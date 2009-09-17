@@ -1,0 +1,107 @@
+Instructions: For each browser being tested, go through each of the following scenarios.  If the test proceeds as expected, continue on to the next; otherwise, please note the actual behavior (and any confusion about the expected behavior) before moving on.
+
+Each scenario is in the form of 1 or more numbered instructions.  Most of these instructions are intended to get the application to a certain state.  Instructions starting with 'Expect: " ask you to verify some state of the application.  Please take special care to check each of the conditions described.  If you are unable to complete any instruction, please report this as an issue.
+Prior to each scenario, please refresh the browser page to bring up a clean view of the application (without any popups, measure lines, etc.)
+
+Thanks for testing GeoExplorer!
+
+Scenario: Pan/Zoom tool
+1. Expect: a full view of the United States layer shipped with GeoServer.
+2. Center the map on the state of Florida using the arrow buttons in the top left corner of the map view.
+3. Use the scale line beneath the arrow buttons to zoom in until Florida fills the viewport.  You may need to adjust the map centering as the arrows give you finer control at lower zoom levels.
+4. Expect: That you were able to center the screen on Florida.
+5. Continue zooming in until the box on the scale line is at the top end of the line.
+6. Expect: That the [+] button has no effect when you are already at the closest zoomlevel.
+7. Use the scale line to zoom back out until the box on the scale line is at the bottom end of the line.
+8: Expect: That the [-] button has no effect when you are already at the farthest-out zoomlevel.
+
+Scenario: Mouse navigation
+1. Use the mouse controls (drag to pan, scroll to zoom) to center the map on the state of Texas with Texas filling the viewport.
+2. Expect: That you were able to center the screen on Texas.
+3. Use the mouse scroll wheel to zoom in until the box on the scale line is at the top end of the line.
+4. Expect: That continuing to scroll up has no effect on the map.
+5. Use the mouse scroll wheel to zoom out until the box on the scale line is at the bottom end of the line.
+6. Expect: That continuing to scroll down has no effect on the map.
+
+Scenario: Toolbar Zoom controls
+1. Use the Magnifier [+] button to zoom in until the box on the scale line is at the top end of the line. 
+2. Expect: That continuing to press the button does not affect the map.
+3. Use the Magnifier [-] button to zoom out until the box on the scale line is at the bottom end of the line.
+4. Expect: that continuing to press the button does not affect the map.
+
+Scenario: Scalebar for zooming
+1. Change the zoom level by clicking on the scale ratio in the bottom right of the map view and selecting a different zoom level.
+2. Expect: that choosing zoom levels other than the current one changes the map view.
+2. Expect: that the bottom zoom level in the combo box places the box on the scale line at the bottom of the line.
+3. Expect: that the top zoom level in the combo box places the box on the scale line at the top of the line.
+
+Scenario: Bookmark a map
+1. Pan the map to an arbitrary view.  Note the layers and features currently available, as well as the current scale level (the scale box at the bottom of the map view).
+2. Use the bookmark tool (with the floppy disk icon) from the toolbar to bookmark the current view.
+3. Close the browser window/tab, then use the bookmark to restore the view.
+4. Expect: That the layers, features you noted earlier are visible again, and that the scale ratio is restored properly.
+
+Scenario: Identify a feature
+1. Click the identify (circled [i]) button on the toolbar.
+2. Click on the state of Idaho.
+3. Expect: That a popup is presented with information about the state of Idaho.
+4. If it is not already sized thus, resize the popup such that the content is not all visible by dragging its edges.
+5. Expect: That scrollbars appear to allow the user to access the hidden parts of the content.
+6. Click on the state of Tennessee.
+7. Expect: That there are now two popups on the map, one with information about Idaho and one about Tennesse.
+8. Pan and zoom the map.
+9. Expect: that the popups stay anchored to their respective states.
+10. Click the thumbtack icon in the popups' title bars. 
+11. Expect: that the popups can now be dragged around the window.
+12: Expect: that the popups' position is no longer affected by panning and zooming the map.
+13. Click outside of any features.
+14. Expect: that no popup is presented when you click on nothing.
+
+Scenario: Measure distances and area
+1. Click the measure (ruler) button on the toolbar.
+2. Single-click on several points on the map.
+3. Expect: that at each point, a popup shows distance information about the total path travelled. (No need to try and actually verify the values, but verify that it's going up and approximately the right amount.  For reference, the continental US is roughly 3000 miles wide.)
+4. Click the close button for the measurement display.
+5. Expect: that you can measure the distance to points previously obscured by the popup.
+6. Double-click on a point on the map to end measurement.
+7. Click on the pan (crossed arrows) button on the toolbar.
+8. Expect: that switching to other tools hides the measure tools' trail.
+9. Click on the small downward arrow next to the ruler and choose 'Area' from the menu.
+10. Expect: that the measure tool is now selected.
+11. Repeat the steps (2-8) from the Length test.
+
+Scenario: Add and remove layers
+1. Click on the add layers (green circled [+]) button in the Layers view.
+2. Expect: that you have a listing of available layers now. 
+3. Expect: that using ctrl+click lets you toggle selection of individual layers from the list.
+4. Expect: that using shift+click lets you select ranges from the list.
+5. Select some layers, then click the 'Add layers' button at the bottom of the dialog.
+6. Click the Done button at the bottom of the dialog.
+7. Expect: that you now have some additional layers on the map, and that the available layer dialog is hidden.
+9. Expect: that the added layers appear on the map, in the layer tree, and in the legend panel.
+10. Select some other layers (preferably with some nice coverage) and click 'Add Base Layers'
+11. Expect: that you will now have some additional base layers on the map, and that one of the newly added base layers will be selected as the new active, visible map base layer.
+10. Click the identify (circled [i]) tool and then click some points on the map where features from different layers overlap.
+11. Expect: that you get information about multiple layers in the identify popups now.
+12. Select a layer in the tree by single-clicking on it.
+13. Click the remove layer (red circled [-]) button in the Layers view.
+14. Expect: that the removed layer is no longer visible in the map or legend panel.
+
+Scenario: Rearrange layers via the layer tree
+1. Add some layers to the map.
+2. Drag the top layer from the overlay list to the bottom.
+3. Expect: that features from the layer are now obscured by features from other layers.
+4. Expect: that the move is reflected in the legend panel beneath the layer tree.
+5. Repeat steps 2-4 until the same layer is back at the top of the list.
+6. Swap the first and second layers a few times, noting the appropriate changes in the map rendering and legend panel.
+7. Try to move a base layer to be on top of an overlay layer.
+8. Expect: you are not able to move a base layer on top of an overlay layer.
+
+Scenario: Hide and display layers via the layer tree.
+1. Add some layers to the map.
+2. Use the checkbox to hide and then display each layer.
+3. Expect: that clearing the checkbox hides the layer in the map and legend panel.
+4. Expect: that setting the checkbox shows the layer in the map and legend panel.
+5. Hide and then display each layer by double-clicking.
+6. Expect: that double-clicking a visible layer hides it in the map and legend panel
+7. Expect: that double-clicking a hidden layer shows it in the map and legend panel

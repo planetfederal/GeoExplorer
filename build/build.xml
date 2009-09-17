@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="GeoExplorer" default="dist" basedir=".">
+
+    <description>
+        GeoExplorer Build File
+    </description>
+
+    <property name="src" location="../src"/>
+    <property name="externals" location="../externals"/>
+    <property name="build" location="geoexplorer"/>
+    
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${build}"/>
+    </target>
+    
+    <target name="doc" depends="init" description="build documentation">
+        <echo>Building docs.</echo>
+        <exec executable="sphinx-build" failonerror="true">
+            <arg line="-b html"/>
+            <arg value="-d"/>
+            <arg path="${src}/doc/_build/doctrees"/>
+            <arg path="${src}/doc"/>
+            <arg path="${build}/doc"/>
+        </exec>
+    </target>
+    
+    <target name="dev" depends="clean, init, servlet" description="set up development build">
+        <echo>Setting up development build.</echo>
+
+        <copy todir="${build}/script/app">
+            <fileset dir="${src}/client/script/app"></fileset>
+        </copy>
+
+        <copy todir="${build}/script/ux">
+            <fileset dir="${src}/client/script/ux"></fileset>
+        </copy>
+
+        <copy todir="${build}/script/ol">
+            <fileset dir="${externals}/openlayers/"></fileset>
+        </copy>
+
+        <copy todir="${build}/script/gxp">
+            <fileset dir="${externals}/gxp/src/script"></fileset>
+        </copy>
+
+        <copy todir="${build}/script/gx">
+            <fileset dir="${externals}/geoext/"></fileset>
+        </copy>
+
+        <copy todir="${build}/theme/app">
+            <fileset dir="${src}/client/theme/app"></fileset>
+        </copy>
+
+        <copy todir="${build}/theme/ol">
+            <fileset dir="${externals}/openlayers/theme/default"></fileset>
+        </copy>
+
+        <copy todir="${build}/theme/gxp">
+            <fileset dir="${externals}/gxp/src/theme"></fileset>
+        </copy>
+
+        <copy todir="${build}/theme/gx">
+            <fileset dir="${externals}/geoext/resources"></fileset>
+        </copy>
+
+
+        <filterset id="dev-replacements">
+            <filter token="title" value="GeoExplorer (debug)"/>
+            <!-- Ext Resources -->
+            <filter token="ext-all.js" value="ext-all-debug.js"/>
+            <!-- OpenLayers Resources -->
+            <filter token="ol-style.css" value="theme/ol/style.css"/>
+            <filter token="OpenLayers.js" value="script/ol/lib/OpenLayers.js"/>
+            <!-- GeoExt Resources -->
+            <filter token="geoext-all.css" value="theme/gx/css/geoext-all-debug.css"/>
+            <filter token="gxtheme-gray.css" value="theme/gx/css/gxtheme-gray.css"/>
+            <filter token="GeoExt.js" value="script/gx/lib/GeoExt.js"/>
+            <!-- gxp Resources -->
+            <filter token="gxp.js" value="script/gxp/loader.js"/>
+            <filter token="gxp.css" value="theme/gxp/all.css"/>
+            <!-- GeoExplorer Resources -->
+            <filter token="geoexplorer.css" value="theme/app/geoexplorer.css"/>
+            <filter token="ie.css" value="theme/app/ie.css"/>
+            <filter token="about.css" value="theme/app/about.css"/>
+            <filter token="GeoExplorer.js" value="script/app/loader.js"/>
+            <filter token="ux.js" value="script/ux/RowExpander.js"/>
+            <filter token="blank.gif" value="theme/app/img/blank.gif"/>
+        </filterset>
+
+        <copy file="${src}/client/html/index.html" todir="${build}">
+            <filterset refid="dev-replacements"/>
+        </copy>
+        <copy file="${src}/client/html/embed.html" todir="${build}">
+            <filterset refid="dev-replacements"/>
+        </copy>
+        <copy file="${src}/client/html/about.html" todir="${build}">
+            <filterset refid="dev-replacements"/>
+        </copy>
+
+    </target>
+    
+    <target name="jsbuild" depends="init" description="concatenate JavaScript source">
+        <echo>Concatenating JavaScript.</echo>
+        <mkdir dir="${build}/script"/>
+        <exec executable="jsbuild" failonerror="true">
+            <arg line="jsbuild.cfg -v"/>
+            <arg value="-o"/>
+            <arg path="${build}/script"/>
+        </exec>
+    </target>
+
+    <target name="dist" depends="clean, init, jsbuild, servlet, doc" description="prepare app for distribution">
+        <echo>Preparing for distribution.</echo>
+        
+        <copy todir="${build}/theme/app">
+            <fileset dir="${src}/client/theme/app"/>
+        </copy>
+
+        <copy todir="${build}/theme/ol">
+            <fileset dir="${externals}/openlayers/theme/default"/>
+        </copy>
+
+        <copy todir="${build}/theme/gxp">
+            <fileset dir="${externals}/gxp/src/theme"/>
+        </copy>
+
+        <copy todir="${build}/theme/gx">
+            <fileset dir="${externals}/geoext/resources"/>
+        </copy>
+
+        <filterset id="dist-replacements">
+            <filter token="title" value="GeoExplorer"/>
+            <!-- Ext Resources -->
+            <filter token="ext-all.js" value="ext-all.js"/>
+            <!-- OpenLayers Resources -->
+            <filter token="ol-style.css" value="theme/ol/style.css"/>
+            <filter token="OpenLayers.js" value="script/OpenLayers.js"/>
+            <!-- GeoExt Resources -->
+            <filter token="geoext-all.css" value="theme/gx/css/geoext-all-debug.css"/>
+            <filter token="gxtheme-gray.css" value="theme/gx/css/gxtheme-gray.css"/>
+            <filter token="GeoExt.js" value="script/GeoExt.js"/>
+            <!-- gxp Resources -->
+            <filter token="gxp.js" value="script/gxp.js"/>
+            <filter token="gxp.css" value="theme/gxp/all.css"/>
+            <!-- GeoExplorer Resources -->
+            <filter token="geoexplorer.css" value="theme/app/geoexplorer.css"/>
+            <filter token="ie.css" value="theme/app/ie.css"/>
+            <filter token="about.css" value="theme/app/about.css"/>
+            <filter token="GeoExplorer.js" value="script/GeoExplorer.js"/>
+            <filter token="ux.js" value="script/ux.js"/>
+            <filter token="blank.gif" value="theme/app/img/blank.gif"/>
+        </filterset>
+
+        <copy file="${src}/client/html/index.html" todir="${build}">
+            <filterset refid="dist-replacements"/>
+        </copy>
+        <copy file="${src}/client/html/embed.html" todir="${build}">
+            <filterset refid="dist-replacements"/>
+        </copy>
+        <copy file="${src}/client/html/about.html" todir="${build}">
+            <filterset refid="dist-replacements"/>
+        </copy>        
+        
+    </target>
+
+    <target name="servlet" depends="init" description="structure for servlet">
+        <echo>Creating structure for servlet container.</echo>
+        <mkdir dir="${build}/WEB-INF"/>
+        <copy todir="${build}/WEB-INF">
+            <fileset dir="${src}/server"></fileset>
+        </copy>
+        <copy todir="${build}/WEB-INF/config">
+            <fileset dir="${externals}/persevere/WEB-INF/config"></fileset>
+        </copy>
+        <copy todir="${build}/WEB-INF/lib">
+            <fileset dir="${externals}/persevere/WEB-INF/lib"></fileset>
+        </copy>
+        <copy file="${externals}/persevere/WEB-INF/web.xml" tofile="${build}/WEB-INF/web.xml"/>
+    </target>
+    
+    <target name="war" depends="dist" description="create archive for servlet container">
+        <war destfile="geoexplorer.war">
+            <fileset dir="${build}"/>
+        </war>
+    </target>
+    
+    <target name="clean" description="remove previous build">
+        <delete dir="${build}"/>
+    </target>
+
+</project>
+
