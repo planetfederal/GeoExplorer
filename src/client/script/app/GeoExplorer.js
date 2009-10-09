@@ -291,8 +291,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 if(evt.layer.mergeNewParams){
                     var maxExtent = evt.layer.maxExtent;
                     evt.layer.mergeNewParams({
-                        transparent: true,
-                        format: "image/png",
+                        //transparent: true,
+                        //format: "image/png",
                         tiled: true,
                         tilesorigin: [maxExtent.left, maxExtent.bottom]
                     });
