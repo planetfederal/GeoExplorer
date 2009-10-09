@@ -658,6 +658,16 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     // set layer visibility from config
                     layer.visibility = ("visibility" in conf) ? conf.visibility : true;
                     
+                    // set layer opacity from config
+                    if ("opacity" in conf) {
+                        layer.opacity = conf.opacity;
+                    }
+                    
+                    // set layer format from config
+                    if ("format" in conf) {
+                        layer.params["FORMAT"] = conf.format;
+                    }
+                    
                     // set layer title from config
                     if (conf.title) {
                         /**
