@@ -17,11 +17,9 @@
  *
  *     Valid config properties:
  *     map - {Object} Map configuration object.
- *     wms - {Object} An object with properties whose values are WMS endpoint URLs
+ *     sources - {Object} An object with properties whose values are WMS endpoint URLs
  *     alignToGrid - {boolean} if true, align tile requests to the grid 
  *         enforced by tile caches such as GeoWebCache or Tilecache
- *     plugins - {Array} Plugins to be loaded. A plugin needs to have an init
- *         method which will be called with the application as argument.
  *
  *     Valid map config properties:
  *         projection - {String} EPSG:xxxx
@@ -34,11 +32,6 @@
  *     Valid layer config properties (WMS):
  *     name - {String} Required WMS layer name.
  *     title - {String} Optional title to display for layer.
- *     
- *     Additional layer config proeprties (Plugins):
- *     type - {String} Required layer type, as provided by the plugin.
- *     See the plugin documentation for additional properties
- *
  */
 var GeoExplorer = Ext.extend(Ext.util.Observable, {
     
@@ -69,14 +62,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      */
     alignToGrid: false,
     
-    /** api: property[plugins]
-     *  ``Array`` Plugins to load for this application. Each plugin needs to
-     *  have an init function, which will be called in the scope of this
-     *  application. The plugin's init function should register objects in
-     *  this application's layerType and serviceType objects, keyed
-     */
-    plugins: null,
-
     /**
      * private: property[capGrid]
      * :class:`Ext.Window` The window containing the CapabilitiesGrid panel to 
@@ -101,21 +86,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      */
     layerSources: null,
         
-    /** api: property[serviceType]
-     *  ``Object`` serviceTypes (provided by plugins), keyed by plugin name.
-     *  A plugin should provide the following in the object it registers here:
-     *  prepare {Function} - (optional) Executes asynchronous preparation tasks
-     *      that are required before the plugin can work. This function will
-     *      be called in the scope of this application, with a callback
-     *      function as argument. The callback function needs to be executed by
-     *      the plugin when it is ready to be used.
-     *  createLayer {Function} - A mandatory function that will be called in
-     *      the scope of this application, with the matching layer config as
-     *      argument. Returns a :class:`GeoExt.LayerRecord`. The LayerRecord
-     *      should have an additional abstract field.
-     */
-    serviceType: {},
-    
     constructor: function(config) {
 
         // add any custom application events
@@ -179,31 +149,13 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             }
         ];
         
-        if(this.plugins) {
-            for(var i=0, len=this.plugins.length; i<len; ++i) {
-                this.plugins[i].init(this);
-            }
-        }
-        // now that all plugins ran their init methods, we can expect to
-        // find some serviceTypes with a prepare method that we need to add
-        // to the dispatch queue
-        var service;
-        for(var i in this.serviceType) {
-            service = this.serviceType[i];
-            service.prepare && dispatchQueue.push(
-                function(done) {
-                    service.prepare.call(this, done);
-                }
-            );
-        }
-        
-        for (var id in this.wms) {
-            // Load capabilities for each wms passed through the configuration.
+        for (var id in this.sources) {
+            // Load capabilities for each sources passed through the configuration.
             dispatchQueue.push(
                 (function(id) {
                     // Create a new scope for 'id'.
                     return function(done){
-                        this.addSource(this.wms[id], id, done, done);
+                        this.addSource(this.sources[id], id, done, done);
                     }; 
                 })(id));
         }
@@ -288,7 +240,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 success(record);
             },
             failure: function(){
-                OpenLayers.Console.error("Couldn't get capabilities document for wms '" + id + "'.");
+                OpenLayers.Console.error("Couldn't get capabilities document for sources '" + id + "'.");
                 fail();
             },
             scope: this
@@ -652,21 +604,10 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             for(var i = 0; i < mapConfig.layers.length; ++i) {
                 var conf = mapConfig.layers[i];
                 
-                // load layers from services registered by plugins
-                if(conf.type && conf.type !== "wms") {
-                    var serviceType = this.serviceType[conf.type];
-                    if(serviceType) {
-                        var layer = serviceType.createLayer.call(this, conf);
-                        if(layer) {
-                            records.push(layer);
-                        }
-                    }
-                    continue;
-                }
-                
-                // load wms layers
-                
-                var index = this.layerSources.find("identifier", conf.wms);
+                // load wms layers                
+                var index = this.layerSources.findBy(function(r) {
+                    return r.get("identifier") === conf.source;
+                });
                 
                 if (index == -1) {
                     continue;
@@ -675,7 +616,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 var storeRecord = this.layerSources.getAt(index);
                 var store = storeRecord.data.store;
 
-                var id = store.find("name", conf.name);
+                var id = store.findBy(function(r) {
+                    return r.get("name") === conf.name;
+                });
                 
                 var record;
                 var base;
@@ -832,7 +775,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 // do is select it. Note: There's probably a better way to do this, 
                 // but there doesn't seem to be another way to get the select event
                 // to fire.
-                var index = this.layerSources.find("identifier", record.get("identifier"));
+                var index = this.layerSources.findBy(function(r) {
+                    return r.get("identifier") === record.get("identifier");
+                });
                 sourceComboBox.onSelect(record, index);
                 
                 // Close the new source window.
@@ -1423,7 +1368,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
 
         var center = this.map.getCenter();        
         var config = {
-            wms: {},
+            sources: {},
             map: {
                 center: [center.lon, center.lat],
                 zoom: this.map.zoom,
@@ -1436,7 +1381,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             if (layer.displayInLayerSwitcher) {
                 
                 // Get the source of this layer.
-                var index = this.layerSources.find("identifier", layerRecord.get("source_id"));
+                var index = this.layerSources.findBy(function(r) {
+                    return r.get("identifier") === layerRecord.get("source_id");
+                });
                 var source = this.layerSources.getAt(index);
                 
                 if (!source) {
@@ -1446,7 +1393,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     return;
                 }
                 // add source
-                config.wms[source.get("identifier")] = source.get("url");
+                config.sources[source.get("identifier")] = source.get("url");
                 
                 config.map.layers.push({
                     name: layerRecord.get("name"),
@@ -1455,7 +1402,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     format: layer.params.FORMAT,
                     opacity: layer.opacity || undefined,
                     group: layerRecord.get("group"),
-                    wms: source.get("identifier")
+                    source: source.get("identifier")
                 });
             }
         }, this);

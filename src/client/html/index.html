@@ -46,26 +46,19 @@
                         "in any web page.",
                     contact: "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
                 },
-                wms: {
+                sources: {
                     "demo": "/geoserver/ows/"
                 },
                 map: {
-                    projection: "EPSG:900913",
-                    units: "m",
-                    maxResolution: 156543.0339,
                     layers: [{
-                        name: "topp:states",
-                        wms: "demo"
-                    }, {
-                        type: "GoogleMaps",
-                        layer: "G_PHYSICAL_MAP"
+                        name: "World",
+                        title: "World",
+                        source: "demo",
+                        group: "background"
                     }],
-                    center: [-10764594.758211, 4523072.3184791],
-                    zoom: 4
-                },
-                plugins: [
-                    GeoExplorer.plugins.GoogleMaps
-                ]
+                    center: [-6.328, 5.249],
+                    zoom: 2
+                }
             });
         </script>
 
