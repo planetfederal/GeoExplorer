@@ -560,10 +560,12 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     plugins: new GeoExt.ZoomSliderTip({
                         template: "<div>Zoom Level: {zoom}</div>"
                     })
-                },
-                this.createMapOverlay()
+                }
             ]
         });
+        
+        this.mapPanel.add(this.createMapOverlay());
+        
     },
     
     /** private: method[activate]
@@ -587,7 +589,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      */
     addLayers: function() {
         var mapConfig = this.initialConfig.map;
-        var projection = mapConfig.projection || "EPSG:4326";
+        var mapProj = new OpenLayers.Projection(mapConfig.projection || "EPSG:4326");
+        var ggProj = new OpenLayers.Projection("EPSG:4326");
 
         if(mapConfig && mapConfig.layers) {
             var records = [];
@@ -632,14 +635,12 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     // set layer max extent from capabilities
                     //TODO SRS handling should be done in WMSCapabilitiesReader
                     layer.restrictedExtent = OpenLayers.Bounds.fromArray(record.get("llbbox")).transform(
-                        new OpenLayers.Projection("EPSG:4326"),
-                        new OpenLayers.Projection(projection)
+                        ggProj, mapProj
                     );
                     
                     if (this.alignToGrid) {
                         layer.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90).transform(
-                            new OpenLayers.Projection("EPSG:4326"),
-                            new OpenLayers.Projection(projection)
+                            ggProj, mapProj
                         );
                     } else {
                         layer.maxExtent = layer.restrictedExtent;
@@ -874,23 +875,29 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             width: 110
         });
 
-        zoomSelector.on('click', function(evt){evt.stopEvent();});
-        zoomSelector.on('mousedown', function(evt){evt.stopEvent();});
-
-        zoomSelector.on('select', function(combo, record, index) {
+        zoomSelector.on({
+            click: function(evt) {
+                evt.stopEvent();
+            },
+            mousedown: function(evt) {
+                evt.stopEvent();
+            },
+            select: function(combo, record, index) {
                 this.mapPanel.map.zoomTo(record.data.level);
             },
-            this);
+            scope: this
+        })
 
         var zoomSelectorWrapper = new Ext.Panel({
             items: [zoomSelector],
             cls: 'overlay-element overlay-scalechooser',
-            border: false });
+            border: false 
+        });
 
         this.mapPanel.map.events.register('zoomend', this, function() {
-            var scale = zoomStore.queryBy(function(record){
+            var scale = zoomStore.queryBy(function(record) {
                 return this.mapPanel.map.getZoom() == record.data.level;
-            });
+            }, this);
 
             if (scale.length > 0) {
                 scale = scale.items[0];
