@@ -56,6 +56,10 @@
             <fileset dir="${externals}/openlayers/theme/default"></fileset>
         </copy>
 
+        <copy todir="${build}/ext">
+            <fileset dir="${externals}/ext"></fileset>
+        </copy>
+
         <copy todir="${build}/theme/gxp">
             <fileset dir="${externals}/gxp/src/theme"></fileset>
         </copy>
@@ -119,6 +123,10 @@
 
         <copy todir="${build}/theme/ol">
             <fileset dir="${externals}/openlayers/theme/default"/>
+        </copy>
+
+        <copy todir="${build}/ext">
+            <fileset dir="${externals}/ext"></fileset>
         </copy>
 
         <copy todir="${build}/theme/gxp">
