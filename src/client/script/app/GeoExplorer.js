@@ -40,12 +40,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      */
     map: null,
     
-    /** private: property[layers]
-     * A :class:`GeoExt.data.LayerStore` containing a record for each layer
-     * on the map.
-     */
-    layers: null,
-
     /**
      * private: property[mapPanel]
      * the :class:`GeoExt.MapPanel` instance for the main viewport
@@ -275,9 +269,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         
         this.createMap();
         
-        // create layer store
-        this.layers = this.mapPanel.layers;
-
         var addLayerButton = new Ext.Button({
             tooltip : "Add Layers",
             disabled: true,
@@ -308,7 +299,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             handler: function() {
                 var record = getSelectedLayerRecord();
                 if(record) {
-                    this.layers.remove(record);
+                    this.mapPanel.layers.remove(record);
                     removeLayerAction.disable();
                 }
             },
@@ -701,7 +692,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     (aGroup == "background" ? -1 : 1);
             });
             
-            this.layers.add(records);
+            this.mapPanel.layers.add(records);
 
             // set map center
             if(this.mapPanel.center) {
@@ -1391,7 +1382,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             }
         };
         
-        this.layers.each(function(layerRecord){
+        this.mapPanel.layers.each(function(layerRecord){
             var layer = layerRecord.get('layer');
             if (layer.displayInLayerSwitcher) {
                 

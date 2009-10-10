@@ -18,9 +18,6 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
     createLayout: function() {
         
         this.createMap();
-        
-        // create layer store
-        this.layers = this.mapPanel.layers;
 
         var toolbar = new Ext.Toolbar({
             xtype: "toolbar",
