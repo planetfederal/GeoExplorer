@@ -275,57 +275,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         
         this.createMap();
         
-        // create the map
-        // TODO: check this.initialConfig.map for any map options
-        this.map = new OpenLayers.Map({
-            theme: null,
-            allOverlays: true,
-            controls: [new OpenLayers.Control.PanPanel(),
-                       new OpenLayers.Control.ZoomPanel()],
-            projection: this.initialConfig.map.projection,
-            units: this.initialConfig.map.units,
-            maxResolution: this.initialConfig.map.maxResolution
-        });
-
-        //TODO: make this more configurable
-        this.map.events.on({
-            "preaddlayer" : function(evt){
-                if(evt.layer.mergeNewParams){
-                    var maxExtent = evt.layer.maxExtent;
-                    evt.layer.mergeNewParams({
-                        tiled: true,
-                        tilesorigin: [maxExtent.left, maxExtent.bottom]
-                    });
-                }
-            },
-            scope : this
-        });
-        
-
-        // place map in panel
-        var mapConfig = this.initialConfig.map || {};
-        this.mapPanel = new GeoExt.MapPanel({
-            layout: "anchor",
-            border: true,
-            region: "center",
-            map: this.map,
-            // TODO: update the OpenLayers.Map constructor to accept an initial center
-            center: mapConfig.center && new OpenLayers.LonLat(mapConfig.center[0], mapConfig.center[1]),
-            // TODO: update the OpenLayers.Map constructor to accept an initial zoom
-            zoom: mapConfig.zoom,
-            items: [
-                {
-                    xtype: "gx_zoomslider",
-                    vertical: true,
-                    height: 100,
-                    plugins: new GeoExt.ZoomSliderTip({
-                        template: "<div>Zoom Level: {zoom}</div>"
-                    })
-                },
-                this.createMapOverlay()
-            ]
-        });
-        
         // create layer store
         this.layers = this.mapPanel.layers;
 
