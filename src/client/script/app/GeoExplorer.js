@@ -35,11 +35,6 @@
  */
 var GeoExplorer = Ext.extend(Ext.util.Observable, {
     
-    /** api: property[map]
-     * :class:`OpenLayers.Map` The application's map.
-     */
-    map: null,
-    
     /**
      * private: property[mapPanel]
      * the :class:`GeoExt.MapPanel` instance for the main viewport
@@ -433,7 +428,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                         handler: function() {
                             var node = layerTree.getSelectionModel().getSelectedNode();
                             if(node && node.layer) {
-                                this.map.zoomToExtent(node.layer.restrictedExtent);
+                                this.mapPanel.map.zoomToExtent(node.layer.restrictedExtent);
                             }
                         },
                         scope: this
@@ -466,7 +461,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             split: true,
             autoScroll: true,
             ascending: false,
-            map: this.map,
+            map: this.mapPanel.map,
             defaults: {cls: 'legend-item'}
         });
 
@@ -521,7 +516,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
     createMap: function() {
 
         var mapConfig = this.initialConfig.map || {};
-        this.map = new OpenLayers.Map({
+        var map = new OpenLayers.Map({
             theme: null,
             allOverlays: true,
             controls: [new OpenLayers.Control.PanPanel(),
@@ -533,9 +528,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         });
 
         //TODO: make this more configurable
-        this.map.events.on({
+        map.events.on({
             preaddlayer: function(evt) {
-                if(evt.layer.mergeNewParams){
+                if(evt.layer.mergeNewParams) {
                     var maxExtent = evt.layer.maxExtent;
                     evt.layer.mergeNewParams({
                         tiled: true,
@@ -552,7 +547,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             layout: "anchor",
             border: true,
             region: "center",
-            map: this.map,
+            map: map,
             // TODO: update the OpenLayers.Map constructor to accept an initial center
             center: mapConfig.center && new OpenLayers.LonLat(mapConfig.center[0], mapConfig.center[1]),
             // TODO: update the OpenLayers.Map constructor to accept an initial zoom
@@ -697,11 +692,11 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             // set map center
             if(this.mapPanel.center) {
                 // zoom does not have to be defined
-                this.map.setCenter(this.mapPanel.center, this.mapPanel.zoom);
+                this.mapPanel.map.setCenter(this.mapPanel.center, this.mapPanel.zoom);
             } else if (this.mapPanel.extent) {
-                this.map.zoomToExtent(this.mapPanel.extent);
+                this.mapPanel.map.zoomToExtent(this.mapPanel.extent);
             } else {
-                this.map.zoomToMaxExtent();
+                this.mapPanel.map.zoomToMaxExtent();
             }
             
         }
@@ -861,12 +856,12 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 div: scaleLinePanel.body.dom
             });
 
-            this.map.addControl(scaleLine);
+            this.mapPanel.map.addControl(scaleLine);
             scaleLine.activate();
         }, this);
 
         var zoomStore = new GeoExt.data.ScaleStore({
-            map: this.map
+            map: this.mapPanel.map
         });
 
         var zoomSelector = new Ext.form.ComboBox({
@@ -883,7 +878,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         zoomSelector.on('mousedown', function(evt){evt.stopEvent();});
 
         zoomSelector.on('select', function(combo, record, index) {
-                this.map.zoomTo(record.data.level);
+                this.mapPanel.map.zoomTo(record.data.level);
             },
             this);
 
@@ -892,9 +887,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             cls: 'overlay-element overlay-scalechooser',
             border: false });
 
-        this.map.events.register('zoomend', this, function() {
+        this.mapPanel.map.events.register('zoomend', this, function() {
             var scale = zoomStore.queryBy(function(record){
-                return this.map.getZoom() == record.data.level;
+                return this.mapPanel.map.getZoom() == record.data.level;
             });
 
             if (scale.length > 0) {
@@ -946,13 +941,13 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             pressed: true,
             allowDepress: false,
             control: new OpenLayers.Control.Navigation(),
-            map: this.map,
+            map: this.mapPanel.map,
             toggleGroup: toolGroup
         });
 
         // create a navigation history control
         var historyControl = new OpenLayers.Control.NavigationHistory();
-        this.map.addControl(historyControl);
+        this.mapPanel.map.addControl(historyControl);
 
         // create actions for previous and next
         var navPreviousAction = new GeoExt.Action({
@@ -1065,7 +1060,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                             toggleGroup: toolGroup,
                             group: toolGroup,
                             allowDepress: false,
-                            map: this.map,
+                            map: this.mapPanel.map,
                             control: this.createMeasureControl(
                                 OpenLayers.Handler.Path, "Length"
                             )
@@ -1078,7 +1073,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                             toggleGroup: toolGroup,
                             group: toolGroup,
                             allowDepress: false,
-                            map: this.map,
+                            map: this.mapPanel.map,
                             control: this.createMeasureControl(
                                 OpenLayers.Handler.Polygon, "Area"
                             )
@@ -1104,7 +1099,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             "-",
             new Ext.Button({
                 handler: function(){
-                    this.map.zoomIn();
+                    this.mapPanel.map.zoomIn();
                 },
                 tooltip: "Zoom In",
                 iconCls: "icon-zoom-in",
@@ -1113,7 +1108,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             new Ext.Button({
                 tooltip: "Zoom Out",
                 handler: function(){
-                    this.map.zoomOut();
+                    this.mapPanel.map.zoomOut();
                 },
                 iconCls: "icon-zoom-out",
                 scope: this
@@ -1125,8 +1120,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 iconCls: "icon-zoom-visible",
                 handler: function() {
                     var extent, layer;
-                    for(var i=0, len=this.map.layers.length; i<len; ++i) {
-                        layer = this.map.layers[i];
+                    for(var i=0, len=this.mapPanel.map.layers.length; i<len; ++i) {
+                        layer = this.mapPanel.map.layers[i];
                         if(layer.getVisibility()) {
                             if(extent) {
                                 extent.extend(layer.maxExtent);
@@ -1136,7 +1131,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                         }
                     }
                     if(extent) {
-                        this.map.zoomToExtent(extent);
+                        this.mapPanel.map.zoomToExtent(extent);
                     }
                 },
                 scope: this
@@ -1277,7 +1272,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         var popupKey = evt.xy.x + "." + evt.xy.y;
 
         if (!(popupKey in this.popupCache)) {
-            var lonlat = this.map.getLonLatFromPixel(evt.xy);
+            var lonlat = this.mapPanel.map.getLonLatFromPixel(evt.xy);
             popup = new GeoExt.Popup({
                 title: "Feature Info",
                 layout: "accordion",
@@ -1372,12 +1367,12 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      */ 
     extractConfiguration: function() {
 
-        var center = this.map.getCenter();        
+        var center = this.mapPanel.map.getCenter();        
         var config = {
             sources: {},
             map: {
                 center: [center.lon, center.lat],
-                zoom: this.map.zoom,
+                zoom: this.mapPanel.map.zoom,
                 layers: []
             }
         };
