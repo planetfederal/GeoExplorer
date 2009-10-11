@@ -463,7 +463,56 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             ascending: false,
             map: this.mapPanel.map,
             defaults: {cls: 'legend-item'}
+        });        
+
+        //  TODO: remove when http://trac.geoext.org/ticket/161 is closed
+        //  START WORKAROUND FOR #161
+        var oldGetLegendUrl = GeoExt.LegendWMS.prototype.getLegendUrl;
+        GeoExt.LegendWMS.prototype.getLegendUrl = function() {
+            var url = oldGetLegendUrl.apply(this, arguments);
+            var param = "SCALE=" + (this.layer.map.getScale() | 0);
+            if (url.indexOf("?") > -1) {
+                if (url.charAt(url.length - 1) === "&") {
+                    url += param;
+                } else {
+                    url += "&" + param;
+                }
+            } else {
+                url += "?" + param;
+            }
+            return url;
+        };
+        var updateLegend = function() {
+            if (this.rendered) {
+                this.updateLegend();
+            }
+        };
+        legendContainer.on({
+            beforeadd: function(panel, comp) {
+                if (comp.items && comp.items.length > 1) {
+                    var legend = comp.get(1);
+                    if (legend.updateLegend) {
+                        this.mapPanel.map.events.on({
+                            zoomend: updateLegend,
+                            scope: legend
+                        });
+                    }
+                }
+            },
+            beforeremove: function(panel, comp) {
+                if (comp.items && comp.items.length > 1) {
+                    var legend = comp.get(1);
+                    if (legend.updateLegend) {
+                        this.mapPanel.map.events.un({
+                            zoomend: updateLegend,
+                            scope: legend
+                        });
+                    }
+                }
+            },
+            scope: this
         });
+        //  END WORKAROUND FOR #161
 
         var westPanel = new Ext.Panel({
             border: true,
