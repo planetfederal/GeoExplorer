@@ -221,3 +221,7 @@ div.map-overlay div.overlay-element {
     margin: 4px;
     vertical-align: baseline;
 }
+
+.gx-export-section {
+    padding: 10px 10px 5px 10px;
+}

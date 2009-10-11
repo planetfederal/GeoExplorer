@@ -59,26 +59,17 @@ GeoExplorer.Full = Ext.extend(GeoExplorer, {
      */
     showEmbedWindow: function() {
 
-        var snippetArea = new Ext.form.TextArea({
-            height: 70,
-            width: "100%",
-            selectOnFocus: true,
-            enableKeyEvents: true,
-            listeners: {
-                keypress: function(area, evt) {
-                    evt.stopEvent();
-                }
-            }
-        });
- 
-        var heightField = new Ext.form.NumberField({width: 50, value: 400});
-        var widthField = new Ext.form.NumberField({width: 50, value: 600});
-        
         // TODO: Get rid of embed.html
         var obj = OpenLayers.Util.createUrlObject("embed.html");
         var port = (obj.port === "80") ? "" : ":" + obj.port;
         var url = obj.protocol + "//" + obj.host + port + obj.pathname + "#maps/" + this.id;
 
+        var snippetArea = new Ext.form.TextArea({
+            height: 70,
+            selectOnFocus: true,
+            readOnly: true
+        });
+ 
         var updateSnippet = function() {
             snippetArea.setValue(
                 '<iframe height="' + heightField.getValue() +
@@ -86,21 +77,25 @@ GeoExplorer.Full = Ext.extend(GeoExplorer, {
             );
         };
 
-        heightField.on("change", updateSnippet);
-        widthField.on("change", updateSnippet);
-
-        var snippet = new Ext.Panel({
-            border: false,
-            layout: 'fit',
-            cls: 'gx-snippet-area',
-            items: [snippetArea]
+        var heightField = new Ext.form.NumberField({
+            width: 50,
+            value: 400,
+            listeners: {change: updateSnippet}
         });
+        var widthField = new Ext.form.NumberField({
+            width: 50,
+            value: 600,
+            listeners: {change: updateSnippet}
+        });        
 
-        var adjustments = new Ext.Panel({
+        var adjustments = new Ext.Container({
             layout: "column",
-            defaults: {border: false},
+            defaults: {
+                border: false,
+                xtype: "box"
+            },
             items: [
-                {cls: "gx-field-label", html: "Map Size"},
+                {autoEl: {cls: "gx-field-label", html: "Map Size"}},
                 new Ext.form.ComboBox({
                     editable: false,
                     width: 70,
@@ -124,28 +119,41 @@ GeoExplorer.Full = Ext.extend(GeoExplorer, {
                         }
                     }
                 }),
-                {cls: "gx-field-label", html: "Height", border: false},
+                {autoEl: {cls: "gx-field-label", html: "Height"}},
                 heightField,
-                {cls: "gx-field-label", html: "Width", border: false},
+                {autoEl: {cls: "gx-field-label", html: "Width"}},
                 widthField
-            ],
-            border: false
+            ]
         });
 
         var win = new Ext.Window({
-            height: 180,
+            height: 205,
             width: 350,
-            resizable: false,
             modal: true,
             title: "Export Map",
-            items: [
-                {html: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:"}, 
-                snippetArea, 
-                adjustments
-            ],
-            listeners: {
-                afterrender: updateSnippet
-            }
+            layout: "fit",
+            items: [{
+                xtype: "container",
+                border: false,
+                defaults: {
+                    border: false,
+                    cls: "gx-export-section",
+                    xtype: "container",
+                    layout: "fit"
+                },
+                items: [{
+                    xtype: "box",
+                    autoEl: {
+                        tag: "p",
+                        html: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:"
+                    }
+                }, {
+                    items: [snippetArea]
+                }, {
+                    items: [adjustments]
+                }]
+            }],
+            listeners: {afterrender: updateSnippet}
         });
         win.show();
     }
