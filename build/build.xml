@@ -25,8 +25,8 @@
         </exec>
     </target>
     
-    <target name="dev" depends="clean, init, servlet" description="set up development build">
-        <echo>Setting up development build.</echo>
+    <target name="redev" description="redo dev setup with services running">
+        <echo>Shuffling files.</echo>
 
         <copy todir="${build}/script/app">
             <fileset dir="${src}/client/script/app"></fileset>
@@ -67,8 +67,7 @@
         <copy todir="${build}/theme/gx">
             <fileset dir="${externals}/geoext/resources"></fileset>
         </copy>
-
-
+        
         <filterset id="dev-replacements">
             <filter token="title" value="GeoExplorer (debug)"/>
             <!-- Ext Resources -->
@@ -101,7 +100,10 @@
         <copy file="${src}/client/html/about.html" todir="${build}">
             <filterset refid="dev-replacements"/>
         </copy>
+    </target>
 
+    <target name="dev" depends="clean, init, servlet, redev" description="set up development build">
+        <echo>Setting up development build.</echo>
     </target>
     
     <target name="jsbuild" depends="init" description="concatenate JavaScript source">
