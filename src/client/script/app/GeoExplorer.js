@@ -1367,20 +1367,29 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
     },
 
 
-    /**
-     * private: method[bookmark]
-     * :return: the URL :class:`String` that was displayed to the user
+    /** private: method[save]
      *
-     * Creates a window that shows the user a URL that can be used to
-     * reload the map in its current configuration.
+     * Saves the map config and displays the URL in a window.
      */ 
-    bookmark: function() {
-        
+    save: function(callback, scope) {
         var configStr = Ext.util.JSON.encode(this.extractConfiguration());
-        OpenLayers.Request.POST({
-            url: "maps",
+        var method, url;
+        if (this.id) {
+            method = "PUT";
+            url = "maps/" + this.id;
+        } else {
+            method = "POST";
+            url = "maps"
+        }
+        OpenLayers.Request[method]({
+            url: url,
             data: Ext.util.JSON.encode(this.extractConfiguration()),
-            callback: this.handleSave,
+            callback: function(request) {
+                this.handleSave(request, method);
+                if (callback) {
+                    callback.call(scope || this);
+                }
+            },
             scope: this
         });
     },
@@ -1388,12 +1397,23 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
     /** private: method[handleSave]
      *  :arg: ``XMLHttpRequest``
      */
-    handleSave: function(request) {
+    handleSave: function(request, method) {
         var config = Ext.util.JSON.decode(request.responseText);
-        
-        // update the current url
-        window.location.hash = "#" + config.id;        
-
+        var mapId = config.id;
+        if (mapId) {
+            if (method === "POST") {
+                mapId = mapId.split("/").pop;
+            }
+            this.id = mapId;
+            window.location.hash = "#maps/" + mapId;
+        } else {
+            throw "Trouble saving: " + request.responseText;
+        }
+    },
+    
+    /** private: method[showUrl]
+     */
+    showUrl: function() {
         var win = new Ext.Window({
             title: "Bookmark URL",
             layout: 'form',
@@ -1410,11 +1430,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 value: window.location.href
             }]
         });
-
         win.show();
         win.items.first().selectText();
-
-        return window.location.href;
     },
     
     /**

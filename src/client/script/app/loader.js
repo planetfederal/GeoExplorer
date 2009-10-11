@@ -3,12 +3,10 @@
     var jsfiles = new Array(
         "GeoExplorer.js",
         "GeoExplorer/util.js",
-        "GeoExplorer/Wizard.js",
         "GeoExplorer/CapabilitiesGrid.js",
         "GeoExplorer/Full.js",
         "GeoExplorer/Embed.js",
-        "GeoExplorer/NewSourceWindow.js",
-        "GeoExplorer/plugins/GoogleMaps.js"
+        "GeoExplorer/NewSourceWindow.js"
     );
 
     var scripts = document.getElementsByTagName("script");
