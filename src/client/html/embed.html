@@ -34,6 +34,7 @@
             Ext.BLANK_IMAGE_URL = "@blank.gif@";
             var app = new GeoExplorer.Embed({
                 proxy: "/geoserver/rest/proxy/?url=",
+                alignToGrid: true,
                 about: {
                     title: "GeoExplorer Demo Map",
                     "abstract": "This is a demonstration of GeoExplorer, " +
@@ -41,16 +42,18 @@
                         "based maps.",
                     contact: "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
                 },
-                wms: {
-                    "demo": "http://demo.opengeo.org/geoserver/ows"
+                sources: {
+                    "demo": "/geoserver/ows/"
                 },
                 map: {
                     layers: [{
-                        name: "topp:states",
-                        wms: "demo"
+                        name: "World",
+                        title: "World",
+                        source: "demo",
+                        group: "background"
                     }],
-                    center: [-96.7, 37.6],
-                    zoom: 4
+                    center: [-6.328, 5.249],
+                    zoom: 2
                 }
             });
         </script>
