@@ -573,7 +573,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             projection: mapConfig.projection,
             units: mapConfig.units,
             maxResolution: mapConfig.maxResolution,
-            numZoomLevels: mapConfig.numZoomLevels
+            numZoomLevels: mapConfig.numZoomLevels || 20
         });
 
         //TODO: make this more configurable
