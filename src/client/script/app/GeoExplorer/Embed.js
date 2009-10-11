@@ -67,13 +67,6 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
         });
 
         tools.push("->");
-        tools.push(new Ext.Button({
-            tooltip: "Bookmark",
-            handler: this.bookmark,
-            scope: this,
-            iconCls: "icon-bookmark"
-        }));
-        // tools.push("-");
         tools.push(aboutButton);
 
         return tools;
