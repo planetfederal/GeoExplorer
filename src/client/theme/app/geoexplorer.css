@@ -225,3 +225,11 @@ div.map-overlay div.overlay-element {
 .gx-export-section {
     padding: 10px 10px 5px 10px;
 }
+
+.gx-info-panel {
+    margin: 1em;
+}
+
+.gx-info-panel h2 {
+    margin-top: 1em;
+}
