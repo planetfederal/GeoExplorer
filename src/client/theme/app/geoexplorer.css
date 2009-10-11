@@ -109,6 +109,21 @@ body {
     background-image: url(img/geosilk/pan.png);
 }
 
+
+.x-menu-group-item .x-menu-item-icon {
+    background: transparent url(../../ext/resources/images/default/form/radio.gif) no-repeat 0 0;
+    height: 13px;
+    width: 13px;
+    margin: 2px;
+}
+
+.x-menu-item-checked .x-menu-group-item .x-menu-item-icon {
+    background: transparent url(../../ext/resources/images/default/form/radio.gif) no-repeat -13px -13px;
+    height: 13px;
+    width: 13px;
+    margin: 2px;
+}
+
 .legend-item {
     margin: 0.5em 10px;
 }
@@ -195,6 +210,10 @@ div.map-overlay div.overlay-element {
 .gx-zoomslider {
     top: 90px;
     left: 17px
+}
+
+.gx-layer-visibility {
+    background-image: url(img/silk/eye.png);
 }
 
 
