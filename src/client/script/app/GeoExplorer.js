@@ -602,8 +602,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
 
         var mapConfig = this.initialConfig.map || {};
         var map = new OpenLayers.Map({
-            theme: null,
-            allOverlays: true,
+            theme: mapConfig.theme || null,
+            allOverlays: ("allOverlays" in mapConfig) ? mapConfig.allOverlays : true,
             controls: [new OpenLayers.Control.PanPanel(),
                        new OpenLayers.Control.ZoomPanel()],
             projection: mapConfig.projection,
