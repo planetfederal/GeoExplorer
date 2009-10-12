@@ -1035,7 +1035,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             enableToggle: true,
             pressed: true,
             allowDepress: false,
-            control: new OpenLayers.Control.Navigation(),
+            control: new OpenLayers.Control.Navigation({zoomWheelEnabled: false}),
             map: this.mapPanel.map,
             toggleGroup: toolGroup
         });
