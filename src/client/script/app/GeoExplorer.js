@@ -1244,9 +1244,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                         layer = this.mapPanel.map.layers[i];
                         if(layer.getVisibility()) {
                             if(extent) {
-                                extent.extend(layer.maxExtent);
+                                extent.extend(layer.restrictedExtent);
                             } else {
-                                extent = layer.maxExtent.clone();
+                                extent = layer.restrictedExtent.clone();
                             }
                         }
                     }
