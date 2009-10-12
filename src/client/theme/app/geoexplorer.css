@@ -236,3 +236,7 @@ div.map-overlay div.overlay-element {
 .gx-info-panel h2 {
     margin-top: 1em;
 }
+
+.x-tree-node-leaf  .gx-tree-layer-icon {
+    background-image: url(img/geosilk/vector.png);
+}
