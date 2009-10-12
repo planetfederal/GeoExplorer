@@ -1467,7 +1467,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         var mapId = config.id;
         if (mapId) {
             if (method === "POST") {
-                mapId = mapId.split("/").pop;
+                mapId = mapId.split("/").pop();
             }
             this.id = mapId;
             window.location.hash = "#maps/" + mapId;

@@ -117,10 +117,10 @@
             <arg path="${build}/script"/>
         </exec>
     </target>
+    
+    <target name="redist" description="redistribute resources while services are running">
+        <echo>Shuffling files.</echo>
 
-    <target name="dist" depends="clean, init, jsbuild, servlet, doc" description="prepare app for distribution">
-        <echo>Preparing for distribution.</echo>
-        
         <copy todir="${build}/theme/app">
             <fileset dir="${src}/client/theme/app"/>
         </copy>
@@ -174,8 +174,12 @@
         </copy>
         <copy file="${src}/client/html/about.html" todir="${build}">
             <filterset refid="dist-replacements"/>
-        </copy>        
-        
+        </copy>
+
+    </target>
+
+    <target name="dist" depends="clean, init, jsbuild, servlet, redist, doc" description="prepare app for distribution">
+        <echo>Preparing for distribution.</echo>
     </target>
 
     <target name="servlet" depends="init" description="structure for servlet">
