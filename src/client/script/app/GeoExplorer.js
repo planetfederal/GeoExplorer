@@ -723,6 +723,10 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     record = store.getAt(id).copy(Ext.data.Record.AUTO_ID);
                     layer = record.get("layer").clone();
                     record.data.layer = layer;
+
+                    // TODO: allow config for layer options
+                    layer.buffer = 0;
+                    layer.tileSize = new OpenLayers.Size(512, 512);
                     
                     // set layer max extent from capabilities
                     //TODO SRS handling should be done in WMSCapabilitiesReader

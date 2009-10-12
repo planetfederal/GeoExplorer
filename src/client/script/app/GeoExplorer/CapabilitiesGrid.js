@@ -89,6 +89,8 @@ GeoExplorer.CapabilitiesGrid = Ext.extend(Ext.grid.GridPanel, {
         var records = sm.getSelections();
         
         var record, layer;
+        var mapProj = new OpenLayers.Projection(this.mapPanel.map.getProjectionObject());
+        var ggProj = new OpenLayers.Projection("EPSG:4326");
         for(var i = 0; i < records.length; i++){
             Ext.data.Record.AUTO_ID++;
             record = records[i].copy(Ext.data.Record.AUTO_ID);
@@ -98,7 +100,7 @@ GeoExplorer.CapabilitiesGrid = Ext.extend(Ext.grid.GridPanel, {
             
             // TODO: allow config for layer options
             layer.buffer = 0;
-            layer.tileSize = new OpenLayers.Size(512, 512),
+            layer.tileSize = new OpenLayers.Size(512, 512);
 
             /*
              * TODO: deal with srs and maxExtent - this should be done in the
@@ -110,15 +112,13 @@ GeoExplorer.CapabilitiesGrid = Ext.extend(Ext.grid.GridPanel, {
              */
 
             layer.restrictedExtent = OpenLayers.Bounds.fromArray(record.get("llbbox")).transform(
-                new OpenLayers.Projection("EPSG:4326"),
-                new OpenLayers.Projection(this.mapPanel.map.getProjectionObject())
+                ggProj, mapProj
             );
 
             if (this.alignToGrid) {
                 layer.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90).transform(
-                            new OpenLayers.Projection("EPSG:4326"),
-                            new OpenLayers.Projection(this.mapPanel.map.getProjectionObject())
-                        );
+                    ggProj, mapProj
+                );
             } else {
                 layer.maxExtent = layer.restrictedExtent;
             } 
