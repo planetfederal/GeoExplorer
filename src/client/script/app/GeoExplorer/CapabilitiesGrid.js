@@ -95,6 +95,10 @@ GeoExplorer.CapabilitiesGrid = Ext.extend(Ext.grid.GridPanel, {
 
             layer = record.get("layer").clone();
             record.data.layer = layer;
+            
+            // TODO: allow config for layer options
+            layer.buffer = 0;
+            layer.tileSize = new OpenLayers.Size(512, 512),
 
             /*
              * TODO: deal with srs and maxExtent - this should be done in the
