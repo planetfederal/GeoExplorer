@@ -1555,7 +1555,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
     displayAppInfo: function() {
         var appInfo = new Ext.Panel({
             title: "GeoExplorer",
-            html: "<iframe style='border: none; height: 100%; width: 100%' src='about.html'><a target='_blank' href='about.html'>About GeoExplorer</a> </iframe>"
+            html: "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'><a target='_blank' href='about.html'>About GeoExplorer</a> </iframe>"
         });
 
         var about = Ext.applyIf(this.about, {
