@@ -26,11 +26,11 @@ body {
 }
 
 .x-tree-node img.gx-folder, .x-tree-node-collapsed img.gx-folder{
-    background: url(http://extjs.cachefly.net/ext-2.2.1/resources/images/default/tree/folder.gif);
+    background: url(../../ext/resources/images/default/tree/folder.gif);
 }
  
 .x-tree-node-expanded img.gx-folder {
-    background: url(http://extjs.cachefly.net/ext-2.2.1/resources/images/default/tree/folder-open.gif);
+    background: url(../../ext/resources/images/default/tree/folder-open.gif);
 }
 
 .x-btn .icon-geoexplorer {
@@ -153,7 +153,7 @@ div.map-overlay div.overlay-element {
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
-    background-image:url(http://extjs.cachefly.net/ext-2.2.1/resources/images/gray/panel/tool-sprites.gif);
+    background-image:url(../../ext/resources/images/gray/panel/tool-sprites.gif);
     height:15px;
     width:15px;
     /* workaround for button height in IE */
@@ -185,7 +185,7 @@ div.map-overlay div.overlay-element {
 }
 
 .olControlZoomPanel div {
-    background-image:url(http://extjs.cachefly.net/ext-2.2.1/resources/images/gray/panel/tool-sprites.gif);
+    background-image:url(../../ext/resources/images/gray/panel/tool-sprites.gif);
     height:15px;
     width:15px;
     /* workaround for button height in IE */
