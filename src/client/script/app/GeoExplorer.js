@@ -554,6 +554,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         googleEarthPanel.on("show", function() {
             addLayerButton.disable();
             removeLayerAction.disable();
+            showPropertiesAction.disable();
             layerTree.getSelectionModel().un(
                 "beforeselect", updateRemoveLayerAction, this
             );
@@ -562,6 +563,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         googleEarthPanel.on("hide", function() {
             addLayerButton.enable();
             removeLayerAction.enable();
+            showPropertiesAction.enable();
             layerTree.getSelectionModel().on(
                 "beforeselect", updateRemoveLayerAction, this
             );
