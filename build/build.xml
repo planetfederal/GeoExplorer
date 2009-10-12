@@ -70,6 +70,8 @@
         
         <filterset id="dev-replacements">
             <filter token="title" value="GeoExplorer (debug)"/>
+            <!-- Google Resources -->
+            <filter token="google-apikey" value="ABQIAAAAeDjUod8ItM9dBg5_lz0esxTnme5EwnLVtEDGnh-lFVzRJhbdQhQBX5VH8Rb3adNACjSR5kaCLQuBmw"/>
             <!-- Ext Resources -->
             <filter token="ext-all.js" value="ext-all-debug.js"/>
             <!-- OpenLayers Resources -->
@@ -141,6 +143,8 @@
 
         <filterset id="dist-replacements">
             <filter token="title" value="GeoExplorer"/>
+            <!-- Google Resources -->
+            <filter token="google-apikey" value="ABQIAAAAeDjUod8ItM9dBg5_lz0esxTnme5EwnLVtEDGnh-lFVzRJhbdQhQBX5VH8Rb3adNACjSR5kaCLQuBmw"/>
             <!-- Ext Resources -->
             <filter token="ext-all.js" value="ext-all.js"/>
             <!-- OpenLayers Resources -->

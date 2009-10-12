@@ -19,13 +19,28 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
         
         this.createMap();
 
-        var toolbar = new Ext.Toolbar({
+        this.toolbar = new Ext.Toolbar({
             xtype: "toolbar",
             region: "north",
             disabled: true,
             items: this.createTools()
         });
-        this.on("ready", function() {toolbar.enable();});
+        this.on("ready", function() {this.toolbar.enable();}, this);
+
+        this.mapPanelContainer = new Ext.Panel({
+            layout: "card",
+            region: "center",
+            defaults: {
+                border: false
+            },
+            items: [
+                this.mapPanel,
+                new gxp.GoogleEarthPanel({
+                    mapPanel: this.mapPanel
+                })
+            ],
+            activeItem: 0
+        });
 
         var viewport = new Ext.Viewport({
             layout: "fit",
@@ -34,8 +49,8 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
                 layout: "border",
                 deferredRender: false,
                 items: [
-                    toolbar,
-                    this.mapPanel
+                    this.toolbar,
+                    this.mapPanelContainer
                 ]
             }
         });    

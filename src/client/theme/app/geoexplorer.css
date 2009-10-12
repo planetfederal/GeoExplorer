@@ -109,6 +109,9 @@ body {
     background-image: url(img/geosilk/pan.png);
 }
 
+.x-btn .icon-3D {
+    background-image: url(img/geosilk/google_earth.png);
+}
 
 .x-menu-group-item .x-menu-item-icon {
     background: transparent url(../../ext/resources/images/default/form/radio.gif) no-repeat 0 0;

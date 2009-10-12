@@ -375,6 +375,19 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 }
             }
         });
+        
+        var updateRemoveLayerAction = function(sel, node) {
+            if(node && node.layer) {
+                // allow removal if more than one non-vector layer
+                var count = this.mapPanel.layers.queryBy(function(r) {
+                    return !(r.get("layer") instanceof OpenLayers.Layer.Vector);
+                }).getCount();
+                if(count > 1) {
+                    removeLayerAction.enable();
+                }
+                showPropertiesAction.enable();
+            }
+        };
 
         var layerTree = new Ext.tree.TreePanel({
             root: treeRoot,
@@ -383,18 +396,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             enableDD: true,
             selModel: new Ext.tree.DefaultSelectionModel({
                 listeners: {
-                    beforeselect: function(sel, node) {
-                        if(node && node.layer) {
-                            // allow removal if more than one non-vector layer
-                            var count = this.mapPanel.layers.queryBy(function(r) {
-                                return !(r.get("layer") instanceof OpenLayers.Layer.Vector);
-                            }).getCount();
-                            if(count > 1) {
-                                removeLayerAction.enable();
-                            }
-                            showPropertiesAction.enable();
-                        }
-                    },
+                    beforeselect: updateRemoveLayerAction,
                     scope: this
                 }
             }),
@@ -527,7 +529,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             ]
         });
         
-        var toolbar = new Ext.Toolbar({
+        this.toolbar = new Ext.Toolbar({
             xtype: "toolbar",
             region: "north",
             disabled: true,
@@ -535,13 +537,46 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         });
         this.on("ready", function() {
             // enable only those items that were not specifically disabled
-            var disabled = toolbar.items.filterBy(function(item) {
+            var disabled = this.toolbar.items.filterBy(function(item) {
                 return item.initialConfig && item.initialConfig.disabled;
             });
-            toolbar.enable();
+            this.toolbar.enable();
             disabled.each(function(item) {
                 item.disable();
             });
+        });
+
+        var googleEarthPanel = new gxp.GoogleEarthPanel({
+            mapPanel: this.mapPanel
+        });
+
+        googleEarthPanel.on("show", function() {
+            addLayerButton.disable();
+            removeLayerAction.disable();
+            layerTree.getSelectionModel().un(
+                "beforeselect", updateRemoveLayerAction, this
+            );
+        }, this);
+
+        googleEarthPanel.on("hide", function() {
+            addLayerButton.enable();
+            removeLayerAction.enable();
+            layerTree.getSelectionModel().on(
+                "beforeselect", updateRemoveLayerAction, this
+            );
+        }, this);
+
+        this.mapPanelContainer = new Ext.Panel({
+            layout: "card",
+            region: "center",
+            defaults: {
+                border: false
+            },
+            items: [
+                this.mapPanel,
+                googleEarthPanel
+            ],
+            activeItem: 0
         });
         
         var viewport = new Ext.Viewport({
@@ -551,8 +586,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 layout: "border",
                 deferredRender: false,
                 items: [
-                    toolbar,
-                    this.mapPanel,
+                    this.toolbar,
+                    this.mapPanelContainer,
                     westPanel
                 ]
             }
@@ -1147,6 +1182,23 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 }
             }});
         });
+        
+        var enable3DButton = new Ext.Button({
+            iconCls: "icon-3D",
+            tooltip: "Switch to 3D Viewer",
+            enableToggle: true,
+            toggleHandler: function(button, state) {
+                if (state === true) {
+                    this.mapPanelContainer.getLayout().setActiveItem(1);
+                    this.toolbar.disable();
+                    button.enable();
+                } else {
+                    this.mapPanelContainer.getLayout().setActiveItem(0);
+                    this.toolbar.enable();
+                }
+            },
+            scope: this
+        });
     
         var tools = [
             navAction,
@@ -1191,7 +1243,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     }
                 },
                 scope: this
-            })
+            }),
+            enable3DButton
         ];
 
         return tools;
