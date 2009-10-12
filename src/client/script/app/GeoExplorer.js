@@ -385,6 +385,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 }).getCount();
                 if(count > 1) {
                     removeLayerAction.enable();
+                } else {
+                    removeLayerAction.disable();
                 }
                 showPropertiesAction.enable();
             }
@@ -486,7 +488,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             return url;
         };
         var updateLegend = function() {
-            if (this.rendered) {
+            if (this.rendered && this.layer && this.layer.map) {
                 this.updateLegend();
             }
         };
