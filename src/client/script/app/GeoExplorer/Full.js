@@ -2,10 +2,6 @@
  * Copyright (c) 2009 OpenGeo
  */
 
-/*
- * @include GeoExplorer/Wizard.js
- */ 
-
 /**
  * api: (define)
  * module = GeoExplorer
