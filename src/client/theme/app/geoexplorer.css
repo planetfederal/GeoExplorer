@@ -45,6 +45,10 @@ body {
     background-image: url(img/silk/add.png);
 }
 
+.x-btn .icon-addserver {
+    background-image: url(img/silk/map_add.png);
+}
+
 .x-btn .icon-removelayers, .x-menu-item .icon-removelayers {
     background-image: url(img/silk/delete.png);
 }

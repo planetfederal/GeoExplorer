@@ -867,8 +867,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         }
 
         if (this.proxy) {
-            capGridToolbar.push(new Ext.Button({
-                text: "or add a new server.",
+            capGridToolbar.push("-", new Ext.Button({
+                text: "Add a New Server",
+                iconCls: "icon-addserver",
                 handler: function() {
                     newSourceWindow.show();
                 }
