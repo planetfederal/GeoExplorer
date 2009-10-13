@@ -179,6 +179,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 var store = new GeoExt.data.WMSCapabilitiesStore({
                             fields:  [
                                 {name: "name", type: "string"},
+                                {name: "title", type: "string"},
                                 {name: "abstract", type: "string"},
                                 {name: "queryable", type: "boolean"},
                                 {name: "formats"},
