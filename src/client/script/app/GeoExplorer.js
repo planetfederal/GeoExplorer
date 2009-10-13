@@ -254,9 +254,16 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         };
         var argIndex = url.indexOf("?");
         if(argIndex > -1) {
-            var search = url.substring(url.indexOf("?")+1);
-            url = url.replace(search, Ext.urlEncode(Ext.apply(
-                Ext.urlDecode(search), args)));
+            var params = OpenLayers.Util.getParameters(url);
+            // merge, favoring those here
+            var merged = {}, ukey;
+            for (var key in params) {
+                ukey = key.toUpperCase();
+                if (!(ukey in args)) {
+                    merged[key] = params[key];
+                }
+            }
+            url = url.substring(0, argIndex + 1) + Ext.urlEncode(Ext.apply(merged, args));
         } else {
             url = url + "?" + Ext.urlEncode(args);
         }
