@@ -104,6 +104,11 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 scope: this
             });
         } else {
+            var query = Ext.urlDecode(document.location.search.substr(1));
+            if (query && query.q) {
+                var queryConfig = Ext.util.JSON.decode(query.q);
+                Ext.apply(config, queryConfig);
+            }
             this.applyConfig(config);
         }
         
@@ -1500,6 +1505,25 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         win.items.first().selectText();
     },
     
+    /** api: method[getBookmark]
+     *  :return: ``String``
+     *
+     *  Generate a bookmark for an unsaved map.
+     */
+    getBookmark: function() {
+        var params = Ext.apply(
+            OpenLayers.Util.getParameters(),
+            {q: Ext.util.JSON.encode(this.extractConfiguration())}
+        );
+        
+        // disregard any hash in the url, but maintain all other components
+        var url = 
+            document.location.href.split("?").shift() +
+            "?" + Ext.urlEncode(params);
+        
+        return url;
+    },
+
     /**
      * private: method[extractConfiguration]
      * :return: an :class:`Object` representing the app's current configuration.
