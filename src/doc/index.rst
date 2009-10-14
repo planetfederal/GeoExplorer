@@ -2,38 +2,19 @@
 GeoExplorer
 ===========
 
-Quickly assemble rich mapping applications from multiple :term:`OGC` Web Mapping
-Services (:term:`WMS`) with GeoExplorer. Using the publish wizard, embed your
-mapping application in any web page.
+GeoExplorer is a Javascript user interface framework for building browser-based geospatial applications with the look, feel, and functionality of desktop clients.  Quickly assemble rich mapping applications from multiple OGC Web Mapping Services (WMS) with GeoExplorer, and use the publishing wizard to embed your mapping application in any web page.  GeoExplorer demonstrates GeoExt 1.0's capabilities in the form of a data viewer. It focuses on the display and management of layers (either from WMS or WFS), the ability to query and search across these layers, and the display of results. GeoExplorer is a tool for enabling people to answer questions or solve problems by exploring the spatial data they already have.  GeoExplorer is currently under development and will eventually integrate Styler's design component for a complete web-mapping framework.
 
 Contents
 --------
 
 .. toctree::
+    :maxdepth: 2
 
     getting-started
     working-with-geoexplorer
+    configuration
     
     glossary
     license
 
 
-Quick Start
------------
-
-If you're interested in diving right in, follow the steps below. For more detail
-on getting started with GeoExplorer, see the :doc:`introductory <getting-started>`
-documentation.
-
-#.  Open up `GeoExplorer <../>`_ in your browser.
-#.  Use the add and remove buttons to choose which layers will be included in
-    your application.
-#.  From the "Available Layers" dialog, add new WMS servers (e.g.
-    http://terraserver-usa.com/ogccapabilities.ashx).
-#.  Reorder layers by dragging
-    them around. Only one layer at a time can be visible in the "Base Layers"
-    group.
-#.  Launch the "Publish Map" wizard to embed your application in any web page.
-
-For a more detailled description of what you can do with GeoExplorer, see the
-:doc:`Working With GeoExplorer <working-with-geoexplorer>` documentation.
