@@ -50,4 +50,4 @@ documentation.
        *Publishing Map*
 
 For a more detailled description of what you can do with GeoExplorer, see the
-:doc:`Working With GeoExplorer <working-with-geoexplorer>` documentation.re no layers in the "background" group.
+:doc:`Working With GeoExplorer <working-with-geoexplorer>` documentation.
