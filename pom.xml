@@ -20,11 +20,11 @@
    <plugins>
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
-      <dependencies>
+       <dependencies>
           <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.6.5</version>
+            <version>${ant.version}</version>
           </dependency>
           <dependency>
             <groupId>ant-contrib</groupId>
