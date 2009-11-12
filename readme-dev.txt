@@ -10,7 +10,7 @@ Getting a copy of the application
 
 To get a copy of the application source code, use subversion::
 
-    you@prompt:~$ svn checkout http://svn.opengeo.org/vulcan/trunk/geoexplorer
+    you@prompt:~$ svn checkout http://svn.opengeo.org/suite/trunk/geoexplorer
 
 
 Dependencies
