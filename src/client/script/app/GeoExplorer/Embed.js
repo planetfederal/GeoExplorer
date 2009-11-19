@@ -1,3 +1,7 @@
+/**
+ * @requires GeoExplorer.js
+ */
+
 /** api: (define)
  *  module = GeoExplorer
  *  class = Embed

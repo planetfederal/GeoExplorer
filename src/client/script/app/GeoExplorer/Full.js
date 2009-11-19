@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009 OpenGeo
+ * @requires GeoExplorer.js
  */
 
 /**
