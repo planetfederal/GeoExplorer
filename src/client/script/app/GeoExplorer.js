@@ -663,7 +663,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     vertical: true,
                     height: 100,
                     plugins: new GeoExt.ZoomSliderTip({
-                        template: "<div>Zoom Level: {zoom}</div>"
+                        template: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}"
                     })
                 }
             ]
