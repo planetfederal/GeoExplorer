@@ -739,7 +739,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
 
                     // TODO: allow config for layer options
                     layer.buffer = 0;
-                    layer.tileSize = new OpenLayers.Size(512, 512);
+                    layer.tileSize = new OpenLayers.Size(256, 256);
                     
                     // set layer max extent from capabilities
                     //TODO SRS handling should be done in WMSCapabilitiesReader

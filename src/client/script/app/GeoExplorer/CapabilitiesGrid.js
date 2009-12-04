@@ -100,7 +100,7 @@ GeoExplorer.CapabilitiesGrid = Ext.extend(Ext.grid.GridPanel, {
             
             // TODO: allow config for layer options
             layer.buffer = 0;
-            layer.tileSize = new OpenLayers.Size(512, 512);
+            layer.tileSize = new OpenLayers.Size(256, 256);
 
             /*
              * TODO: deal with srs and maxExtent - this should be done in the
