@@ -485,18 +485,20 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
 
         //  TODO: remove when http://trac.geoext.org/ticket/161 is closed
         //  START WORKAROUND FOR #161
-        var oldGetLegendUrl = GeoExt.LegendWMS.prototype.getLegendUrl;
-        GeoExt.LegendWMS.prototype.getLegendUrl = function() {
+        var oldGetLegendUrl = GeoExt.WMSLegend.prototype.getLegendUrl;
+        GeoExt.WMSLegend.prototype.getLegendUrl = function() {
             var url = oldGetLegendUrl.apply(this, arguments);
-            var param = "SCALE=" + (this.layer.map.getScale() | 0);
-            if (url.indexOf("?") > -1) {
-                if (url.charAt(url.length - 1) === "&") {
-                    url += param;
+            if (this.layer) {
+                var param = "SCALE=" + (this.layer.map.getScale() | 0);
+                if (url.indexOf("?") > -1) {
+                    if (url.charAt(url.length - 1) === "&") {
+                        url += param;
+                    } else {
+                        url += "&" + param;
+                    }
                 } else {
-                    url += "&" + param;
+                    url += "?" + param;
                 }
-            } else {
-                url += "?" + param;
             }
             return url;
         };
