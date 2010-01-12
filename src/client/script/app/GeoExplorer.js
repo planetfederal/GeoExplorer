@@ -291,13 +291,17 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             var node = layerTree.getSelectionModel().getSelectedNode();
             var record;
             if(node && node.layer) {
-                var layer = node.layer;
-                var store = node.layerStore;
-                record = store.getAt(store.findBy(function(record) {
-                    return record.get("layer") === layer;
-                }));
+                record = getRecordForNode(node);
             }
             return record;
+        };
+        
+        var getRecordForNode = function(node) {
+            var layer = node.layer;
+            var store = node.layerStore;
+            return store.getAt(store.findBy(function(record) {
+                return record.get("layer") === layer;
+            }));
         };
 
         var removeLayerAction = new Ext.Action({
