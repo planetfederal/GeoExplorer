@@ -1432,12 +1432,13 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             popup = this.popupCache[popupKey];
         }
 
-        var html = evt.text;
-        if (!(html === '' || html.match(/<body>\s*<\/body>/))) {
+        // extract just the body content
+        var match = evt.text.match(/<body>([\s\S]*)<\/body>/);
+        if (match && !match[1].match(/^\s*$/)) {
             popup.add({
                 title: title,
                 layout: "fit",
-                html: html,
+                html: match[1],
                 autoScroll: true,
                 autoWidth: true,
                 collapsible: true
