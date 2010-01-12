@@ -390,7 +390,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             }
         });
         
-        var updateRemoveLayerAction = function(sel, node) {
+        var updateLayerActions = function(sel, node) {
             if(node && node.layer) {
                 // allow removal if more than one non-vector layer
                 var count = this.mapPanel.layers.queryBy(function(r) {
@@ -402,6 +402,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     removeLayerAction.disable();
                 }
                 showPropertiesAction.enable();
+            } else {
+                removeLayerAction.disable();
+                showPropertiesAction.disable();
             }
         };
 
@@ -412,7 +415,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             enableDD: true,
             selModel: new Ext.tree.DefaultSelectionModel({
                 listeners: {
-                    beforeselect: updateRemoveLayerAction,
+                    beforeselect: updateLayerActions,
                     scope: this
                 }
             }),
@@ -456,7 +459,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 ]
             })
         });
-
+        
         var layersContainer = new Ext.Panel({
             autoScroll: true,
             border: false,
@@ -569,20 +572,21 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         });
 
         googleEarthPanel.on("show", function() {
-            addLayerButton.disable();
-            removeLayerAction.disable();
-            showPropertiesAction.disable();
-            layerTree.getSelectionModel().un(
-                "beforeselect", updateRemoveLayerAction, this
-            );
+            if (layersContainer.rendered) {
+                layersContainer.getTopToolbar().disable();
+            }
+            layerTree.getSelectionModel().un("beforeselect", updateLayerActions, this);
         }, this);
 
         googleEarthPanel.on("hide", function() {
-            addLayerButton.enable();
-            removeLayerAction.enable();
-            showPropertiesAction.enable();
-            layerTree.getSelectionModel().on(
-                "beforeselect", updateRemoveLayerAction, this
+            if (layersContainer.rendered) {
+                layersContainer.getTopToolbar().enable();
+            }
+            var sel = layerTree.getSelectionModel();
+            var node = sel.getSelectedNode();
+            updateLayerActions.apply(this, [sel, node]);
+            sel.on(
+                "beforeselect", updateLayerActions, this
             );
         }, this);
 
