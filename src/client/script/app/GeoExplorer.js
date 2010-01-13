@@ -572,7 +572,12 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         });
 
         var googleEarthPanel = new gxp.GoogleEarthPanel({
-            mapPanel: this.mapPanel
+            mapPanel: this.mapPanel,
+            listeners: {
+                beforeadd: function(record) {
+                    return record.get("group") !== "background";
+                }
+            }
         });
 
         googleEarthPanel.on("show", function() {

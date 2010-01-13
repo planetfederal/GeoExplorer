@@ -40,7 +40,12 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
             items: [
                 this.mapPanel,
                 new gxp.GoogleEarthPanel({
-                    mapPanel: this.mapPanel
+                    mapPanel: this.mapPanel,
+                    listeners: {
+                        beforeadd: function(record) {
+                            return record.get("group") !== "background";
+                        }
+                    }
                 })
             ],
             activeItem: 0
