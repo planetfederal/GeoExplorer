@@ -291,19 +291,15 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             var node = layerTree.getSelectionModel().getSelectedNode();
             var record;
             if(node && node.layer) {
-                record = getRecordForNode(node);
+                var layer = node.layer;
+                var store = node.layerStore;
+                record = store.getAt(store.findBy(function(r) {
+                    return r.get("layer") === layer;
+                }));
             }
             return record;
         };
         
-        var getRecordForNode = function(node) {
-            var layer = node.layer;
-            var store = node.layerStore;
-            return store.getAt(store.findBy(function(record) {
-                return record.get("layer") === layer;
-            }));
-        };
-
         var removeLayerAction = new Ext.Action({
             text: "Remove Layer",
             iconCls: "icon-removelayers",
@@ -334,6 +330,19 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 filter: function(record) {
                     return !record.get("group") &&
                         record.get("layer").displayInLayerSwitcher == true;
+                },
+                createNode: function(attr) {
+                    var layer = attr.layer;
+                    var store = attr.layerStore;
+                    if (layer && store) {
+                        var record = store.getAt(store.findBy(function(r) {
+                            return r.get("layer") === layer;
+                        }));
+                        if (record && !record.get("queryable")) {
+                            attr.iconCls = "gx-tree-rasterlayer-icon";
+                        }
+                    }
+                    return GeoExt.tree.LayerLoader.prototype.createNode.apply(this, [attr]);
                 }
             }),
             singleClickExpand: true,
@@ -344,6 +353,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 }
             }
         }));
+        
         treeRoot.appendChild(new GeoExt.tree.LayerContainer({
             text: "Base Layers",
             iconCls: "gx-folder",
@@ -355,6 +365,19 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 filter: function(record) {
                     return record.get("group") === "background" &&
                         record.get("layer").displayInLayerSwitcher == true;
+                },
+                createNode: function(attr) {
+                    var layer = attr.layer;
+                    var store = attr.layerStore;
+                    if (layer && store) {
+                        var record = store.getAt(store.findBy(function(r) {
+                            return r.get("layer") === layer;
+                        }));
+                        if (record && !record.get("queryable")) {
+                            attr.iconCls = "gx-tree-rasterlayer-icon";
+                        }
+                    }
+                    return GeoExt.tree.LayerLoader.prototype.createNode.apply(this, arguments);
                 }
             }),
             singleClickExpand: true,
