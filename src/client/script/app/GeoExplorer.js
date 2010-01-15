@@ -518,8 +518,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         var oldGetLegendUrl = GeoExt.WMSLegend.prototype.getLegendUrl;
         GeoExt.WMSLegend.prototype.getLegendUrl = function() {
             var url = oldGetLegendUrl.apply(this, arguments);
-            if (this.layer) {
-                var param = "SCALE=" + (this.layer.map.getScale() | 0);
+            if (this.layerRecord) {
+                var layer = this.layerRecord.get("layer");
+                var param = "SCALE=" + (layer.map.getScale() | 0);
                 if (url.indexOf("?") > -1) {
                     if (url.charAt(url.length - 1) === "&") {
                         url += param;
@@ -533,31 +534,28 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             return url;
         };
         var updateLegend = function() {
-            if (this.rendered && this.layer && this.layer.map) {
-                this.updateLegend();
+            if (this.rendered && this.layerRecord) {
+                var layer = this.layerRecord.get("layer");
+                if (layer && layer.map) {
+                    this.update();
+                }
             }
         };
         legendContainer.on({
             beforeadd: function(panel, comp) {
-                if (comp.items && comp.items.length > 1) {
-                    var legend = comp.get(1);
-                    if (legend.updateLegend) {
-                        this.mapPanel.map.events.on({
-                            zoomend: updateLegend,
-                            scope: legend
-                        });
-                    }
+                if (comp instanceof GeoExt.WMSLegend) {
+                    this.mapPanel.map.events.on({
+                        zoomend: updateLegend,
+                        scope: comp
+                    });
                 }
             },
             beforeremove: function(panel, comp) {
-                if (comp.items && comp.items.length > 1) {
-                    var legend = comp.get(1);
-                    if (legend.updateLegend) {
-                        this.mapPanel.map.events.un({
-                            zoomend: updateLegend,
-                            scope: legend
-                        });
-                    }
+                if (comp instanceof GeoExt.WMSLegend) {
+                    this.mapPanel.map.events.un({
+                        zoomend: updateLegend,
+                        scope: comp
+                    });
                 }
             },
             scope: this
