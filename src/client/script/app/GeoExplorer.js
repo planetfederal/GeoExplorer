@@ -513,55 +513,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             defaults: {cls: 'legend-item'}
         });        
 
-        //  TODO: remove when http://trac.geoext.org/ticket/161 is closed
-        //  START WORKAROUND FOR #161
-        var oldGetLegendUrl = GeoExt.WMSLegend.prototype.getLegendUrl;
-        GeoExt.WMSLegend.prototype.getLegendUrl = function() {
-            var url = oldGetLegendUrl.apply(this, arguments);
-            if (this.layerRecord) {
-                var layer = this.layerRecord.get("layer");
-                var param = "SCALE=" + (layer.map.getScale() | 0);
-                if (url.indexOf("?") > -1) {
-                    if (url.charAt(url.length - 1) === "&") {
-                        url += param;
-                    } else {
-                        url += "&" + param;
-                    }
-                } else {
-                    url += "?" + param;
-                }
-            }
-            return url;
-        };
-        var updateLegend = function() {
-            if (this.rendered && this.layerRecord) {
-                var layer = this.layerRecord.get("layer");
-                if (layer && layer.map) {
-                    this.update();
-                }
-            }
-        };
-        legendContainer.on({
-            beforeadd: function(panel, comp) {
-                if (comp instanceof GeoExt.WMSLegend) {
-                    this.mapPanel.map.events.on({
-                        zoomend: updateLegend,
-                        scope: comp
-                    });
-                }
-            },
-            beforeremove: function(panel, comp) {
-                if (comp instanceof GeoExt.WMSLegend) {
-                    this.mapPanel.map.events.un({
-                        zoomend: updateLegend,
-                        scope: comp
-                    });
-                }
-            },
-            scope: this
-        });
-        //  END WORKAROUND FOR #161
-
         var westPanel = new Ext.Panel({
             border: true,
             layout: "border",
