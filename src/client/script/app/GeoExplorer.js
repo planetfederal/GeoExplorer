@@ -944,14 +944,16 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      * map-friendliness.
      */
     createMapOverlay: function() {
-        var scaleLinePanel = new Ext.Panel({
-            cls: 'olControlScaleLine overlay-element overlay-scaleline',
-            border: false
+        var scaleLinePanel = new Ext.BoxComponent({
+            autoEl: {
+                tag: "div",
+                cls: "olControlScaleLine overlay-element overlay-scaleline"
+            }
         });
 
         scaleLinePanel.on('render', function(){
             var scaleLine = new OpenLayers.Control.ScaleLine({
-                div: scaleLinePanel.body.dom
+                div: scaleLinePanel.getEl().dom
             });
 
             this.mapPanel.map.addControl(scaleLine);
@@ -1018,8 +1020,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
 
 
         mapOverlay.on("afterlayout", function(){
-            scaleLinePanel.body.dom.style.position = 'relative';
-            scaleLinePanel.body.dom.style.display = 'inline';
+            scaleLinePanel.getEl().dom.style.position = 'relative';
+            scaleLinePanel.getEl().dom.style.display = 'inline';
 
             mapOverlay.getEl().on("click", function(x){x.stopEvent();});
             mapOverlay.getEl().on("mousedown", function(x){x.stopEvent();});
