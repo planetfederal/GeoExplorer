@@ -1,0 +1,1 @@
+/home/tschaub/projects/suite/geoexplorer/externals/narwhal/packages/jack/bin/jackup.cmd
