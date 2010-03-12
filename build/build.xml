@@ -7,8 +7,8 @@
 
     <property file="build.properties"/>
 
-    <property name="javasrc" location="../server/java/src"/>
-    <property name="war" location="../server/java/war"/>
+    <property name="javasrc" location="../java/src"/>
+    <property name="war" location="../java/war"/>
     <property name="build" location="geoexplorer"/>
 
     <path id="classpath">
@@ -30,23 +30,19 @@
         <jar destfile="jars/JackServlet.jar" basedir="classes"/>
     </target>
     
-    <target name="dist" depends="clean, init, jar">
+    <target name="dist" depends="clean, init">
 
         <copy todir="${build}">
             <fileset dir="${war}"/>
         </copy>
 
         <mkdir dir="${build}/WEB-INF/lib"/>
-        <copy file="${narwhal}/engines/rhino/jars/js.jar" todir="${build}/WEB-INF/lib"/>
+        <copy file="../narwhal/engines/rhino/jars/js.jar" todir="${build}/WEB-INF/lib"/>
         
-        <copy todir="${build}/WEB-INF/lib">
-            <fileset dir="jars"/>
-        </copy>
-
         <copy todir="${build}/WEB-INF/narwhal">
-            <fileset dir="${narwhal}">
-                <exclude name="**/.git/"/>
-                <exclude name="**/.git*"/>
+            <fileset dir="../narwhal">
+                <exclude name="**/.svn/"/>
+                <exclude name="**/.svn*"/>
                 <exclude name="**/examples/"/>
                 <exclude name="**/tests/"/>
                 <exclude name="**/docs/"/>
@@ -56,10 +52,7 @@
             </fileset>
         </copy>
         
-        <copy file="../server/app.js" todir="${build}/WEB-INF"/>
-        <copy todir="${build}/WEB-INF/app">
-            <fileset dir="../server/app"/>
-        </copy>
+        <copy file="../narwhal/jackconfig.js" todir="${build}/WEB-INF"/>
 
     </target>
     
