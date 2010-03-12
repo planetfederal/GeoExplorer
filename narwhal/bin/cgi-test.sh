@@ -1,0 +1,1 @@
+/home/tschaub/projects/suite/geoexplorer/narlet/server/narwhal/packages/jack/bin/cgi-test.sh
