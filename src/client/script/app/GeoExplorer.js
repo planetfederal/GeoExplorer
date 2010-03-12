@@ -211,7 +211,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     var format = new OpenLayers.Format.WMSCapabilities();
                     var extractedData = format.read(data);
                     
-                    store.loadData(data);
+                    store.loadData(extractedData);
                 } catch(err) {
                     OpenLayers.Console.error("Could not load source: " + url);
                     fail();
