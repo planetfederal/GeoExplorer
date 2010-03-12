@@ -26,11 +26,11 @@ body {
 }
 
 .x-tree-node img.gx-folder, .x-tree-node-collapsed img.gx-folder{
-    background: url(../../ext/resources/images/default/tree/folder.gif);
+    background: url(../../externals/ext/resources/images/default/tree/folder.gif);
 }
  
 .x-tree-node-expanded img.gx-folder {
-    background: url(../../ext/resources/images/default/tree/folder-open.gif);
+    background: url(../../externals/ext/resources/images/default/tree/folder-open.gif);
 }
 
 .x-btn .icon-geoexplorer {
@@ -118,14 +118,14 @@ body {
 }
 
 .x-menu-group-item .x-menu-item-icon {
-    background: transparent url(../../ext/resources/images/default/form/radio.gif) no-repeat 0 0;
+    background: transparent url(../../externals/ext/resources/images/default/form/radio.gif) no-repeat 0 0;
     height: 13px;
     width: 13px;
     margin: 2px;
 }
 
 .x-menu-item-checked .x-menu-group-item .x-menu-item-icon {
-    background: transparent url(../../ext/resources/images/default/form/radio.gif) no-repeat -13px -13px;
+    background: transparent url(../../externals/ext/resources/images/default/form/radio.gif) no-repeat -13px -13px;
     height: 13px;
     width: 13px;
     margin: 2px;
@@ -157,7 +157,7 @@ div.map-overlay div.overlay-element {
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
-    background-image:url(../../ext/resources/images/gray/panel/tool-sprites.gif);
+    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
     height:15px;
     width:15px;
     /* workaround for button height in IE */
@@ -189,7 +189,7 @@ div.map-overlay div.overlay-element {
 }
 
 .olControlZoomPanel div {
-    background-image:url(../../ext/resources/images/gray/panel/tool-sprites.gif);
+    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
     height:15px;
     width:15px;
     /* workaround for button height in IE */
