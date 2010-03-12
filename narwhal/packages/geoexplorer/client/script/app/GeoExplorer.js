@@ -93,10 +93,12 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             data: []
         });
         
-        var mapId = window.location.hash.substr(1);
-        if (mapId) {
+        var mapUrl = window.location.hash.substr(1);
+        var match = mapUrl.match(/^maps\/(\d+)$/);
+        if (match) {
+            this.id = Number(match[1]);
             OpenLayers.Request.GET({
-                url: mapId,
+                url: mapUrl,
                 callback: function(request) {
                     var addConfig = Ext.util.JSON.decode(request.responseText);
                     this.applyConfig(Ext.applyIf(addConfig, config));
@@ -1454,7 +1456,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             url: url,
             data: Ext.util.JSON.encode(this.extractConfiguration()),
             callback: function(request) {
-                this.handleSave(request, method);
+                this.handleSave(request);
                 if (callback) {
                     callback.call(scope || this);
                 }
@@ -1466,15 +1468,14 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
     /** private: method[handleSave]
      *  :arg: ``XMLHttpRequest``
      */
-    handleSave: function(request, method) {
-        var config = Ext.util.JSON.decode(request.responseText);
-        var mapId = config.id;
-        if (mapId) {
-            if (method === "POST") {
-                mapId = mapId.split("/").pop();
+    handleSave: function(request) {
+        if (request.status == 200) {
+            var config = Ext.util.JSON.decode(request.responseText);
+            var mapId = config.id;
+            if (mapId) {
+                this.id = mapId;
+                window.location.hash = "#maps/" + mapId;
             }
-            this.id = mapId;
-            window.location.hash = "#maps/" + mapId;
         } else {
             throw "Trouble saving: " + request.responseText;
         }
