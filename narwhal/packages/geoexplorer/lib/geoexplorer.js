@@ -9,7 +9,7 @@ var app = URLMap({
     
     "/geoexplorer/": Static(notFound, {root: root, urls: [""], indexes: ["index.html"]}),
     
-    "/geoexplorer/map/": require("./geoexplorer/map").handler,
+    "/geoexplorer/maps/": require("./geoexplorer/maps").app,
     
     "/proxy/": require("./proxy").app
     
