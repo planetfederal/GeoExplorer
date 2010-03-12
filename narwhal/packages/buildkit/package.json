@@ -1,0 +1,6 @@
+{
+    "name": "buildkit",
+    "author": "Tim Schaub",
+    "dependencies": ["narwhal"],
+    "contributors": []
+}
