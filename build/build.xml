@@ -10,11 +10,13 @@
     <property name="javasrc" location="../java/src"/>
     <property name="war" location="../java/war"/>
     <property name="build" location="geoexplorer"/>
+    <property name="narwhal" location="../narwhal"/>
 
-    <path id="classpath">
-        <fileset dir="${jars}" includes="**/*.jar"/>
+    <path id="project.classpath">
+        <pathelement location="${narwhal}/engines/rhino/jars/js.jar"/>
+        <pathelement path="${javax.servlet.jar}/" />
     </path>
-    
+
     <target name="init">
         <tstamp/>
         <mkdir dir="${build}"/>
@@ -22,25 +24,36 @@
     
     <target name="compile">
         <mkdir dir="classes"/>
-        <javac srcdir="${javasrc}" destdir="classes" classpathref="classpath" debug="on" />
+        <javac srcdir="${javasrc}" destdir="classes" classpathref="project.classpath" debug="on" />
     </target>
     
     <target name="jar" depends="compile">
         <mkdir dir="jars"/>
-        <jar destfile="jars/JackServlet.jar" basedir="classes"/>
+        <jar destfile="jars/jack.jar" basedir="classes"/>
     </target>
     
-    <target name="dist" depends="clean, init">
+    <target name="buildjs" depends="init">
+        <mkdir dir="script"/>
+        <exec executable="${narwhal}/bin/narwhal">
+            <arg line="${narwhal}/packages/buildkit/lib/buildkit/build.js -o script jsbuild.cfg"/>
+        </exec>
+    </target>
+    
+    <target name="dist" depends="clean, init, buildjs, redist"/>
+    
+    <target name="redist">
 
         <copy todir="${build}">
             <fileset dir="${war}"/>
         </copy>
 
         <mkdir dir="${build}/WEB-INF/lib"/>
-        <copy file="../narwhal/engines/rhino/jars/js.jar" todir="${build}/WEB-INF/lib"/>
+        <copy file="${narwhal}/engines/rhino/jars/js.jar" todir="${build}/WEB-INF/lib"/>
+        <copy file="${narwhal}/packages/sqlite-jdbc/jars/sqlitejdbc-v056.jar" todir="${build}/WEB-INF/lib"/>
+        <copy file="jars/jack.jar" todir="${build}/WEB-INF/lib"/>
         
         <copy todir="${build}/WEB-INF/narwhal">
-            <fileset dir="../narwhal">
+            <fileset dir="${narwhal}">
                 <exclude name="**/.svn/"/>
                 <exclude name="**/.svn*"/>
                 <exclude name="**/examples/"/>
@@ -52,8 +65,11 @@
             </fileset>
         </copy>
         
-        <copy file="../narwhal/jackconfig.js" todir="${build}/WEB-INF"/>
-
+        <delete dir="${build}/WEB-INF/narwhal/packages/geoexplorer/client/script"/>
+        <copy todir="${build}/WEB-INF/narwhal/packages/geoexplorer/client/script">
+            <fileset dir="script"/>
+        </copy>
+        
     </target>
     
     <target name="clean" description="remove previous build">

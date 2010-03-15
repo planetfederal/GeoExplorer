@@ -7,9 +7,9 @@ var root = FILE.join(FILE.dirname(module.path), "../client");
 
 var app = URLMap({
     
-    "/geoexplorer/": Static(notFound, {root: root, urls: [""], indexes: ["index.html"]}),
+    "/": Static(notFound, {root: root, urls: [""], indexes: ["index.html"]}),
     
-    "/geoexplorer/maps/": require("./geoexplorer/maps").app,
+    "/maps/": require("./geoexplorer/maps").app,
     
     "/proxy/": require("./proxy").app
     

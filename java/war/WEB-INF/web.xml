@@ -9,8 +9,8 @@
             <param-value>9</param-value>
         </init-param>	
         <init-param>
-            <param-name>module</param-name>
-            <param-value>jackconfig.js</param-value>
+            <param-name>modulesPath</param-name>
+            <param-value>WEB-INF/narwhal</param-value>
         </init-param>	
     </servlet>
     
