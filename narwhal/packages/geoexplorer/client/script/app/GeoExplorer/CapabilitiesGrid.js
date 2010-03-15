@@ -1,6 +1,7 @@
 /**
- * Copyright (c) 2008 OpenGeo
+ * Copyright (c) 2009-2010 The Open Planning Project
  *
+ * @requires GeoExplorer.js
  */
 
 /**

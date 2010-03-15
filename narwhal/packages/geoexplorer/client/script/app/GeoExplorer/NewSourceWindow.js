@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2009-2010 The Open Planning Project
+ *
+ * @requires GeoExplorer.js
+ */
+
 Ext.namespace("GeoExplorer");
 GeoExplorer.NewSourceWindow = Ext.extend(Ext.Window, {
     
