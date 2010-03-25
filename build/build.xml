@@ -77,7 +77,7 @@
     </target>
     
     <target name="war" depends="dist" description="create archive for servlet container">
-        <war destfile="geoexplorer.war">
+        <war destfile="geoexplorer.war" webxml="${war}/WEB-INF/web.xml">
             <fileset dir="${build}"/>
         </war>
     </target>
