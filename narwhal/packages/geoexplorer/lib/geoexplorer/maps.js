@@ -1,6 +1,5 @@
 var SQLITE = require("jdbc/sqlite");
 var Request = require("jack/request").Request;
-var responseForStatus = require("jack/utils").responseForStatus;
 
 // TODO: configure path to db
 var db = "geoexplorer.db";
@@ -15,12 +14,12 @@ statement.executeUpdate(
 );
 connection.close();
 
-var success = function(data) {
+var createResponse = function(data, status) {
     if (typeof data !== "string") {
         data = JSON.encode(data);
     }
     return {
-        status: 200,
+        status: status || 200,
         headers: {
             "Content-Type": "application/json"
         },
@@ -76,10 +75,10 @@ var handlers = {
             results.close();
             connection.close();
             // return all ids
-            resp = success({ids: ids});
+            resp = createResponse({ids: ids});
         } else if (id === false) {
             // invalid id
-            resp = responseForStatus(400, "Invalid map id.");
+            resp = createResponse({error: "Invalid map id."}, 400);
         } else {
             // retrieve single map config
             var connection = SQLITE.open(db);
@@ -90,10 +89,10 @@ var handlers = {
             var results = prep.executeQuery();
             if (results.next()) {
                 // found map by id
-                resp = success(String(results.getString("config")));
+                resp = createResponse(String(results.getString("config")));
             } else {
                 // not found
-                resp = responseForStatus(404, "No map with id " + id);
+                resp = createResponse({error: "No map with id " + id}, 404);
             }
             results.close();
             connection.close();
@@ -103,11 +102,11 @@ var handlers = {
     "POST": function(env) {
         var id = getId(env);
         if (id !== null) {
-            resp = responseForStatus(405, "Can't POST to map " + id);
+            resp = createResponse({error: "Can't POST to map " + id}, 405);
         } else {
             var config = getConfig(env);
             if (!config) {
-                resp = responseForStatus(400, "Bad map config.");
+                resp = createResponse({error: "Bad map config."}, 400);
             } else {
                 var connection = SQLITE.open(db);
                 // store the new map config
@@ -124,7 +123,7 @@ var handlers = {
                 results.close();
                 connection.close();
                 // return the map id
-                resp = success({id: id});
+                resp = createResponse({id: id});
             }
         }
         return resp;
@@ -133,14 +132,14 @@ var handlers = {
         var resp;
         var id = getId(env);
         if (id === null) {
-            resp = responseForStatus(405, "Can't PUT without map id.");
+            resp = createResponse({error: "Can't PUT without map id."}, 405);
         } else if (id === false) {
-            resp = responseForStatus(400, "Invalid map id.");
+            resp = createResponse({error: "Invalid map id."}, 400);
         } else {
             // valid map id
             var config = getConfig(env);
             if (!config) {
-                resp = responseForStatus(400, "Bad map config.");
+                resp = createResponse({error: "Bad map config."}, 400);
             } else {
                 var connection = SQLITE.open(db);
                 var prep = connection.prepareStatement(
@@ -150,9 +149,9 @@ var handlers = {
                 prep.setInt(2, id);
                 var rows = prep.executeUpdate();
                 if (!rows) {
-                    resp = responseForStatus(404, "No map with id " + id);
+                    resp = createResponse({error: "No map with id " + id}, 404);
                 } else {
-                    resp = success(config);
+                    resp = createResponse(config);
                 }
                 connection.close();
             }
@@ -163,9 +162,9 @@ var handlers = {
         var resp;
         var id = getId(env);
         if (id === null) {
-            resp = responseForStatus(405, "Can't DELETE without map id.");
+            resp = createResponse({error: "Can't DELETE without map id."}, 405);
         } else if (id === false) {
-            resp = responseForStatus(400, "Invalid map id.");
+            resp = createResponse({error: "Invalid map id."}, 400);
         } else {
             var connection = SQLITE.open(db);
             var prep = connection.prepareStatement(
@@ -174,9 +173,9 @@ var handlers = {
             prep.setInt(1, id);
             var rows = prep.executeUpdate();
             if (!rows) {
-                resp = responseForStatus(404, "No map with id " + id);
+                resp = createResponse({error: "No map with id " + id}, 404);
             } else {
-                resp = success({id: id});
+                resp = createResponse({id: id});
             }
             connection.close();
         }
@@ -191,7 +190,7 @@ exports.app = function(env) {
     if (handler) {
         resp = handler(env);
     } else {
-        resp = responseForStatus(405, method);
+        resp = createResponse({error: "Not allowed: " + method}, 405);
     }
     return resp;    
 };
