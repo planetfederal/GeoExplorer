@@ -62,6 +62,7 @@
                 <exclude name="**/zips/"/>
                 <exclude name="**/.tusk/"/>
                 <exclude name="**/*.md"/>
+                <exclude name="**/*.db"/>
             </fileset>
         </copy>
         
@@ -74,6 +75,7 @@
     
     <target name="clean" description="remove previous build">
         <delete dir="${build}"/>
+        <delete file="geoexplorer.war"/>
     </target>
     
     <target name="war" depends="dist" description="create archive for servlet container">
