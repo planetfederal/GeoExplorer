@@ -99,9 +99,30 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             this.id = Number(match[1]);
             OpenLayers.Request.GET({
                 url: mapUrl,
-                callback: function(request) {
+                success: function(request) {
                     var addConfig = Ext.util.JSON.decode(request.responseText);
                     this.applyConfig(Ext.applyIf(addConfig, config));
+                },
+                failure: function(request) {
+                    var obj;
+                    try {
+                        obj = Ext.util.JSON.decode(request.responseText);
+                    } catch (err) {
+                        // pass
+                    }
+                    var msg = "Trouble reading saved configuration: <br />";
+                    if (obj && obj.error) {
+                        msg += obj.error;
+                    } else {
+                        msg += "Server Error.";
+                    }
+                    this.on({
+                        ready: function() {
+                            this.displayXHRTrouble(msg, request.status);
+                        },
+                        scope: this
+                    });
+                    this.applyConfig(config);
                 },
                 scope: this
             });
@@ -162,6 +183,16 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             // activate app when the above are both done
             this.activate, 
             this);
+    },
+    
+    displayXHRTrouble: function(msg, status) {
+        
+        Ext.Msg.show({
+            title: "Communication Trouble: Status " + status,
+            msg: msg,
+            icon: Ext.MessageBox.WARNING
+        });
+        
     },
     
     /** private: method[addSource]
