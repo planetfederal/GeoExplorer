@@ -33,7 +33,7 @@
     
     <target name="buildjs" depends="narwhal">
         <mkdir dir="script"/>
-        <exec executable="narwhal/bin/narwhal">
+        <exec executable="${basedir}/narwhal/bin/narwhal" dir="${basedir}">
             <arg line="narwhal/packages/buildkit/lib/buildkit/build.js -o script jsbuild.cfg"/>
         </exec>
     </target>
