@@ -10,10 +10,9 @@
     <property name="javasrc" location="../java/src"/>
     <property name="war" location="../java/war"/>
     <property name="build" location="geoexplorer"/>
-    <property name="narwhal" location="../narwhal"/>
 
     <path id="project.classpath">
-        <pathelement location="${narwhal}/engines/rhino/jars/js.jar"/>
+        <pathelement location="../externals/narwhal/engines/rhino/jars/js.jar"/>
         <pathelement path="${javax.servlet.jar}/" />
     </path>
 
@@ -32,14 +31,51 @@
         <jar destfile="jars/jack.jar" basedir="classes"/>
     </target>
     
-    <target name="buildjs" depends="init">
+    <target name="buildjs" depends="narwhal">
         <mkdir dir="script"/>
-        <exec executable="${narwhal}/bin/narwhal">
-            <arg line="${narwhal}/packages/buildkit/lib/buildkit/build.js -o script jsbuild.cfg"/>
+        <exec executable="narwhal/bin/narwhal">
+            <arg line="narwhal/packages/buildkit/lib/buildkit/build.js -o script jsbuild.cfg"/>
         </exec>
     </target>
     
-    <target name="dist" depends="clean, init, buildjs, redist"/>
+    <target name="narwhal">
+
+        <copy todir="narwhal">
+            <fileset dir="../externals/narwhal"/>
+        </copy>
+        <copy todir="narwhal/packages/buildkit">
+            <fileset dir="../externals/buildkit"/>
+        </copy>
+        <copy todir="narwhal/packages/jack">
+            <fileset dir="../externals/jack"/>
+        </copy>
+        <copy todir="narwhal/packages/jdbc">
+            <fileset dir="../externals/jdbc"/>
+        </copy>
+        <copy todir="narwhal/packages/sqlite-jdbc">
+            <fileset dir="../externals/sqlite-jdbc"/>
+        </copy>
+        <copy todir="narwhal/packages/geoexplorer">
+            <fileset dir="../package"/>
+        </copy>
+        <copy todir="narwhal" file="jackconfig.js"/>
+
+        <chmod perm="a+x">
+            <fileset dir="narwhal">
+                <include name="**/bin/"/>
+                <exclude name="**/.*"/>
+            </fileset>
+        </chmod>
+
+    </target>
+    
+    <target name="debug" depends="narwhal">
+        <exec executable="bin/narwhal" dir="narwhal">
+            <arg value="packages/jack/lib/jackup.js"/>
+        </exec>
+    </target>
+    
+    <target name="dist" depends="clean, init, narwhal, buildjs, redist"/>
     
     <target name="redist">
 
@@ -48,12 +84,12 @@
         </copy>
 
         <mkdir dir="${build}/WEB-INF/lib"/>
-        <copy file="${narwhal}/engines/rhino/jars/js.jar" todir="${build}/WEB-INF/lib"/>
-        <copy file="${narwhal}/packages/sqlite-jdbc/jars/sqlitejdbc-v056.jar" todir="${build}/WEB-INF/lib"/>
+        <copy file="narwhal/engines/rhino/jars/js.jar" todir="${build}/WEB-INF/lib"/>
+        <copy file="narwhal/packages/sqlite-jdbc/jars/sqlitejdbc-v056.jar" todir="${build}/WEB-INF/lib"/>
         <copy file="jars/jack.jar" todir="${build}/WEB-INF/lib"/>
         
         <copy todir="${build}/WEB-INF/narwhal">
-            <fileset dir="${narwhal}">
+            <fileset dir="narwhal">
                 <exclude name="**/.svn/"/>
                 <exclude name="**/.svn*"/>
                 <exclude name="**/examples/"/>
@@ -76,6 +112,7 @@
     <target name="clean" description="remove previous build">
         <delete dir="${build}"/>
         <delete file="geoexplorer.war"/>
+        <delete dir="narwhal"/>
     </target>
     
     <target name="war" depends="dist" description="create archive for servlet container">
