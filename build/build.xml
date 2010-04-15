@@ -10,6 +10,9 @@
     <property name="javasrc" location="../java/src"/>
     <property name="war" location="../java/war"/>
     <property name="build" location="geoexplorer"/>
+    <condition property="narwhal.exe" value="narwhal.cmd" else="narwhal">
+        <os family="windows"/>
+    </condition>
 
     <path id="project.classpath">
         <pathelement location="../externals/narwhal/engines/rhino/jars/js.jar"/>
@@ -33,7 +36,7 @@
     
     <target name="buildjs" depends="narwhal">
         <mkdir dir="script"/>
-        <exec executable="${basedir}/narwhal/bin/narwhal" dir="${basedir}">
+        <exec executable="${basedir}/narwhal/bin/${narwhal.exe}" dir="${basedir}" failonerror="true">
             <arg line="narwhal/packages/buildkit/lib/buildkit/build.js -o script jsbuild.cfg"/>
         </exec>
     </target>
@@ -70,7 +73,7 @@
     </target>
     
     <target name="debug" depends="narwhal">
-        <exec executable="bin/narwhal" dir="narwhal">
+        <exec executable="bin/${narwhal.exe}" dir="narwhal">
             <arg value="packages/jack/lib/jackup.js"/>
         </exec>
     </target>
