@@ -37,7 +37,8 @@
     <target name="buildjs" depends="narwhal">
         <mkdir dir="script"/>
         <exec executable="${basedir}/narwhal/bin/${narwhal.exe}" dir="${basedir}" failonerror="true">
-            <arg line="narwhal/packages/buildkit/lib/buildkit/build.js -o script jsbuild.cfg"/>
+            <arg path="narwhal/packages/buildkit/lib/buildkit/build.js"/>
+            <arg line="-o script jsbuild.cfg"/>
         </exec>
     </target>
     
@@ -73,8 +74,8 @@
     </target>
     
     <target name="debug" depends="narwhal">
-        <exec executable="bin/${narwhal.exe}" dir="narwhal">
-            <arg value="packages/jack/lib/jackup.js"/>
+        <exec executable="${basedir}/narwhal/bin/${narwhal.exe}" dir="${basedir}/narwhal" failonerror="true">
+            <arg path="${basedir}/narwhal/packages/jack/lib/jackup.js"/>
         </exec>
     </target>
     
