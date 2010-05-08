@@ -718,7 +718,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         var ggProj = new OpenLayers.Projection("EPSG:4326");
 
         if(mapConfig && mapConfig.layers) {
-            var records = [];
+            
+            var baseRecords = [];
+            var overlayRecords = [];
             
             for(var i = 0; i < mapConfig.layers.length; ++i) {
                 var conf = mapConfig.layers[i];
@@ -804,20 +806,17 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                     record.set("group", conf.group);
                     
                     // set any other layer configuration
-
-                    records.push(record);
+                    
+                    if (record.get("group") === "background") {
+                        baseRecords.push(record);
+                    } else {
+                        overlayRecords.push(record);
+                    }
                 }
             }
             
-            // ensures that background layers are on the bottom
-            records.sort(function(a, b) {
-                var aGroup = a.get("group");
-                var bGroup = b.get("group");
-                return (aGroup == bGroup) ? 0 : 
-                    (aGroup == "background" ? -1 : 1);
-            });
-            
-            this.mapPanel.layers.add(records);
+            // add background group then other records
+            this.mapPanel.layers.add(baseRecords.concat(overlayRecords));
 
             // set map center
             if(this.mapPanel.center) {
