@@ -1452,7 +1452,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         }
 
         // extract just the body content
-        var match = evt.text.match(/<body>([\s\S]*)<\/body>/);
+        var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
         if (match && !match[1].match(/^\s*$/)) {
             popup.add({
                 title: title,
