@@ -20,7 +20,7 @@
     <dependency>
       <groupId>rhino</groupId>
       <artifactId>js</artifactId>
-      <version>1.7R2</version>
+      <version>1.7R3</version>
     </dependency>
     <dependency>
       <groupId>com.zentus</groupId>
