@@ -63,7 +63,7 @@
           <webappDirectory>target/${artifactId}</webappDirectory>
           <webResources>
             <resource>
-              <directory>build</directory>
+              <directory>build/geoexplorer/WEB-INF</directory>
               <targetPath>WEB-INF</targetPath>
               <includes>
                 <include>narwhal/**</include>
