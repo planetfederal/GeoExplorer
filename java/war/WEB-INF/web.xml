@@ -3,6 +3,16 @@
 	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	     version="2.5">
+    <filter>
+       <filter-name>redirect</filter-name>
+       <filter-class>org.opengeo.geoexplorer.RedirectFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>redirect</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>jack</servlet-name>
         <servlet-class>org.jackjs.JackServlet</servlet-class>
@@ -20,5 +30,5 @@
         <servlet-name>jack</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-  
+
 </web-app>

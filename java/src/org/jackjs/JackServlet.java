@@ -7,7 +7,7 @@ import java.io.*;
 
 import org.mozilla.javascript.*;
 
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 public class JackServlet extends HttpServlet {
     private Scriptable scope;
     private Function require;

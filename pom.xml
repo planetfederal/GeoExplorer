@@ -13,11 +13,65 @@
 
  <groupId>org.opengeo</groupId>
  <artifactId>geoexplorer</artifactId>
- <packaging>jar</packaging>
+ <packaging>war</packaging>
  <name>OpenGeo Suite GeoExplorer</name>
 
+ <dependencies>
+    <dependency>
+      <groupId>rhino</groupId>
+      <artifactId>js</artifactId>
+      <version>1.7R2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.zentus</groupId>
+      <artifactId>sqlitejdbc</artifactId>
+      <version>v056</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-naming</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+      <scope>test</scope>
+    </dependency>
+ </dependencies>
+
  <build>
+   <sourceDirectory>java/src</sourceDirectory>
+   <testSourceDirectory>java/test</testSourceDirectory>
    <plugins>
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>geoexplorer</warName>
+          <warSourceDirectory>java/war</warSourceDirectory>
+          <webappDirectory>target/${artifactId}</webappDirectory>
+          <webResources>
+            <resource>
+              <directory>build</directory>
+              <targetPath>WEB-INF</targetPath>
+              <includes>
+                <include>narwhal/**</include>
+              </includes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
        <dependencies>
@@ -39,18 +93,6 @@
             <configuration>
               <tasks>
                 <ant antfile="${basedir}/build/build.xml" dir="${basedir}/build"/>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>install</id>
-            <phase>install</phase>
-            <configuration>
-              <tasks>
-                <ant antfile="${basedir}/build/build.xml" dir="${basedir}/build" target="war"/>
               </tasks>
             </configuration>
             <goals>
