@@ -13,7 +13,7 @@
 
  <groupId>org.opengeo</groupId>
  <artifactId>geoexplorer</artifactId>
- <packaging>war</packaging>
+ <packaging>jar</packaging>
  <name>OpenGeo Suite GeoExplorer</name>
 
  <dependencies>
@@ -71,6 +71,15 @@
             </resource>
           </webResources>
         </configuration>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
+        </executions>
+
       </plugin>
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
