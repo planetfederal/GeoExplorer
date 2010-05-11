@@ -1,11 +1,18 @@
 var SQLITE = require("jdbc/sqlite");
 var Request = require("jack/request").Request;
+var FILE = require("file");
 
-// TODO: configure path to db
-var db = "geoexplorer.db";
+// GEOEXPLORER_DATA can be an init-param for the servlet or an environment var
+var dataDir = GEOEXPLORER_DATA || String(Packages.java.lang.System.getenv("GEOEXPLORER_DATA") || ".");
+var db = FILE.join(dataDir, "geoexplorer.db");
 
 // set up maps table
-var connection = SQLITE.open(db);
+try {
+    var connection = SQLITE.open(db);
+} catch (err) {
+    // TODO: nicer exception handling - this is hard for the user to find
+    throw "Can't open '" + db + "' for writing.  Set GEOEXPLORER_DATA to a writable directory.";
+}
 var statement = connection.createStatement();
 statement.executeUpdate(
     "CREATE TABLE IF NOT EXISTS maps (" + 

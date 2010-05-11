@@ -27,6 +27,7 @@ public class JackServlet extends HttpServlet {
         final String moduleName = getInitParam(config, "module", "jackconfig.js");
         final String appName = getInitParam(config, "app", "app");
         final String environmentName = getInitParam(config, "environment", null);
+        final String geoexplorerData = getInitParam(config, "GEOEXPLORER_DATA", System.getenv("GEOEXPLORER_DATA"));
         final int optimizationLevel = Integer.parseInt(getInitParam(config, "optimizationLevel", "9"));
 
         final String modulePath = getServletContext().getRealPath(modulesPath+"/"+moduleName);
@@ -41,6 +42,7 @@ public class JackServlet extends HttpServlet {
 
             ScriptableObject.putProperty(scope, "NARWHAL_HOME",  Context.javaToJS(narwhalHome, scope));
             ScriptableObject.putProperty(scope, "NARWHAL_ENGINE_HOME",  Context.javaToJS(narwhalEngineHome, scope));
+            ScriptableObject.putProperty(scope, "GEOEXPLORER_DATA",  Context.javaToJS(geoexplorerData, scope));
 
             // load Narwhal
             context.evaluateReader(scope, new FileReader(narwhalBootstrap), narwhalBootstrap, 1, null);

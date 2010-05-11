@@ -49,9 +49,23 @@ to a production environment, run ant with the "dist" or "war" target.  The
 "dist" target will result in a directory that can be dropped in a servlet
 container, and the "war" target results in a archive of the same directory.
 
-    you@prompt:~$ cd geoexplorer/build
-    you@prompt:~/geoexplorer/build$ ant dist
+    you@prompt:~$ cd geoexplorer
+    you@prompt:~/geoexplorer/build$ mvn clean install
 
-Move the geoexplorer directory or geoexplorer.war file (from the build
+Move the geoexplorer directory or geoexplorer.war file (from the target
 directory) to your production environment (e.g. a GeoServer servlet container).
 
+GeoExplorer writes to a geoexplorer.db when saving maps.  The location of this
+file is determined by the GEOEXPLORER_DATA value at runtime.  This value can be
+set as an environment variable or as an initialization parameter in the servlet.
+
+Example snip from web.xml to set GEOEXPLORER_DATA:
+
+    <init-param>
+        <param-name>GEOEXPLORER_DATA</param-name>
+        <param-value>/Users/you</param-value>
+    </init-param>	
+
+The GEOEXPLORER_DATA value must be a path to a directory that is writable by 
+the process that runs the application.  The servlet initialization parameter is
+given precedence over an environment variable if both exist.
