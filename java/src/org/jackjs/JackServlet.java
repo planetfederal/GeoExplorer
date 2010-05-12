@@ -27,7 +27,9 @@ public class JackServlet extends HttpServlet {
         final String moduleName = getInitParam(config, "module", "jackconfig.js");
         final String appName = getInitParam(config, "app", "app");
         final String environmentName = getInitParam(config, "environment", null);
-        final String geoexplorerData = getInitParam(config, "GEOEXPLORER_DATA", System.getenv("GEOEXPLORER_DATA"));
+        final String geoexplorerData = getInitParam(config, "GEOEXPLORER_DATA", 
+            System.getProperty("GEOEXPLORER_DATA") != null ? System.getProperty("GEOEXPLORER_DATA") 
+                : System.getenv("GEOEXPLORER_DATA"));
         final int optimizationLevel = Integer.parseInt(getInitParam(config, "optimizationLevel", "9"));
 
         final String modulePath = getServletContext().getRealPath(modulesPath+"/"+moduleName);
