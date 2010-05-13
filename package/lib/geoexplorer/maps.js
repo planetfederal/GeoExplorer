@@ -3,7 +3,7 @@ var Request = require("jack/request").Request;
 var FILE = require("file");
 
 // GEOEXPLORER_DATA can be an init-param for the servlet or an environment var
-var dataDir = GEOEXPLORER_DATA || String(Packages.java.lang.System.getenv("GEOEXPLORER_DATA") || ".");
+var dataDir = global["GEOEXPLORER_DATA"] || String(Packages.java.lang.System.getenv("GEOEXPLORER_DATA") || ".");
 var db = FILE.join(dataDir, "geoexplorer.db");
 
 // set up maps table
