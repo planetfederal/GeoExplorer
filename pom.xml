@@ -8,7 +8,7 @@
  <parent>
    <groupId>org.opengeo</groupId>
    <artifactId>suite</artifactId>
-   <version>1.0</version>
+   <version>1.9-SNAPSHOT</version>
  </parent>
 
  <groupId>org.opengeo</groupId>
