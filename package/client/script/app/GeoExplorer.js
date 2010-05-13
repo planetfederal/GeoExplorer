@@ -714,7 +714,16 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      */
     addLayers: function() {
         var mapConfig = this.initialConfig.map;
-        var mapProj = new OpenLayers.Projection(mapConfig.projection || "EPSG:4326");
+        var mapProj;
+        if (mapConfig.projection) {
+            if (typeof mapConfig.projection === "string") {
+                mapProj = new OpenLayers.Projection(mapConfig.projection);
+            } else {
+                mapProj = mapConfig.projection;
+            }
+        } else {
+            mapProj = new OpenLayers.Projection("EPSG:4326");
+        }
         var ggProj = new OpenLayers.Projection("EPSG:4326");
 
         if(mapConfig && mapConfig.layers) {

@@ -90,7 +90,7 @@ GeoExplorer.CapabilitiesGrid = Ext.extend(Ext.grid.GridPanel, {
         var records = sm.getSelections();
         
         var record, layer;
-        var mapProj = new OpenLayers.Projection(this.mapPanel.map.getProjectionObject());
+        var mapProj = this.mapPanel.map.getProjectionObject();
         var ggProj = new OpenLayers.Projection("EPSG:4326");
         for(var i = 0; i < records.length; i++){
             Ext.data.Record.AUTO_ID++;
