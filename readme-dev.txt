@@ -50,7 +50,7 @@ to a production environment, run ant with the "dist" or "war" target.  The
 container, and the "war" target results in a archive of the same directory.
 
     you@prompt:~$ cd geoexplorer
-    you@prompt:~/geoexplorer/build$ mvn clean install
+    you@prompt:~/geoexplorer$ mvn clean install
 
 Move the geoexplorer directory or geoexplorer.war file (from the target
 directory) to your production environment (e.g. a GeoServer servlet container).
