@@ -1491,9 +1491,10 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             method = "POST";
             url = "maps"
         }
-        OpenLayers.Request[method]({
+        OpenLayers.Request.issue({
+            method: method,
             url: url,
-            data: Ext.util.JSON.encode(this.extractConfiguration()),
+            data: configStr,
             callback: function(request) {
                 this.handleSave(request);
                 if (callback) {
