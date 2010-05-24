@@ -17,13 +17,11 @@ Ext.namespace("GeoExplorer");
  *  Create a GeoExplorer application suitable for embedding in larger pages.
  */
 GeoExplorer.Embed = Ext.extend(GeoExplorer, {
-    /**
-     * api: method[createLayout]
+
+    /** private: method[initPortal]
      * Create the various parts that compose the layout.
      */
-    createLayout: function() {
-        
-        this.createMap();
+    initPortal: function() {
 
         this.toolbar = new Ext.Toolbar({
             xtype: "toolbar",
@@ -53,18 +51,13 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
             activeItem: 0
         });
 
-        var viewport = new Ext.Viewport({
-            layout: "fit",
-            hideBorders: true,
-            items: {
-                layout: "border",
-                deferredRender: false,
-                items: [
-                    this.toolbar,
-                    this.mapPanelContainer
-                ]
-            }
-        });    
+        this.portalItems = [
+            this.toolbar,
+            this.mapPanelContainer
+        ];
+        
+        GeoExplorer.superclass.initPortal.apply(this, arguments);        
+
     },
 
     /**

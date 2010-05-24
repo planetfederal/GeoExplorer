@@ -33,7 +33,7 @@
  *     name - {String} Required WMS layer name.
  *     title - {String} Optional title to display for layer.
  */
-var GeoExplorer = Ext.extend(Ext.util.Observable, {
+var GeoExplorer = Ext.extend(gxp.Viewer, {
     
     /**
      * private: property[mapPanel]
@@ -67,31 +67,22 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      */
     popupCache: null,
     
-    /** api: property[layerSources]
-     *  A :class:`Ext.data.Store` containing one 
-     *  :class:`GeoExt.data.WMSCapabilitiesStore` for each WMS service in use by
-     *  the application, along with service-specific metadata like the service 
-     *  name.
-     */
-    layerSources: null,
-        
     constructor: function(config) {
 
-        // add any custom application events
-        this.addEvents(
-            /**
-             * Event: ready
-             * Fires when application is ready for user interaction.
-             */
-            "ready"
-        );
-
         this.popupCache = {};
-
-        this.layerSources = new Ext.data.SimpleStore({
-            fields: ["identifier", "name", "store", "url"],
-            data: []
-        });
+        this.mapItems = [{
+            xtype: "gx_zoomslider",
+            vertical: true,
+            height: 100,
+            plugins: new GeoExt.ZoomSliderTip({
+                template: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}"
+            })
+        }];
+        
+        GeoExplorer.superclass.constructor.apply(this, arguments);
+    }, 
+    
+    loadConfig: function(config) {
         
         var mapUrl = window.location.hash.substr(1);
         var match = mapUrl.match(/^maps\/(\d+)$/);
@@ -137,54 +128,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         
     },
     
-    applyConfig: function(config) {
-        this.initialConfig = Ext.apply({}, config);
-        Ext.apply(this, this.initialConfig);
-        this.load();
-    },
-
-    /**
-     * private: method[load]
-     * Called at the end of construction.  This initiates the sequence that
-     * prepares the application for use, including tasks such as loading 
-     * capabilities from remote servers, populating the map, etc.
-     */
-    load: function() {
-
-        // pass on any proxy config to OpenLayers
-        if(this.proxy) {
-            OpenLayers.ProxyHost = this.proxy;
-        }
-
-        var dispatchQueue = [
-            // create layout as soon as Ext says ready
-            function(done) {
-                Ext.onReady(function() {
-                    this.createLayout();
-                    done();
-                }, this);
-            }
-        ];
-        
-        for (var id in this.sources) {
-            // Load capabilities for each sources passed through the configuration.
-            dispatchQueue.push(
-                (function(id) {
-                    // Create a new scope for 'id'.
-                    return function(done){
-                        this.addSource(this.sources[id], id, done, done);
-                    }; 
-                })(id));
-        }
-        
-        gxp.util.dispatch(
-            dispatchQueue,
-            
-            // activate app when the above are both done
-            this.activate, 
-            this);
-    },
-    
     displayXHRTrouble: function(msg, status) {
         
         Ext.Msg.show({
@@ -195,121 +138,10 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
         
     },
     
-    /** private: method[addSource]
-     * Add a new WMS server to GeoExplorer. The id parameter is optional,
-     * and will be given a default if not specified; success and fail 
-     * are also optional, and scope only applies if success or fail
-     * is passed in.
-     */
-    addSource: function(url, id, success, fail, scope) {
-        scope = scope || this;
-        success = OpenLayers.Function.bind(success, scope);
-        fail = OpenLayers.Function.bind(fail, scope);
-        
-        id = id || OpenLayers.Util.createUniqueID("source");
-        var capsURL = this.createWMSCapabilitiesURL(url);
-                        var store = new GeoExt.data.WMSCapabilitiesStore();
-
-        OpenLayers.Request.GET({
-            proxy: this.proxy, 
-            url: capsURL,
-            success: function(request){
-                var store = new GeoExt.data.WMSCapabilitiesStore({
-                            fields:  [
-                                {name: "name", type: "string"},
-                                {name: "title", type: "string"},
-                                {name: "abstract", type: "string"},
-                                {name: "queryable", type: "boolean"},
-                                {name: "formats"},
-                                {name: "styles"},
-                                {name: "llbbox"},
-                                {name: "minScale"},
-                                {name: "maxScale"},
-                                {name: "prefix"},
-                                
-                                // Added for GeoExplorer.
-                                {name: "group", type: "string"},
-                                {name: "source_id", type: "string"}
-                            ]
-                        });
-                var xml = request.responseXML;
-                var data = (xml && xml.documentElement) ?
-                    xml : request.responseText;
-                
-                try {
-                    // Read the response. It's important to note that the
-                    // WMSCapabilitiesStore reads the data as well, though
-                    // we need to do it ourselves in order to maintain
-                    // low coupling.
-                    var format = new OpenLayers.Format.WMSCapabilities();
-                    var extractedData = format.read(data);
-                    
-                    store.loadData(extractedData);
-                } catch(err) {
-                    OpenLayers.Console.error("Could not load source: " + url);
-                    fail();
-                    return;
-                }
-                
-                // MODERATELY LARGE DIRTY HACK!
-                // Tell each layer where it came from.
-                store.each(function(record) {
-                    record.set("source_id", id);
-                }, this);
-                
-                var record = new this.layerSources.recordType({
-                    url: url,
-                    store: store,
-                    identifier: id,
-                    name: extractedData.service.title || id
-                });
-                
-                this.layerSources.add(record);
-                success(record);
-            },
-            failure: function(){
-                OpenLayers.Console.error("Couldn't get capabilities document for sources '" + id + "'.");
-                fail();
-            },
-            scope: this
-        });
-    },
-    
-    /** private: method[createWMSCapabilitiesURL]
-     * Given the URL to an OWS service endpoint, generate a GET request URL for
-     * the service's WMS capabilities.
-     */
-    createWMSCapabilitiesURL: function(url) {
-        var args = {
-            SERVICE: "WMS",
-            REQUEST: "GetCapabilities",
-            VERSION: "1.1.1"
-        };
-        var argIndex = url.indexOf("?");
-        if(argIndex > -1) {
-            var params = OpenLayers.Util.getParameters(url);
-            // merge, favoring those here
-            var merged = {}, ukey;
-            for (var key in params) {
-                ukey = key.toUpperCase();
-                if (!(ukey in args)) {
-                    merged[key] = params[key];
-                }
-            }
-            url = url.substring(0, argIndex + 1) + Ext.urlEncode(Ext.apply(merged, args));
-        } else {
-            url = url + "?" + Ext.urlEncode(args);
-        }
-
-        return url;
-    },
-    
-    /** private: method[createLayout]
+    /** private: method[initPortal]
      * Create the various parts that compose the layout.
      */
-    createLayout: function() {
-        
-        this.createMap();
+    initPortal: function() {
         
         var addLayerButton = new Ext.Button({
             tooltip : "Add Layers",
@@ -319,10 +151,8 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             scope: this
         });
         this.on("ready", function() {addLayerButton.enable();});
-
-        var getSelectedLayerRecord = function() {
-            var node = layerTree.getSelectionModel().getSelectedNode();
-            var record;
+        
+        var getRecordFromNode = function(node) {
             if(node && node.layer) {
                 var layer = node.layer;
                 var store = node.layerStore;
@@ -331,6 +161,11 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 }));
             }
             return record;
+        };
+
+        var getSelectedLayerRecord = function() {
+            var node = layerTree.getSelectionModel().getSelectedNode();
+            return getRecordFromNode(node);
         };
         
         var removeLayerAction = new Ext.Action({
@@ -406,8 +241,13 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                         var record = store.getAt(store.findBy(function(r) {
                             return r.get("layer") === layer;
                         }));
-                        if (record && !record.get("queryable")) {
-                            attr.iconCls = "gx-tree-rasterlayer-icon";
+                        if (record) {
+                            if (!record.get("queryable")) {
+                                attr.iconCls = "gx-tree-rasterlayer-icon";
+                            }
+                            if (record.get("fixed")) {
+                                attr.allowDrag = false;
+                            }
                         }
                     }
                     return GeoExt.tree.LayerLoader.prototype.createNode.apply(this, arguments);
@@ -430,22 +270,25 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             tooltip: "Layer Properties",
             handler: function() {
                 var record = getSelectedLayerRecord();
-                if(record) {
-                    if(layerPropertiesDialog) {
-                        layerPropertiesDialog.close();
+                if (record) {
+                    var type = record.get("properties");
+                    if (type) {
+                        if(layerPropertiesDialog) {
+                            layerPropertiesDialog.close();
+                        }
+                        layerPropertiesDialog = new Ext.Window({
+                            title: "Layer Properties: " + record.get("title"),
+                            width: 250,
+                            height: 250,
+                            layout: "fit",
+                            items: [{
+                                xtype: type,
+                                layerRecord: record,
+                                defaults: {style: "padding: 10px"}
+                            }]
+                        });
+                        layerPropertiesDialog.show();
                     }
-                    layerPropertiesDialog = new Ext.Window({
-                        title: "Layer Properties: " + record.get("title"),
-                        width: 250,
-                        height: 250,
-                        layout: "fit",
-                        items: [{
-                            xtype: "gx_wmslayerpanel",
-                            layerRecord: record,
-                            defaults: {style: "padding: 10px"}
-                        }]
-                    });
-                    layerPropertiesDialog.show();
                 }
             }
         });
@@ -461,7 +304,12 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 } else {
                     removeLayerAction.disable();
                 }
-                showPropertiesAction.enable();
+                var record = getRecordFromNode(node);
+                if (record.get("properties")) {
+                    showPropertiesAction.enable();                    
+                } else {
+                    showPropertiesAction.disable();
+                }
             } else {
                 removeLayerAction.disable();
                 showPropertiesAction.disable();
@@ -509,7 +357,9 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                         handler: function() {
                             var node = layerTree.getSelectionModel().getSelectedNode();
                             if(node && node.layer) {
-                                this.mapPanel.map.zoomToExtent(node.layer.restrictedExtent);
+                                var map = this.mapPanel.map;
+                                var extent = node.layer.restrictedExtent || map.maxExtent;
+                                map.zoomToExtent(extent, true);
                             }
                         },
                         scope: this
@@ -617,275 +467,92 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             activeItem: 0
         });
         
-        var viewport = new Ext.Viewport({
-            layout: "fit",
-            hideBorders: true,
-            items: {
-                layout: "border",
-                deferredRender: false,
-                items: [
-                    this.toolbar,
-                    this.mapPanelContainer,
-                    westPanel
-                ]
-            }
-        });    
+        this.portalItems = [
+            this.toolbar,
+            this.mapPanelContainer,
+            westPanel
+        ];
+        
+        GeoExplorer.superclass.initPortal.apply(this, arguments);        
     },
     
-    /** private: method[createMap]
-     *  Create the map and place it in a map panel.
-     */
-    createMap: function() {
-
-        var mapConfig = this.initialConfig.map || {};
-        var map = new OpenLayers.Map({
-            theme: mapConfig.theme || null,
-            allOverlays: ("allOverlays" in mapConfig) ? mapConfig.allOverlays : true,
-            controls: [
-                new OpenLayers.Control.Navigation({zoomWheelEnabled: false}),
-                new OpenLayers.Control.PanPanel(),
-                new OpenLayers.Control.ZoomPanel()
-            ],
-            projection: mapConfig.projection,
-            units: mapConfig.units,
-            maxResolution: mapConfig.maxResolution,
-            numZoomLevels: mapConfig.numZoomLevels || 20
-        });
-
-        //TODO: make this more configurable
-        map.events.on({
-            preaddlayer: function(evt) {
-                if(evt.layer.mergeNewParams) {
-                    var maxExtent = evt.layer.maxExtent;
-                    evt.layer.mergeNewParams({
-                        tiled: true,
-                        tilesorigin: [maxExtent.left, maxExtent.bottom]
-                    });
-                }
-            },
-            scope : this
-        });
-        
-
-        // place map in panel
-        this.mapPanel = new GeoExt.MapPanel({
-            layout: "anchor",
-            border: true,
-            region: "center",
-            map: map,
-            // TODO: update the OpenLayers.Map constructor to accept an initial center
-            center: mapConfig.center && new OpenLayers.LonLat(mapConfig.center[0], mapConfig.center[1]),
-            // TODO: update the OpenLayers.Map constructor to accept an initial zoom
-            zoom: mapConfig.zoom,
-            items: [
-                {
-                    xtype: "gx_zoomslider",
-                    vertical: true,
-                    height: 100,
-                    plugins: new GeoExt.ZoomSliderTip({
-                        template: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}"
-                    })
-                }
-            ]
-        });
-        
-        this.mapPanel.add(this.createMapOverlay());
-        
-    },
-    
-    /** private: method[activate]
-     * Activate the application.  Call after application is configured.
-     */
-    activate: function() {
-        
-        // add any layers from config
-        this.addLayers();
-
-        // initialize tooltips
-        Ext.QuickTips.init();
-        
-        this.fireEvent("ready");
-
-    },
-    
-    /** private: method[addLayers]
-     * Construct the layer store to be used with the map (referenced as 
-     * :attr:`GeoExplorer.layers`).
-     */
-    addLayers: function() {
-        var mapConfig = this.initialConfig.map;
-        var mapProj;
-        if (mapConfig.projection) {
-            if (typeof mapConfig.projection === "string") {
-                mapProj = new OpenLayers.Projection(mapConfig.projection);
-            } else {
-                mapProj = mapConfig.projection;
-            }
-        } else {
-            mapProj = new OpenLayers.Projection("EPSG:4326");
-        }
-        var ggProj = new OpenLayers.Projection("EPSG:4326");
-
-        if(mapConfig && mapConfig.layers) {
-            
-            var baseRecords = [];
-            var overlayRecords = [];
-            
-            for(var i = 0; i < mapConfig.layers.length; ++i) {
-                var conf = mapConfig.layers[i];
-                
-                // load wms layers                
-                var index = this.layerSources.findBy(function(r) {
-                    return r.get("identifier") === conf.source;
-                });
-                
-                if (index == -1) {
-                    continue;
-                }
-                
-                var storeRecord = this.layerSources.getAt(index);
-                var store = storeRecord.data.store;
-
-                var id = store.findBy(function(r) {
-                    return r.get("name") === conf.name;
-                });
-                
-                var record;
-                var base;
-                if (id >= 0) {
-                    /**
-                     * If the same layer is added twice, it will get replaced
-                     * unless we give each record a unique id.  In addition, we
-                     * need to clone the layer so that the map doesn't assume
-                     * the layer has already been added.  Finally, we can't
-                     * simply set the record layer to the cloned layer because
-                     * record.set compares String(value) to determine equality.
-                     * 
-                     * TODO: suggest record.clone
-                     */
-                    Ext.data.Record.AUTO_ID++;
-                    record = store.getAt(id).copy(Ext.data.Record.AUTO_ID);
-                    layer = record.get("layer").clone();
-                    record.data.layer = layer;
-
-                    // TODO: allow config for layer options
-                    layer.buffer = 0;
-                    layer.tileSize = new OpenLayers.Size(256, 256);
-                    
-                    // set layer max extent from capabilities
-                    //TODO SRS handling should be done in WMSCapabilitiesReader
-                    layer.restrictedExtent = OpenLayers.Bounds.fromArray(record.get("llbbox")).transform(
-                        ggProj, mapProj
-                    );
-                    
-                    if (this.alignToGrid) {
-                        layer.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90).transform(
-                            ggProj, mapProj
-                        );
-                    } else {
-                        layer.maxExtent = layer.restrictedExtent;
-                    }
-
-
-                    // set layer visibility from config
-                    layer.visibility = ("visibility" in conf) ? conf.visibility : true;
-                    
-                    // set layer opacity from config
-                    if ("opacity" in conf) {
-                        layer.opacity = conf.opacity;
-                    }
-                    
-                    // set layer format from config
-                    if ("format" in conf) {
-                        layer.params["FORMAT"] = conf.format;
-                    }
-                    
-                    // set layer title from config
-                    if (conf.title) {
-                        /**
-                         * Because the layer title data is duplicated, we have
-                         * to set it in both places.  After records have been
-                         * added to the store, the store handles this
-                         * synchronization.
-                         */
-                        layer.setName(conf.title);
-                        record.set("title", conf.title);
-                    }
-
-                    record.set("group", conf.group);
-                    
-                    // set any other layer configuration
-                    
-                    if (record.get("group") === "background") {
-                        baseRecords.push(record);
-                    } else {
-                        overlayRecords.push(record);
-                    }
-                }
-            }
-            
-            // add background group then other records
-            this.mapPanel.layers.add(baseRecords.concat(overlayRecords));
-
-            // set map center
-            if(this.mapPanel.center) {
-                // zoom does not have to be defined
-                this.mapPanel.map.setCenter(this.mapPanel.center, this.mapPanel.zoom);
-            } else if (this.mapPanel.extent) {
-                this.mapPanel.map.zoomToExtent(this.mapPanel.extent);
-            } else {
-                this.mapPanel.map.zoomToMaxExtent();
-            }
-            
-        }
-    },
-
     /**
      * private: method[initCapGrid]
      * Constructs a window with a capabilities grid.
      */
-    initCapGrid: function(){
-
-        // TODO: Might be nice to subclass some of these things into
-        // into their own classes.
-
-        var firstSource = this.layerSources.getAt(0);
-
-        var capGridPanel = new GeoExplorer.CapabilitiesGrid({
-            store: firstSource.data.store,
-            mapPanel : this.mapPanel,
-            layout: 'fit',
-            region: 'center',
-            autoScroll: true,
-            alignToGrid: this.alignToGrid,
-            listeners: {
-                rowdblclick: function(panel, index, evt) {
-                    panel.addLayers();
-                }
-            }
+    initCapGrid: function() {
+        
+        var data = [];        
+        for (var id in this.layerSources) {
+            data.push([id, this.layerSources[id].title || id]);
+        }
+        var sources = new Ext.data.ArrayStore({
+            fields: ["id", "title"],
+            data: data
         });
 
+        var expander = new Ext.grid.RowExpander({
+            tpl: new Ext.Template("<p><b>Abstract:</b> {abstract}</p>")
+        });
+        
+        var addLayers = function() {
+            var key = sourceComboBox.getValue();
+            var layerStore = this.mapPanel.layers;
+            var source = this.layerSources[key];
+            var records = capGridPanel.getSelectionModel().getSelections();
+            var record;
+            for (var i=0, ii=records.length; i<ii; ++i) {
+                record = source.createLayerRecord({
+                    name: records[i].get("name"),
+                    source: key
+                });
+                if (record.get("group") === "background") {
+                    layerStore.insert(0, [record]);
+                } else {
+                    layerStore.add([record]);
+                }
+            }
+        };
+
+        var capGridPanel = new Ext.grid.GridPanel({
+            store: this.layerSources[data[0][0]].store,
+            layout: "fit",
+            region: "center",
+            autoScroll: true,
+            autoExpandColumn: "title",
+            plugins: [expander],
+            colModel: new Ext.grid.ColumnModel([
+                expander,
+                {header: "Name", dataIndex: "name", width: 180, sortable: true},
+                {id: "title", header: "Title", dataIndex: "title", sortable: true}
+            ]),
+            listeners: {
+                rowdblclick: addLayers,
+                scope: this
+            }
+        });
+        
         var sourceComboBox = new Ext.form.ComboBox({
-            store: this.layerSources,
-            valueField: "identifier",
-            displayField: "name",
+            store: sources,
+            valueField: "id",
+            displayField: "title",
             triggerAction: "all",
             editable: false,
             allowBlank: false,
             forceSelection: true,
             mode: "local",
-            value: firstSource.data.identifier,
+            value: data[0][0],
             listeners: {
                 select: function(combo, record, index) {
-                    capGridPanel.reconfigure(record.data.store, capGridPanel.getColumnModel());
+                    var store = this.layerSources[record.get("id")].store;
+                    capGridPanel.reconfigure(store, capGridPanel.getColumnModel());
                 },
                 scope: this
             }
         });
-
+        
         var capGridToolbar = null;
-
-        if (this.proxy || this.layerSources.getCount() > 1) {
+        if (this.proxy || data.length > 1) {
             capGridToolbar = [
                 new Ext.Toolbar.TextItem({
                     text: "View available data from:"
@@ -893,7 +560,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 sourceComboBox
             ];
         }
-
+        
         if (this.proxy) {
             capGridToolbar.push("-", new Ext.Button({
                 text: "Add a New Server",
@@ -903,53 +570,50 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
                 }
             }));
         }
+        
+        var newSourceWindow = new GeoExplorer.NewSourceWindow({
+            modal: true,
+            listeners: {
+                "server-added": function(url) {
+                    newSourceWindow.setLoading();
+                    this.addLayerSource({
+                        config: {url: url}, // assumes default of gx-wmssource
+                        callback: function(id) {
+                            // add to combo and select
+                            var record = new sources.recordType({
+                                id: id,
+                                title: this.layerSources[id].title || "Untitled" // TODO: titles
+                            });
+                            sources.insert(0, [record]);
+                            sourceComboBox.onSelect(record, 0);
+                            newSourceWindow.hide();
+                        },
+                        failure: function() {
+                            // TODO: wire up success/failure
+                            newSourceWindow.setError("Error contacting server.\nPlease check the url and try again.");
+                        },
+                        scope: this
+                    });
+                },
+                scope: this
+            }
+        });
 
-        var newSourceWindow = new GeoExplorer.NewSourceWindow({modal: true});
-        
-        newSourceWindow.on("server-added", function(url) {
-            newSourceWindow.setLoading();
-            
-            var success = function(record) {
-                // The combo box will automatically update when a new item
-                // is added to the layerSources store. Now all we have to
-                // do is select it. Note: There's probably a better way to do this, 
-                // but there doesn't seem to be another way to get the select event
-                // to fire.
-                var index = this.layerSources.findBy(function(r) {
-                    return r.get("identifier") === record.get("identifier");
-                });
-                sourceComboBox.onSelect(record, index);
-                
-                // Close the new source window.
-                newSourceWindow.hide();
-            };
-            
-            var failure = function() {
-                newSourceWindow.setError("Error contacting server.\nPlease check the url and try again.");
-            };
-            
-            this.addSource(url, null, success, failure, this);
-        }, this);
-        
         this.capGrid = new Ext.Window({
             title: "Available Layers",
-            closeAction: 'hide',
-            layout: 'border',
+            closeAction: "hide",
+            layout: "border",
             height: 300,
             width: 600,
             modal: true,
-            items: [
-                capGridPanel
-            ],
+            items: [capGridPanel],
             tbar: capGridToolbar,
             bbar: [
                 "->",
                 new Ext.Button({
                     text: "Add Layers",
                     iconCls: "icon-addlayers",
-                    handler: function(){
-                        capGridPanel.addLayers();
-                    },
+                    handler: addLayers,
                     scope : this
                 }),
                 new Ext.Button({
@@ -1482,7 +1146,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
      * Saves the map config and displays the URL in a window.
      */ 
     save: function(callback, scope) {
-        var configStr = Ext.util.JSON.encode(this.extractConfiguration());
+        var configStr = Ext.util.JSON.encode(this.getState());
         var method, url;
         if (this.id) {
             method = "PUT";
@@ -1552,7 +1216,7 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
     getBookmark: function() {
         var params = Ext.apply(
             OpenLayers.Util.getParameters(),
-            {q: Ext.util.JSON.encode(this.extractConfiguration())}
+            {q: Ext.util.JSON.encode(this.getState())}
         );
         
         // disregard any hash in the url, but maintain all other components
@@ -1561,56 +1225,6 @@ var GeoExplorer = Ext.extend(Ext.util.Observable, {
             "?" + Ext.urlEncode(params);
         
         return url;
-    },
-
-    /**
-     * private: method[extractConfiguration]
-     * :return: an :class:`Object` representing the app's current configuration.
-     */ 
-    extractConfiguration: function() {
-
-        var center = this.mapPanel.map.getCenter();        
-        var config = {
-            sources: {},
-            map: {
-                center: [center.lon, center.lat],
-                zoom: this.mapPanel.map.zoom,
-                layers: []
-            }
-        };
-        
-        this.mapPanel.layers.each(function(layerRecord){
-            var layer = layerRecord.get('layer');
-            if (layer.displayInLayerSwitcher) {
-                
-                // Get the source of this layer.
-                var index = this.layerSources.findBy(function(r) {
-                    return r.get("identifier") === layerRecord.get("source_id");
-                });
-                var source = this.layerSources.getAt(index);
-                
-                if (!source) {
-                    OpenLayers.Console.error("Could not find source for layer '" + layerRecord.get("name") + "'");
-                    
-                    // Return; error gracefully. (This is debatable.)
-                    return;
-                }
-                // add source
-                config.sources[source.get("identifier")] = source.get("url");
-                
-                config.map.layers.push({
-                    name: layerRecord.get("name"),
-                    title: layerRecord.get("title"),
-                    visibility: layer.getVisibility(),
-                    format: layer.params.FORMAT,
-                    opacity: layer.opacity || undefined,
-                    group: layerRecord.get("group"),
-                    source: source.get("identifier")
-                });
-            }
-        }, this);
-        
-        return config;
     },
 
     /** private: method[displayAppInfo]

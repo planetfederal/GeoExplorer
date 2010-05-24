@@ -54,14 +54,32 @@
                         "in any web page.",
                     contact: "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
                 },
+                defaultSourceType: "gx-wmssource",
                 sources: {
-                    "demo": "http://suite.opengeo.org/geoserver/ows"
+                    suite: {
+                        url: "http://suite.opengeo.org/geoserver/ows"
+                    },
+                    google: {
+                        ptype: "gx-googlesource"
+                    }
                 },
                 map: {
+                    projection: "EPSG:900913",
+                    units: "m",
+                    maxResolution: 156543.0339,
+                    maxExtent: [
+                        -20037508.34, -20037508.34,
+                        20037508.34, 20037508.34
+                    ],
                     layers: [{
                         name: "World",
                         title: "World",
-                        source: "demo",
+                        source: "suite",
+                        group: "background"
+                    },{
+                        source: "google",
+                        title: "Google",
+                        name: "G_PHYSICAL_MAP",
                         group: "background"
                     }],
                     center: [0, 0],

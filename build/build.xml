@@ -119,6 +119,7 @@
         <delete dir="${build}"/>
         <delete file="geoexplorer.war"/>
         <delete dir="narwhal"/>
+        <delete dir="script"/>
     </target>
     
     <target name="war" depends="dist" description="create archive for servlet container">

@@ -51,14 +51,17 @@
                         "based maps.",
                     contact: "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
                 },
+                defaultSourceType: "gx-wmssource",
                 sources: {
-                    "demo": "http://suite.opengeo.org/geoserver/ows"
+                    suite: {
+                        url: "http://suite.opengeo.org/geoserver/ows"
+                    }
                 },
                 map: {
                     layers: [{
                         name: "World",
                         title: "World",
-                        source: "demo",
+                        source: "suite",
                         group: "background"
                     }],
                     center: [0, 0],
