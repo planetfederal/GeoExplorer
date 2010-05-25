@@ -579,7 +579,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 "server-added": function(url) {
                     newSourceWindow.setLoading();
                     this.addLayerSource({
-                        config: {url: url}, // assumes default of gx-wmssource
+                        config: {url: url}, // assumes default of gx_wmssource
                         callback: function(id) {
                             // add to combo and select
                             var record = new sources.recordType({
