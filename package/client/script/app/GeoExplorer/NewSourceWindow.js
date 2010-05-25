@@ -7,7 +7,7 @@
 Ext.namespace("GeoExplorer");
 GeoExplorer.NewSourceWindow = Ext.extend(Ext.Window, {
     
-    title: "Add New Server...",
+    title: "Add New Web Map Service (WMS) ...",
     bodyStyle: "padding: 0px",
     width: 300,
     closeAction: 'hide',
