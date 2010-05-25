@@ -604,7 +604,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             closeAction: "hide",
             layout: "border",
             height: 300,
-            width: 600,
+            width: 450,
             modal: true,
             items: [capGridPanel],
             tbar: capGridToolbar,
