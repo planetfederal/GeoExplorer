@@ -213,6 +213,13 @@ div.map-overlay div.overlay-element {
     font-family: tahoma,arial,helvetica,sans-serif;
 }
 
+.olControlAttribution {
+    bottom: 5px;
+    font-size: 10px;
+    left: 10px;
+    right: inherit;
+}
+
 /* position the zoom slider within map panel */
 .gx-zoomslider {
     top: 90px;
