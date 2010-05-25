@@ -506,10 +506,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     name: records[i].get("name"),
                     source: key
                 });
-                if (record.get("group") === "background") {
-                    layerStore.insert(0, [record]);
-                } else {
-                    layerStore.add([record]);
+                if (record) {
+                    if (record.get("group") === "background") {
+                        layerStore.insert(0, [record]);
+                    } else {
+                        layerStore.add([record]);
+                    }
                 }
             }
         };
