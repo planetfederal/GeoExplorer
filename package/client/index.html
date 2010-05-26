@@ -58,9 +58,13 @@
                 },
                 defaultSourceType: "gx_wmssource",
                 sources: {
+                    local: {
+                        url: "/geoserver/ows",
+                        title: "Local GeoServer"
+                    },
                     suite: {
                         url: "http://suite.opengeo.org/geoserver/ows",
-                        title: "OpenGeo Suite GeoServer"
+                        title: "Remote Suite GeoServer"
                     },
                     osm: {
                         ptype: "gx_osmsource"
@@ -78,11 +82,6 @@
                         20037508.34, 20037508.34
                     ],
                     layers: [{
-                        name: "World",
-                        title: "World",
-                        source: "suite",
-                        group: "background"
-                    },{
                         source: "google",
                         title: "Terrain Map",
                         name: "G_PHYSICAL_MAP",
