@@ -71,6 +71,9 @@
                     },
                     google: {
                         ptype: "gx_googlesource"
+                    },
+                    ol: {
+                        ptype: "gx_olsource"
                     }
                 },
                 map: {
@@ -86,6 +89,14 @@
                         title: "Terrain Map",
                         name: "G_PHYSICAL_MAP",
                         group: "background"
+                    }, {
+                        source: "ol",
+                        group: "background",
+                        fixed: true,
+                        type: "OpenLayers.Layer",
+                        args: [
+                            "None", {visibility: false}
+                        ]
                     }],
                     center: [0, 0],
                     zoom: 2
