@@ -482,9 +482,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     initCapGrid: function() {
         
-        var data = [];        
+        var source, data = [];        
         for (var id in this.layerSources) {
-            data.push([id, this.layerSources[id].title || id]);
+            source = this.layerSources[id];
+            if (source.store) {
+                data.push([id, this.layerSources[id].title || id]);                
+            }
         }
         var sources = new Ext.data.ArrayStore({
             fields: ["id", "title"],
