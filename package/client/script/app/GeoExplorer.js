@@ -827,7 +827,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     layers: [x.get("layer")],
                     eventListeners: {
                         getfeatureinfo: function(evt) {
-                            this.displayPopup(evt, x.get("title") || x.get("name"));
+                            var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
+                            if (match && !match[1].match(/^\s*$/)) {
+                                this.displayPopup(
+                                    evt, x.get("title") || x.get("name"), match[1]
+                                );
+                            }
                         },
                         scope: this
                     }
@@ -1103,12 +1108,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     },
 
     /** private: method[displayPopup]
-     * :param: evt: the event object from a 
+     * :arg evt: the event object from a 
      *     :class:`OpenLayers.Control.GetFeatureInfo` control
-     * :param: title: a String to use for the title of the results section 
+     * :arg title: a String to use for the title of the results section 
      *     reporting the info to the user
+     * :arg text: ``String`` Body text.
      */
-    displayPopup: function(evt, title) {
+    displayPopup: function(evt, title, text) {
         var popup;
         var popupKey = evt.xy.x + "." + evt.xy.y;
 
@@ -1137,18 +1143,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }
 
         // extract just the body content
-        var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-        if (match && !match[1].match(/^\s*$/)) {
-            popup.add({
-                title: title,
-                layout: "fit",
-                html: match[1],
-                autoScroll: true,
-                autoWidth: true,
-                collapsible: true
-            });
-        }
-
+        popup.add({
+            title: title,
+            layout: "fit",
+            html: text,
+            autoScroll: true,
+            autoWidth: true,
+            collapsible: true
+        });
         popup.doLayout();
     },
 
