@@ -23,6 +23,10 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
      */
     initPortal: function() {
 
+        // TODO: make a proper component out of this
+        var mapOverlay = this.createMapOverlay();
+        this.mapPanel.add(mapOverlay);
+
         this.toolbar = new Ext.Toolbar({
             xtype: "toolbar",
             region: "north",
