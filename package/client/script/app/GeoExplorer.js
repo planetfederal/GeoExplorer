@@ -143,6 +143,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     initPortal: function() {
         
+        // TODO: make a proper component out of this
+        var mapOverlay = this.createMapOverlay();
+        this.mapPanel.add(mapOverlay);
+        
         var addLayerButton = new Ext.Button({
             tooltip : "Add Layers",
             disabled: true,
