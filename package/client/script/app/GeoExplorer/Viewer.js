@@ -12,11 +12,11 @@
 Ext.namespace("GeoExplorer");
 
 /** api: constructor
- *  ..class:: GeoExplorer.Embed(config)
+ *  ..class:: GeoExplorer.Viewer(config)
  *
  *  Create a GeoExplorer application suitable for embedding in larger pages.
  */
-GeoExplorer.Embed = Ext.extend(GeoExplorer, {
+GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 
     /** private: method[initPortal]
      * Create the various parts that compose the layout.
@@ -69,7 +69,7 @@ GeoExplorer.Embed = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     createTools: function() {
-        var tools = GeoExplorer.Embed.superclass.createTools.apply(this, arguments);
+        var tools = GeoExplorer.Viewer.superclass.createTools.apply(this, arguments);
 
         var layerChooser = new Ext.Button({
             tooltip: 'Layer Switcher',

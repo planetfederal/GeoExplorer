@@ -7,22 +7,22 @@
 /**
  * api: (define)
  * module = GeoExplorer
- * class = GeoExplorer.Full(config)
+ * class = GeoExplorer.Composer(config)
  * extends = GeoExplorer
  */
 
 /** api: constructor
- *  .. class:: GeoExplorer.Full(config)
+ *  .. class:: GeoExplorer.Composer(config)
  *
  *      Create a GeoExplorer application intended for full-screen display.
  */
-GeoExplorer.Full = Ext.extend(GeoExplorer, {
+GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     /**
      * api: method[createTools]
      * Create the toolbar configuration for the main view.
      */
     createTools: function() {
-        var tools = GeoExplorer.Full.superclass.createTools.apply(this, arguments);
+        var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         var aboutButton = new Ext.Button({
             text: "GeoExplorer",
@@ -57,8 +57,8 @@ GeoExplorer.Full = Ext.extend(GeoExplorer, {
      */
     showEmbedWindow: function() {
 
-        // TODO: Get rid of embed.html
-        var obj = OpenLayers.Util.createUrlObject("embed.html");
+        // TODO: Get rid of viewer.html
+        var obj = OpenLayers.Util.createUrlObject("viewer.html");
         var port = (obj.port === "80") ? "" : ":" + obj.port;
         var url = obj.protocol + "//" + obj.host + port + obj.pathname + "#maps/" + this.id;
 

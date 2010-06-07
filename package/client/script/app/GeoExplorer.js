@@ -779,8 +779,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
     /** private: method[createTools]
      * Create the toolbar configuration for the main panel.  This method can be 
-     * overridden in derived explorer classes such as :class:`GeoExplorer.Full`
-     * or :class:`GeoExplorer.Embed` to provide specialized controls.
+     * overridden in derived explorer classes such as :class:`GeoExplorer.Composer`
+     * or :class:`GeoExplorer.Viewer` to provide specialized controls.
      */
     createTools: function() {
 

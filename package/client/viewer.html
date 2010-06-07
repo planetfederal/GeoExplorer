@@ -43,7 +43,7 @@
         <script>
             Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
             OpenLayers.ImgPath = "externals/openlayers/img/";
-            var app = new GeoExplorer.Embed({
+            var app = new GeoExplorer.Viewer({
                 proxy: "proxy/?url=",
                 alignToGrid: true,
                 about: {
@@ -56,7 +56,7 @@
                 defaultSourceType: "gx_wmssource",
                 sources: {
                     suite: {
-                        url: "http://suite.opengeo.org/geoserver/ows"
+                        url: "http://v2.suite.opengeo.org/geoserver/ows"
                     }
                 },
                 map: {
