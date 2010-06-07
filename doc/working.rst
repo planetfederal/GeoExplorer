@@ -1,4 +1,5 @@
-========================
+.. _geoexplorer.working:
+
 Working With GeoExplorer
 ========================
 

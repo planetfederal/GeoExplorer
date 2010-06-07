@@ -22,8 +22,7 @@ Initial Configuration
 
 Once installed, GeoExplorer will work out of the box, configured to use
 http://demo.opengeo.org/geoserver/ows as WMS. Starting from here, layers and
-WMS servers can be added and configured as described in the :doc:`Working With
-GeoExplorer <working-with-geoexplorer>` documentation.
+WMS servers can be added and configured as described in the :ref:`geoexplorer.working` documentation.
 
 If, however, you want to provide a customized application builder, here is how
 to configure it:
