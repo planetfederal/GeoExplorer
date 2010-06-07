@@ -2,21 +2,34 @@
  * Copyright (c) 2009-2010 The Open Planning Project
  */
 
- /**
-  * Patch the SphericalMercator layer to respect projection from configuration.
-  * TODO: remove this when http://trac.openlayers.org/ticket/2665 is closed
-  */
- (function() {
-     var proto = OpenLayers.Layer.SphericalMercator;
-     var original = proto.initMercatorParameters;
-     proto.initMercatorParameters = function() {
-         original.apply(this, arguments);
-         // respect configured projection code
-         if (this.options && this.options.projection) {
-             this.projection = this.options.projection;
-         }
-     };
- })();
+/**
+ * Patch the SphericalMercator layer to respect projection from configuration.
+ * TODO: remove this when http://trac.openlayers.org/ticket/2665 is closed
+ */
+(function() {
+    var proto = OpenLayers.Layer.SphericalMercator;
+    var original = proto.initMercatorParameters;
+    proto.initMercatorParameters = function() {
+        original.apply(this, arguments);
+        // respect configured projection code
+        if (this.options && this.options.projection) {
+            this.projection = this.options.projection;
+        }
+    };
+})();
+ 
+/**
+ * Add transforms for EPSG:102113.  This is web mercator to ArcGIS 9.3.
+ */
+OpenLayers.Projection.addTransform(
+    "EPSG:4326", "EPSG:102113",
+    OpenLayers.Layer.SphericalMercator.projectForward
+);
+OpenLayers.Projection.addTransform(
+    "EPSG:102113", "EPSG:4326",
+    OpenLayers.Layer.SphericalMercator.projectInverse
+);
+
 
 /**
  * api: (define)
