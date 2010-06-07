@@ -600,9 +600,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                             sourceComboBox.onSelect(record, 0);
                             newSourceWindow.hide();
                         },
-                        failure: function() {
-                            // TODO: wire up success/failure
-                            newSourceWindow.setError("Error contacting server.\nPlease check the url and try again.");
+                        fallback: function(source, msg) {
+                            newSourceWindow.setError(
+                                "Error getting WMS capabilities (" + msg + ").\nPlease check the url and try again."
+                            );
                         },
                         scope: this
                     });
