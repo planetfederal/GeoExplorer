@@ -2,6 +2,22 @@
  * Copyright (c) 2009-2010 The Open Planning Project
  */
 
+ /**
+  * Patch the SphericalMercator layer to respect projection from configuration.
+  * TODO: remove this when http://trac.openlayers.org/ticket/2665 is closed
+  */
+ (function() {
+     var proto = OpenLayers.Layer.SphericalMercator;
+     var original = proto.initMercatorParameters;
+     proto.initMercatorParameters = function() {
+         original.apply(this, arguments);
+         // respect configured projection code
+         if (this.options && this.options.projection) {
+             this.projection = this.options.projection;
+         }
+     };
+ })();
+
 /**
  * api: (define)
  * module = GeoExplorer
