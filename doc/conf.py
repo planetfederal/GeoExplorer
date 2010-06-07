@@ -81,7 +81,7 @@ pygments_style = 'sphinx'
 
 # Options for HTML output
 # -----------------------
-html_theme = 'geoexplorer'
+html_theme = 'gxp'
 html_theme_path = ['theme', '../../themes']
 
 # The style sheet to use for HTML and HTML Help pages. A file of that name
