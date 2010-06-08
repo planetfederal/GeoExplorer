@@ -1,30 +1,14 @@
-==============
+.. _geoexplorer.configuration:
+
 Configuration
-==============
+=============
 
-Installing GeoExplorer on your server
--------------------------------------
+This page shows some advanced configuration options for GeoExplorer.
 
-The easiest way to install GeoExplorer is to use the Vulcan Installer. This
-will install GeoServer, GeoExplorer and the required proxy. Once GeoServer is
-started, GeoExplorer can be accessed at
-http://localhost:8080/geoserver/www/GeoExplorer/index.html.
-
-But GeoExplorer will run on any HTTP server, like Apache. All that needs to be
-done is unpack GeoExplorer to a web accessible path on your server. There is
-only server side requirement: an OGC service proxy. If you have Python
-installed, you can e.g. use the OpenGeo python proxy:
-http://svn.opengeo.org/util/proxy/proxy.py. Information on how to configure
-Apache to use that proxy are included in the file.
-
-Initial Configuration
+Initial configuration
 ---------------------
 
-Once installed, GeoExplorer will work out of the box, configured to use
-http://demo.opengeo.org/geoserver/ows as WMS. Starting from here, layers and
-WMS servers can be added and configured as described in the :ref:`geoexplorer.working` documentation.
-
-If, however, you want to provide a customized application builder, here is how
+If you want to provide a customized application builder, here is how
 to configure it:
 
 The startup WMS or additional WMS servers can be configured by modifying
@@ -123,3 +107,13 @@ the map extent will be set to the LatLonBoundingBox specified in the
 Capabilities document. For a configuration with more than one layers, the
 extent will be taken from the first layer in the "background" group, or the
 first layer if there are no layers in the "background" group.
+
+OGC service proxy
+-----------------
+
+GeoExplorer will run on any HTTP server, like Apache. All that needs to be
+done is unpack GeoExplorer to a web accessible path on your server. There is
+only server side requirement: an OGC service proxy. If you have Python
+installed, you can use the OpenGeo python proxy, available at:
+http://svn.opengeo.org/util/proxy/proxy.py. Information on how to configure
+Apache to use that proxy are included in the file.

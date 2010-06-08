@@ -2,15 +2,17 @@
 GeoExplorer
 ===========
 
-GeoExplorer is a JavaScript user interface framework for building browser-based geospatial applications with the look, feel, and functionality of desktop clients.  Quickly assemble rich mapping applications from multiple OGC Web Mapping Services (WMS) with GeoExplorer, and use the publishing wizard to embed your mapping application in any web page.  GeoExplorer demonstrates GeoExt 1.0's capabilities in the form of a data viewer. It focuses on the display and management of layers (either from WMS or WFS), the ability to query and search across these layers, and the display of results. GeoExplorer is a tool for enabling people to answer questions or solve problems by exploring the spatial data they already have.  GeoExplorer is currently under development and will eventually integrate Styler's design component and GeoEditor's editing capabilities for a complete web-mapping framework.
+GeoExplorer is a JavaScript application for building browser-based geospatial applications in a browser.  It is designed to have the match the look, feel, and functionality of desktop clients.  Quickly assemble rich mapping applications from multiple :term:`OGC` Web Mapping Services (:term:`WMS`) with GeoExplorer, and embed your finished map in any web page.
+
+Built with `GeoExt <http://geoext.org>`_, GeoExplorer is currently under development and will eventually integrate the design components of **Styler** and  editing capabilities of **GeoEditor** for a complete web-mapping framework.
 
 .. toctree::
    :maxdepth: 2
 
    introduction
-   working
+   workspace
+   using
    configuration
    glossary
    license
-
 
