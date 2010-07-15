@@ -12,6 +12,7 @@
 # serve to show the default value.
 
 import sys, os
+from xml.dom import minidom
 
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
@@ -44,9 +45,16 @@ copyright = u'2009 OpenGeo'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '2.0.1'
+version = minidom.parse(
+        "../pom.xml"
+    ).getElementsByTagName(
+        "parent"
+    )[0].getElementsByTagName(
+        "version"
+    )[0].firstChild.nodeValue
+
 # The full version, including alpha/beta/rc tags.
-release = '2.0.1'
+release = version
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
