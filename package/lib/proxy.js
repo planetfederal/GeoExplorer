@@ -20,18 +20,14 @@ var app = function(env) {
         var contentLength = request.contentLength();
         if (contentLength) {
             client.setHeader("Content-Length", contentLength);
-            var body;
             var input = env["jsgi.input"];
             if (input) {
                 var charSet = request.contentCharset();
-                body = {
+                client.setOption("body", {
                     forEach: function(callback) {
                         callback(input.readChunk().toString(charSet));
-                    }
-                };
-            }
-            if (body) {
-                client.setOption("body", body);
+                    }                    
+                });
             }
         }
         // TODO: remaining headers
