@@ -1076,7 +1076,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                 ],
                                 eventListeners: {
                                     preaddlayer: function(evt) {
-                                        if (evt.layer instanceof OpenLayers.Layer.Google) {
+                                        if (!(evt.layer instanceof OpenLayers.Layer.WMS)) {
                                             unsupportedLayers.push(evt.layer.name);
                                             return false;
                                         }
@@ -1098,6 +1098,25 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 ]
             });            
         }
+        
+        function showPrintWindow() {
+            printWindow.show();
+            
+            // measure the window content width by it's toolbar
+            printWindow.setWidth(0);
+            var tb = printWindow.items.get(0).items.get(0);
+            var w = 0;
+            tb.items.each(function(item) {
+                if(item.getEl()) {
+                    w += item.getWidth();
+                }
+            });
+            printWindow.setWidth(
+                Math.max(printWindow.items.get(0).printMapPanel.getWidth(),
+                w + 20)
+            );
+            printWindow.center();            
+        }
 
         var printButton = new Ext.Button({
             tooltip: "Print Map",
@@ -1105,28 +1124,16 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             disabled: true,
             handler: function() {
                 createPrintWindow.call(this);
-                printWindow.show();
-                
-                // measure the window content width by it's toolbar
-                printWindow.setWidth(0);
-                var tb = printWindow.items.get(0).items.get(0);
-                var w = 0;
-                tb.items.each(function(item) {
-                    if(item.getEl()) {
-                        w += item.getWidth();
-                    }
-                });
-                printWindow.setWidth(
-                    Math.max(printWindow.items.get(0).printMapPanel.getWidth(),
-                    w + 20)
-                );
-                printWindow.center();
                 
                 if (unsupportedLayers.length) {
                     Ext.Msg.alert(
                         "Not All Layers Printed", 
-                        "Some map layers cannot be printed: " + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>"
+                        "Some map layers cannot be printed: " + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>",
+                        showPrintWindow,
+                        this
                     );                    
+                } else {
+                    showPrintWindow.call(this);
                 }
 
             },
