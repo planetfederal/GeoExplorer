@@ -1,4 +1,4 @@
-var SQLITE = require("jdbc/sqlite");
+var SQLITE = require("../sqlite");
 var Request = require("jack/request").Request;
 var FILE = require("file");
 
