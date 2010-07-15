@@ -783,6 +783,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      * or :class:`GeoExplorer.Viewer` to provide specialized controls.
      */
     createTools: function() {
+        
 
         var toolGroup = "toolGroup";
 
@@ -968,6 +969,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
     
         var tools = [
+            this.printService && this.createPrintButton() || "-",
             navAction,
             infoButton,
             measureSplit,
@@ -1015,6 +1017,123 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         ];
 
         return tools;
+    },
+    
+    /**
+     * Candidate for a shared gxp action.
+     * TODO: push some part of this to gxp (preferably less tangled)
+     */
+    createPrintButton: function() {
+
+        var printProvider = new GeoExt.data.PrintProvider({
+            url: this.printService,
+            listeners: {
+                beforeprint: function() {
+                    // The print module does not like array params.
+                    //TODO Remove when http://trac.geoext.org/ticket/216 is fixed.
+                    printWindow.items.get(0).printMapPanel.layers.each(function(l) {
+                        var params = l.get("layer").params;
+                        for(var p in params) {
+                            if (params[p] instanceof Array) {
+                                params[p] = params[p].join(",");
+                            }
+                        }
+                    })
+                },
+                loadcapabilities: function() {
+                    // TODO: http://trac.geoext.org/ticket/304
+                    // so we don't have to race to define the button
+                    printButton.initialConfig.disabled = false;
+                    printButton.disabled = false;
+                    printButton.enable();
+                },
+                print: function() {
+                    printWindow.close();
+                }
+            }
+        });
+        
+        var unsupportedLayers;
+        var printWindow;
+        function createPrintWindow() {
+            unsupportedLayers = [];
+            printWindow = new Ext.Window({
+                title: "Print Preview",
+                modal: true,
+                border: false,
+                resizable: false,
+                items: [
+                    new GeoExt.ux.PrintPreview({
+                        mapTitle: this.about["title"],
+                        comment: this.about["abstract"],
+                        printMapPanel: {
+                            map: {
+                                controls: [
+                                    new OpenLayers.Control.Navigation(),
+                                    new OpenLayers.Control.PanPanel(),
+                                    new OpenLayers.Control.ZoomPanel(),
+                                    new OpenLayers.Control.Attribution()
+                                ],
+                                eventListeners: {
+                                    preaddlayer: function(evt) {
+                                        if (evt.layer instanceof OpenLayers.Layer.Google) {
+                                            unsupportedLayers.push(evt.layer.name);
+                                            return false;
+                                        }
+                                    },
+                                    scope: this
+                                }
+                            },
+                            items: [{
+                                xtype: "gx_zoomslider",
+                                vertical: true,
+                                height: 100,
+                                aggressive: true
+                            }]
+                        },
+                        printProvider: printProvider,
+                        includeLegend: false,
+                        sourceMap: this.mapPanel
+                    })
+                ]
+            });            
+        }
+
+        var printButton = new Ext.Button({
+            tooltip: "Print Map",
+            iconCls: "icon-print",
+            disabled: true,
+            handler: function() {
+                createPrintWindow.call(this);
+                printWindow.show();
+                
+                // measure the window content width by it's toolbar
+                printWindow.setWidth(0);
+                var tb = printWindow.items.get(0).items.get(0);
+                var w = 0;
+                tb.items.each(function(item) {
+                    if(item.getEl()) {
+                        w += item.getWidth();
+                    }
+                });
+                printWindow.setWidth(
+                    Math.max(printWindow.items.get(0).printMapPanel.getWidth(),
+                    w + 20)
+                );
+                printWindow.center();
+                
+                if (unsupportedLayers.length) {
+                    Ext.Msg.alert(
+                        "Not All Layers Printed", 
+                        "Some map layers cannot be printed: " + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>"
+                    );                    
+                }
+
+            },
+            scope: this
+        });
+
+        return printButton;      
     },
 
     /** private: method[createMeasureControl]

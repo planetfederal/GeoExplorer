@@ -40,11 +40,16 @@
         <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
         <script type="text/javascript" src="script/GeoExplorer.js"></script>
 
+        <!-- PrintPreview resources -->
+        <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css" />
+        <script type="text/javascript" src="script/PrintPreview.js"></script> 
+
         <script>
             Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
             OpenLayers.ImgPath = "externals/openlayers/img/";
             var app = new GeoExplorer.Viewer({
                 proxy: "proxy/?url=",
+                printService: "/geoserver/pdf/",
                 alignToGrid: true,
                 about: {
                     title: "GeoExplorer Demo Map",
