@@ -1207,6 +1207,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         
         var measureToolTip; 
         var measureControl = new OpenLayers.Control.Measure(handlerType, {
+            geodesic: true,
             persist: true,
             handlerOptions: {layerOptions: {styleMap: styleMap}},
             eventListeners: {
