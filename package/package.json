@@ -1,6 +1,6 @@
 {
     "name": "GeoExplorer",
     "author": "Tim Schaub",
-    "dependencies": ["narwhal", "jack", "sqlite-jdbc"],
+    "dependencies": ["narwhal", "jack"],
     "contributors": []
 }
