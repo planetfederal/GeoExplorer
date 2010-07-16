@@ -1050,14 +1050,35 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     printButton.enable();
                 },
                 print: function() {
-                    printWindow.close();
+                    try {
+                        printWindow.close();                        
+                    } catch (err) {
+                        // TODO: improve destroy
+                    }
                 }
             }
         });
         
         var unsupportedLayers;
         var printWindow;
+        var someSupportedLayers;
+        
+        function destroyPrintComponents() {
+            if (printWindow) {
+                // TODO: fix this in GeoExt
+                try {
+                    var panel = printWindow.items.first();
+                    panel.printMapPanel.printPage.destroy();
+                    //panel.printMapPanel.destroy();                    
+                } catch (err) {
+                    // TODO: improve destroy
+                }
+                printWindow = null;
+            }
+        }
+
         function createPrintWindow() {
+            someSupportedLayers = false;
             unsupportedLayers = [];
             printWindow = new Ext.Window({
                 title: "Print Preview",
@@ -1081,6 +1102,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                         if (!(evt.layer instanceof OpenLayers.Layer.WMS)) {
                                             unsupportedLayers.push(evt.layer.name);
                                             return false;
+                                        } else {
+                                            someSupportedLayers = true;
                                         }
                                     },
                                     scope: this
@@ -1097,8 +1120,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         includeLegend: false,
                         sourceMap: this.mapPanel
                     })
-                ]
-            });            
+                ],
+                listeners: {
+                    beforedestroy: destroyPrintComponents
+                }
+            }); 
         }
         
         function showPrintWindow() {
@@ -1126,16 +1152,23 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             disabled: true,
             handler: function() {
                 createPrintWindow.call(this);
-                
-                if (unsupportedLayers.length) {
+                if (!someSupportedLayers) {
                     Ext.Msg.alert(
-                        "Not All Layers Printed", 
-                        "Some map layers cannot be printed: " + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>",
-                        showPrintWindow,
-                        this
-                    );                    
+                        "Not All Layers Can Be Printed", 
+                        "None of your current map layers can be printed"
+                    );
+                    destroyPrintComponents();
                 } else {
-                    showPrintWindow.call(this);
+                    if (unsupportedLayers.length) {
+                        Ext.Msg.alert(
+                            "Not All Layers Can Be Printed", 
+                            "Some map layers cannot be printed: " + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>",
+                            showPrintWindow,
+                            this
+                        );                    
+                    } else {
+                        showPrintWindow.call(this);
+                    }                    
                 }
 
             },
