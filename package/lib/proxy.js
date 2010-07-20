@@ -25,7 +25,9 @@ var app = function(env) {
                 var charSet = request.contentCharset();
                 client.setOption("body", {
                     forEach: function(callback) {
-                        callback(input.readChunk().toString(charSet));
+                        // TODO: fix this in narwhal (stream with forEach)
+                        var chunk = input.read(contentLength).toString(charSet);
+                        callback(chunk);
                     }                    
                 });
             }
