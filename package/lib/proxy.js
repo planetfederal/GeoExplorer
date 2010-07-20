@@ -25,10 +25,16 @@ var app = function(env) {
                 var charSet = request.contentCharset();
                 client.setOption("body", {
                     forEach: function(callback) {
-                        // TODO: fix this in narwhal (stream with forEach)
-                        var chunk = input.read(contentLength).toString(charSet);
-                        callback(chunk);
-                    }                    
+                        var chunk;
+                        while (true) {
+                            chunk = input.readChunk().toString(charSet);
+                            if (chunk.length > 0) {
+                                callback(chunk);
+                            } else {
+                                break;
+                            }
+                        }
+                    }
                 });
             }
         }
