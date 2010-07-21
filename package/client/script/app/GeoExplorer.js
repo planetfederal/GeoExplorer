@@ -1090,7 +1090,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         mapTitle: this.about["title"],
                         comment: this.about["abstract"],
                         printMapPanel: {
-                            map: {
+                            map: Ext.applyIf({
                                 controls: [
                                     new OpenLayers.Control.Navigation(),
                                     new OpenLayers.Control.PanPanel(),
@@ -1099,7 +1099,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                 ],
                                 eventListeners: {
                                     preaddlayer: function(evt) {
-                                        if (!(evt.layer instanceof OpenLayers.Layer.WMS)) {
+                                        if (!(evt.layer instanceof OpenLayers.Layer.WMS) && !(evt.layer instanceof OpenLayers.Layer.OSM)) {
                                             unsupportedLayers.push(evt.layer.name);
                                             return false;
                                         } else {
@@ -1108,7 +1108,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                     },
                                     scope: this
                                 }
-                            },
+                            }, this.mapPanel.initialConfig.map),
                             items: [{
                                 xtype: "gx_zoomslider",
                                 vertical: true,
