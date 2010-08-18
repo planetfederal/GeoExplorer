@@ -50,6 +50,7 @@
 
         <script>
             Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
+            OpenLayers.DOTS_PER_INCH = 25.4 / 0.28; // OGC "standardized rendering pixel size"
             OpenLayers.ImgPath = "externals/openlayers/img/";
             var app = new GeoExplorer.Composer({
                 proxy: "proxy/?url=",
