@@ -142,6 +142,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         },
                         scope: this
                     });
+                    delete this.id;
+                    window.location.hash = "";
                     this.applyConfig(config);
                 },
                 scope: this
