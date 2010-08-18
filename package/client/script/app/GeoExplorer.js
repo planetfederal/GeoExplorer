@@ -1085,8 +1085,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 modal: true,
                 border: false,
                 resizable: false,
+                width: 360,
                 items: [
                     new GeoExt.ux.PrintPreview({
+                        autoHeight: true,
                         mapTitle: this.about["title"],
                         comment: this.about["abstract"],
                         printMapPanel: {
