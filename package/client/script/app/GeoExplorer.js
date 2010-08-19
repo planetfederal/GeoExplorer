@@ -1104,7 +1104,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                 eventListeners: {
                                     preaddlayer: function(evt) {
                                         if (!(evt.layer instanceof OpenLayers.Layer.WMS) && !(evt.layer instanceof OpenLayers.Layer.OSM)) {
-                                            unsupportedLayers.push(evt.layer.name);
+                                            // special treatment for "None" layer
+                                            if (evt.layer.CLASS_NAME !== "OpenLayers.Layer") {
+                                                unsupportedLayers.push(evt.layer.name);
+                                            }
                                             return false;
                                         } else {
                                             someSupportedLayers = true;
