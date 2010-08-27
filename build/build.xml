@@ -23,6 +23,34 @@
     <target name="init">
         <tstamp/>
         <mkdir dir="${build}"/>
+
+        <echo message="pulling in buildkit (ignore fatal warning)"/>
+        <mkdir dir="../externals/buildkit"/>
+        <exec executable="git" dir="../externals/buildkit" failonerror="false">
+            <arg line="clone -n git://github.com/tschaub/buildkit.git ."/>
+        </exec>
+        <exec executable="git" dir="../externals/buildkit" failonerror="true">
+            <arg line="checkout 1d11f58b2d79cc042460d4ab0f411effcbfd7896"/>
+        </exec>
+
+        <echo message="pulling in narwhal (ignore fatal warning)"/>
+        <mkdir dir="../externals/narwhal"/>
+        <exec executable="git" dir="../externals/narwhal" failonerror="false">
+            <arg line="clone -n git://github.com/tschaub/narwhal.git ."/>
+        </exec>
+        <exec executable="git" dir="../externals/narwhal" failonerror="true">
+            <arg line="checkout 100c0ff2da88e55ed8c0f469d49e0f0a8eb19da5"/>
+        </exec>
+
+        <echo message="pulling in jack (ignore fatal warning)"/>
+        <mkdir dir="../externals/jack"/>
+        <exec executable="git" dir="../externals/jack" failonerror="false">
+            <arg line="clone -n git://github.com/tlrobinson/jack.git ."/>
+        </exec>
+        <exec executable="git" dir="../externals/jack" failonerror="true">
+            <arg line="checkout edabfc02070d1fd97ff71bc23dfa1a548bd45d56"/>
+        </exec>
+
     </target>
     
     <target name="compile">
