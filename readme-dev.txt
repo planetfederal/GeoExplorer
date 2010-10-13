@@ -20,7 +20,15 @@ The GeoExplorer repository contains what you need to run the application as a
 servlet with an integrated persistence layer.
 
 To assemble the servlet or run in development mode, you need Ant
-(http://ant.apache.org/).
+(http://ant.apache.org/).  In addition, to pull in external dependencies, you'll
+neeed Git installed (http://git-scm.com/).
+
+Before running in development mode or preparing the application for deployment,
+you need to pull in external dependencies.  Do this by running ``ant init`` in
+the build directory::
+
+    you@prompt:~$ cd geoexplorer/build
+    you@prompt:~/geoexplorer/build$ ant init
 
 
 Running in development mode
