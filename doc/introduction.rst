@@ -3,49 +3,55 @@
 Introduction
 ============
 
-This section is a quick introduction to GeoExplorer.  For more detail, please see the sections on the :ref:`geoexplorer.workspace` and :ref:`geoexplorer.using`.
+.. note:: This section is a brief introduction to GeoExplorer.  For more detail, please see the section on :ref:`geoexplorer.using`.
 
-#. Launch GeoServer.  By default this is available at http://localhost:8080/geoexplorer/ in your browser.
+#. Launch GeoExplorer.  This is typically available in your browser at ``http://localhost:8080/geoexplorer/``, although your setup may differ.
 
-   .. figure:: images/intro_geoexplorer.png
+   .. figure:: images/geoexplorer.png
       :align: center
    
       *GeoExplorer*
 
-#. Use the :guilabel:`Add Layers` button in the Layers Panel to choose the layers to be included in your application.
+#. Click the :guilabel:`Add Layers` button in the :ref:`geoexplorer.workspace.layerspanel` to bring up the :guilabel:`Available Layers` dialog.
     
-   .. figure:: images/intro_addlayersbutton.png
+   .. figure:: using/images/add_button.png
       :align: center
        
       *Add Layers button*
     
-#. From the "Available Layers" dialog, select layers to be added to your application.
+#. In the :guilabel:`Available Layers` dialog, select the layers to be added to your map.
 
-   .. figure:: images/intro_addlayersdialog.png
+   .. figure:: using/images/add_dialog.png
       :align: center
        
       *Adding layers to GeoExplorer*
 
-#. If desired, add new WMS servers with the :guilabel:`Add A New Server` button.
+#. If desired, add a new :term:`WMS` server by clicking the :guilabel:`Add A New Server` button and entering a WMS URL.
 
-   .. note:: An example of a WMS URL is http://terraservice.net/ogccapabilities.ashx?version=1.1.1&request=GetCapabilities 
+   .. note:: An example of a WMS URL is: ``http://terraservice.net/ogccapabilities.ashx?version=1.1.1&request=GetCapabilities``
     
-   .. figure:: images/intro_addnewserver.png
+   .. figure:: using/images/add_newserver.png
       :align: center
    
       *Adding a new WMS server*
        
-#. Compose your map by ordering layers in the Layers Panel.
+#. Compose your map by ordering layers in the :ref:`geoexplorer.workspace.layerspanel`.
     
-   .. figure:: images/intro_draglayers.png
+   .. figure:: using/images/add_draglayers.png
       :align: center
    
       *Ordering layers*
        
-#. Launch the "Publish Map" wizard to embed your application in a web page.
+#. Launch the :ref:`geoexplorer.using.publish` tool to save your map and generate HTML code that you can embed into a web page.
 
-   .. figure:: images/intro_publish.png
+   .. figure:: using/images/publish.png
       :align: center
 
       *Publishing a map*
 
+#. Paste the HTML code into your web page.
+
+   .. figure:: using/images/publish_embed.png
+      :align: center
+
+      *Map embedded in web page*

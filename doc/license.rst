@@ -1,4 +1,5 @@
-=======
+.. _geoexplorer.license:
+
 License
 =======
 
@@ -11,7 +12,7 @@ http://creativecommons.org/licenses/by-sa/3.0/us/ or send a letter to Creative
 Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
 
 
-GeoExplorer
------------
+Code
+----
 
 GeoExplorer is available under the BSD license.

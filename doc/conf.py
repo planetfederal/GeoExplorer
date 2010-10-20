@@ -39,7 +39,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = u'GeoExplorer'
-copyright = u'2009 OpenGeo'
+copyright = u'2010 OpenGeo'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -175,11 +175,11 @@ latex_documents = [
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-latex_logo = 'theme/_static/GeoServer_500.png'
+# latex_logo = 'theme/_static/GeoServer_500.png'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-#latex_use_parts = False
+# latex_use_parts = False
 
 # Additional stuff for the LaTeX preamble.
 latex_elements = {
