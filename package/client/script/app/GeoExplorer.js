@@ -391,9 +391,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         iconCls: "icon-zoom-to",
                         handler: function() {
                             var node = layerTree.getSelectionModel().getSelectedNode();
-                            if(node && node.layer) {
+                            if (node && node.layer) {
                                 var map = this.mapPanel.map;
-                                var extent = node.layer.restrictedExtent || map.maxExtent;
+                                var layer = node.layer;
+                                var extent = layer.restrictedExtent || layer.maxExtent || map.maxExtent;
                                 map.zoomToExtent(extent, true);
                             }
                         },
