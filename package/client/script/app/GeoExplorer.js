@@ -1000,18 +1000,19 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 tooltip: "Zoom to Visible Extent",
                 iconCls: "icon-zoom-visible",
                 handler: function() {
-                    var extent, layer;
-                    for(var i=0, len=this.mapPanel.map.layers.length; i<len; ++i) {
+                    var extent, layer, extended;
+                    for (var i=0, len=this.mapPanel.map.layers.length; i<len; ++i) {
                         layer = this.mapPanel.map.layers[i];
-                        if(layer.getVisibility()) {
-                            if(extent) {
-                                extent.extend(layer.restrictedExtent);
-                            } else {
-                                extent = layer.restrictedExtent.clone();
+                        if (layer.getVisibility()) {
+                            extended = layer.restrictedExtent || layer.maxExtent;
+                            if (extent) {
+                                extent.extend(extended);
+                            } else if (extended) {
+                                extent = extended.clone();
                             }
                         }
                     }
-                    if(extent) {
+                    if (extent) {
                         this.mapPanel.map.zoomToExtent(extent);
                     }
                 },
