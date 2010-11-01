@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="GeoExplorer" default="dist" basedir=".">
+
+    <description>
+        GeoExplorer Build File
+    </description>
+
+    <property name="build" location="build"/>
+
+    <target name="init">
+
+        <echo message="pulling in ringo (ignore fatal warning)"/>
+        <mkdir dir="externals/ringo"/>
+        <exec executable="git" dir="externals/ringo" failonerror="false">
+            <arg line="clone -n git://github.com/ringo/ringojs.git ."/>
+        </exec>
+        <exec executable="git" dir="externals/ringo" failonerror="true">
+            <arg line="checkout 6e5ea994d2854ae619272537bb2ed30084d3f225"/>
+        </exec>
+
+        <echo message="building ringo jars"/>
+        <ant dir="externals/ringo" target="jar"/>
+        <copy todir="externals/ringo/lib" flatten="true" includeEmptyDirs="false">
+            <fileset dir="lib"/>
+        </copy>
+
+        <echo message="pulling in buildkit (ignore fatal warning)"/>
+        <mkdir dir="externals/buildkit"/>
+        <exec executable="git" dir="externals/buildkit" failonerror="false">
+            <arg line="clone -n git://github.com/tschaub/buildkit.git ."/>
+        </exec>
+        <exec executable="git" dir="externals/buildkit" failonerror="true">
+            <arg line="checkout 86eacbd7b3bf62b8e99f46911dd5a633464b8570"/>
+        </exec>
+
+
+    </target>
+    
+    <target name="buildjs">
+
+        <mkdir dir="${build}/geoexplorer/WEB-INF/app/static/script"/>
+        <java jar="externals/ringo/run.jar" fork="true" failonerror="true">
+            <sysproperty key="ringo.classpath" path="externals/ringo/lib/**"/>
+            <arg path="externals/buildkit/lib/buildkit/build.js"/>
+            <arg line="-o ${build}/geoexplorer/WEB-INF/app/static/script buildjs.cfg"/>
+        </java>
+
+    </target>
+    
+    <target name="dist" depends="init, buildjs, redist"/>
+    
+    <target name="redist">
+
+        <mkdir dir="${build}/geoexplorer"/>
+        
+        <copy todir="${build}/geoexplorer">
+            <fileset dir="src/main/webapp/">
+            </fileset>
+        </copy>
+        <copy todir="${build}/geoexplorer/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
+            <fileset dir="externals/ringo/lib"/>
+        </copy>
+        <copy todir="${build}/geoexplorer/WEB-INF/app">
+            <fileset dir="app">
+                <exclude name="**/externals/**"/>
+                <exclude name="**/script/**"/>
+            </fileset>
+        </copy>
+        <!-- copy Ext resources -->
+        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/ext">
+            <fileset dir="app/static/externals/ext"/>
+        </copy>
+        <!-- copy GeoExt resources -->
+        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/geoext/resources">
+            <fileset dir="app/static/externals/geoext/resources"/>
+        </copy>
+        <!-- copy OpenLayers resources -->
+        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/openlayers/theme">
+            <fileset dir="app/static/externals/openlayers/theme"/>
+        </copy>
+        <!-- copy PrintPreview resources -->
+        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/PrintPreview/resources">
+            <fileset dir="app/static/externals/PrintPreview/resources"/>
+        </copy>
+        
+    </target>
+
+    <target name="debug">
+        <java jar="externals/ringo/run.jar" fork="true">
+            <sysproperty key="ringo.classpath" path="externals/ringo/lib/**"/>
+            <arg path="app/main.js"/>
+        </java>
+    </target>
+
+    
+    <target name="clean" description="remove previous build">
+        <delete dir="${build}"/>
+    </target>
+
+</project>

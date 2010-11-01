@@ -18,16 +18,6 @@
 
  <dependencies>
     <dependency>
-      <groupId>rhino</groupId>
-      <artifactId>js</artifactId>
-      <version>1.7R3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.zentus</groupId>
-      <artifactId>sqlitejdbc</artifactId>
-      <version>v056</version>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.4</version>
@@ -51,23 +41,20 @@
  </dependencies>
 
  <build>
-   <sourceDirectory>java/src</sourceDirectory>
-   <testSourceDirectory>java/test</testSourceDirectory>
+   <sourceDirectory>src</sourceDirectory>
+   <testSourceDirectory>test</testSourceDirectory>
    <plugins>
      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <warName>geoexplorer</warName>
-          <warSourceDirectory>java/war</warSourceDirectory>
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
           <webappDirectory>target/${artifactId}</webappDirectory>
           <webResources>
             <resource>
               <directory>build/geoexplorer/WEB-INF</directory>
               <targetPath>WEB-INF</targetPath>
-              <includes>
-                <include>narwhal/**</include>
-              </includes>
             </resource>
           </webResources>
         </configuration>
@@ -79,7 +66,6 @@
             </goals>
           </execution>
         </executions>
-
       </plugin>
      <plugin>
        <artifactId>maven-antrun-plugin</artifactId>
@@ -101,7 +87,7 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
-                <ant antfile="${basedir}/build/build.xml" dir="${basedir}/build"/>
+                <ant antfile="${basedir}build.xml" dir="${basedir}"/>
               </tasks>
             </configuration>
             <goals>
@@ -113,8 +99,7 @@
             <phase>clean</phase>
             <configuration>
               <tasks>
-                <ant antfile="${basedir}/build/build.xml" dir="${basedir}/build" target="clean"/>
-
+                <ant antfile="${basedir}build.xml" dir="${basedir}" target="clean"/>
               </tasks>
             </configuration>
             <goals>

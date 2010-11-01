@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <title>GeoExplorer</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="shortcut icon" href="theme/app/img/favicon.ico"/>
+        
+        <!-- IE 8 Compatibility -->
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+        
+        <!-- Google Earth resources-->
+        <!--
+            Note: Replace the key below with your own key before deploying. 
+            See http://code.google.com/apis/maps/signup.html for information.
+        -->
+        <script src="http://www.google.com/jsapi?key=ABQIAAAAeDjUod8ItM9dBg5_lz0esxTnme5EwnLVtEDGnh-lFVzRJhbdQhQBX5VH8Rb3adNACjSR5kaCLQuBmw"></script>
+        <script type="text/javascript">google&&google.load("earth", "1");</script>
+
+        <!-- Ext resources -->
+        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/ext-all.css" />
+        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/xtheme-gray.css" />
+        <script type="text/javascript" src="externals/ext/adapter/ext/ext-base.js"></script>
+        <script type="text/javascript" src="externals/ext/ext-all.js"></script>
+
+        <!-- OpenLayers resources -->
+        <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css" />
+        <script type="text/javascript" src="script/OpenLayers.js"></script>
+
+        <!-- GeoExt resources -->
+        <link rel="stylesheet" type="text/css" href="externals/geoext/resources/css/popup.css" />
+        <link rel="stylesheet" type="text/css" href="externals/geoext/resources/css/layerlegend.css" />
+        <link rel="stylesheet" type="text/css" href="externals/geoext/resources/css/gxtheme-gray.css" />
+        <script type="text/javascript" src="script/GeoExt.js"></script> 
+
+        <!-- gxp resources -->
+        <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css" />
+        <script type="text/javascript" src="script/gxp.js"></script> 
+        
+        <!-- proj4js resources -->
+        <!--<script type="text/javascript" src="externals/proj4js/lib/proj4js-compressed.js"></script>-->
+
+        <!-- GeoExplorer resources -->
+        <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
+        <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
+        <script type="text/javascript" src="script/GeoExplorer.js"></script>
+        <script type="text/javascript" src="script/ux.js"></script>
+
+        <!-- PrintPreview resources -->
+        <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css" />
+        <script type="text/javascript" src="script/PrintPreview.js"></script> 
+
+        <script>
+            Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
+            OpenLayers.DOTS_PER_INCH = 25.4 / 0.28; // OGC "standardized rendering pixel size"
+            OpenLayers.ImgPath = "externals/openlayers/img/";
+            var app = new GeoExplorer.Composer({
+                proxy: "proxy/?url=",
+                printService: "/geoserver/pdf/",
+                alignToGrid: true,
+                about: {
+                    title: "GeoExplorer Demo Map",
+                    "abstract": "This is a demonstration of GeoExplorer, " +
+                        "an application for assembling and publishing web " +
+                        "based maps.  After adding layer to the map, find " +
+                        "the 'Publish Map' button above to embed this map " +
+                        "in any web page.",
+                    contact: "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
+                },
+                defaultSourceType: "gx_wmssource",
+                sources: {
+                    local: {
+                        url: "/geoserver/ows",
+                        title: "Local GeoServer"
+                    },
+                    suite: {
+                        url: "http://v2.suite.opengeo.org/geoserver/ows",
+                        title: "Remote Suite GeoServer"
+                    },
+                    osm: {
+                        ptype: "gx_osmsource"
+                    },
+                    google: {
+                        ptype: "gx_googlesource"
+                    },
+                    ol: {
+                        ptype: "gx_olsource"
+                    }
+                },
+                map: {
+                    projection: "EPSG:900913",
+                    units: "m",
+                    maxResolution: 156543.0339,
+                    maxExtent: [
+                        -20037508.34, -20037508.34,
+                        20037508.34, 20037508.34
+                    ],
+                    layers: [{
+                        source: "google",
+                        title: "Google Terrain",
+                        name: "TERRAIN",
+                        group: "background"
+                    }, {
+                        source: "ol",
+                        group: "background",
+                        fixed: true,
+                        type: "OpenLayers.Layer",
+                        args: [
+                            "None", {visibility: false}
+                        ]
+                    }],
+                    center: [0, 0],
+                    zoom: 2
+                }
+            });
+        </script>
+
+    </head>
+    <body>
+    </body>
+</html>
