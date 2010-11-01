@@ -87,7 +87,7 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
-                <ant antfile="${basedir}build.xml" dir="${basedir}"/>
+                <ant antfile="${basedir}/build.xml" dir="${basedir}"/>
               </tasks>
             </configuration>
             <goals>
@@ -99,7 +99,7 @@
             <phase>clean</phase>
             <configuration>
               <tasks>
-                <ant antfile="${basedir}build.xml" dir="${basedir}" target="clean"/>
+                <ant antfile="${basedir}/build.xml" dir="${basedir}" target="clean"/>
               </tasks>
             </configuration>
             <goals>
