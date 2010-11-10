@@ -12,10 +12,13 @@
         <echo message="pulling in ringo (ignore fatal warning)"/>
         <mkdir dir="externals/ringo"/>
         <exec executable="git" dir="externals/ringo" failonerror="false">
-            <arg line="clone -n git://github.com/ringo/ringojs.git ."/>
+            <arg line="clone -nq git://github.com/ringo/ringojs.git ."/>
         </exec>
         <exec executable="git" dir="externals/ringo" failonerror="true">
-            <arg line="checkout 6e5ea994d2854ae619272537bb2ed30084d3f225"/>
+            <arg line="pull origin master"/>
+        </exec>
+        <exec executable="git" dir="externals/ringo" failonerror="true">
+            <arg line="checkout 4f676fd3d1fb7b384e9729d28f7a5de477a518e7"/>
         </exec>
 
         <echo message="building ringo jars"/>
@@ -27,7 +30,10 @@
         <echo message="pulling in buildkit (ignore fatal warning)"/>
         <mkdir dir="externals/buildkit"/>
         <exec executable="git" dir="externals/buildkit" failonerror="false">
-            <arg line="clone -n git://github.com/tschaub/buildkit.git ."/>
+            <arg line="clone -nq git://github.com/tschaub/buildkit.git ."/>
+        </exec>
+        <exec executable="git" dir="externals/ringo" failonerror="true">
+            <arg line="pull origin master"/>
         </exec>
         <exec executable="git" dir="externals/buildkit" failonerror="true">
             <arg line="checkout 86eacbd7b3bf62b8e99f46911dd5a633464b8570"/>

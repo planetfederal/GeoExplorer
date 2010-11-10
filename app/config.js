@@ -2,10 +2,6 @@
 var urls = [
     [(/^\/proxy/), require("./proxy").app],
     [(/^\/maps(\/\d+)?/), require("./maps").app]
-    // TODO: remove after http://github.com/ringo/ringojs/issues#issue/97 is closed
-    ,["/", function(env) {
-        throw {redirect: "index.html"};
-    }]
 ];
 
 // debug mode loads unminified scripts
@@ -49,8 +45,7 @@ function slash(config) {
 exports.middleware = [
     slash(),
     require("ringo/middleware/gzip").middleware,
-    // TODO: add index option after http://github.com/ringo/ringojs/issues#issue/97 is closed
-    require("ringo/middleware/static").middleware(module.resolve("static")),
+    require("ringo/middleware/static").middleware({base: module.resolve("static"), index: "index.html"}),
     require("ringo/middleware/error").middleware,
     require("ringo/middleware/notfound").middleware
 ];
