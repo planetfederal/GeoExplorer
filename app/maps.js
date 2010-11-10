@@ -70,8 +70,8 @@ var getId = function(env) {
 
 var handlers = {
     "GET": function(env) {
-        var id = getId(env);
         var resp;
+        var id = getId(env);
         if (id === null) {
             // retrieve all map identifiers
             var connection = SQLITE.open(db);
@@ -111,6 +111,7 @@ var handlers = {
         return resp;
     },
     "POST": function(env) {
+        var resp;
         var id = getId(env);
         if (id !== null) {
             resp = createResponse({error: "Can't POST to map " + id}, 405);
