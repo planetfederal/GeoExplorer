@@ -4,7 +4,7 @@ var FILE = require("fs");
 
 var System = Packages.java.lang.System;
 
-var getDb = function(request) {
+var getDb = exports.getDb = function(request) {
     var dataDir;
     if (request) {
         dataDir = request.env.servlet.getServletConfig().getInitParameter("GEOEXPLORER_DATA");
@@ -159,6 +159,9 @@ var getMapIds = exports.getMapIds = function(request) {
 };
 
 var createMap = exports.createMap = function(config, request) {
+    if (typeof config !== "string") {
+        config = JSON.stringify(config);
+    }
     var connection = SQLITE.open(getDb(request));
     // store the new map config
     var prep = connection.prepareStatement(
@@ -177,7 +180,7 @@ var createMap = exports.createMap = function(config, request) {
     return {id: id};
 };
 
-var readMap = exports.getMap = function(id, request) {
+var readMap = exports.readMap = function(id, request) {
     var config;
     var connection = SQLITE.open(getDb(request));
     var prep = connection.prepareStatement(
@@ -198,6 +201,9 @@ var readMap = exports.getMap = function(id, request) {
 };
 
 var updateMap = exports.updateMap = function(id, config, request) {
+    if (typeof config !== "string") {
+        config = JSON.stringify(config);
+    }
     var result;
     var connection = SQLITE.open(getDb(request));
     var prep = connection.prepareStatement(
