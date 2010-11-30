@@ -84,13 +84,13 @@ var handlers = {
         var id = getId(env);
         if (id === null) {
             // retrieve all map identifiers
-            resp = createResponse(getMapIds());
+            resp = createResponse(getMapIds(env));
         } else if (id === false) {
             // invalid id
             resp = createResponse({error: "Invalid map id."}, 400);
         } else {
             // retrieve single map config
-            resp = createResponse(readMap(id));
+            resp = createResponse(readMap(id, env));
         }
         return resp;
     },
@@ -104,22 +104,8 @@ var handlers = {
             if (!config) {
                 resp = createResponse({error: "Bad map config."}, 400);
             } else {
-                var connection = SQLITE.open(getDb());
-                // store the new map config
-                var prep = connection.prepareStatement(
-                    "INSERT INTO maps (config) VALUES (?);"
-                );
-                prep.setString(1, config);
-                prep.executeUpdate();
-                // get the map id
-                var statement = connection.createStatement();
-                var results = statement.executeQuery("SELECT last_insert_rowid() AS id;");
-                results.next();
-                var id = Number(results.getInt("id"));
-                results.close();
-                connection.close();
                 // return the map id
-                resp = createResponse(createMap(config));
+                resp = createResponse(createMap(config, env));
             }
         }
         return resp;
@@ -137,7 +123,7 @@ var handlers = {
             if (!config) {
                 resp = createResponse({error: "Bad map config."}, 400);
             } else {
-                resp = createResponse(updateMap(id, config));
+                resp = createResponse(updateMap(id, config, env));
             }
         }
         return resp;
@@ -150,14 +136,14 @@ var handlers = {
         } else if (id === false) {
             resp = createResponse({error: "Invalid map id."}, 400);
         } else {
-            resp = createResponse(deleteMap(id));
+            resp = createResponse(deleteMap(id, env));
         }
         return resp;
     }
 };
 
-var getMapIds = exports.getMapIds = function() {
-    var connection = SQLITE.open(getDb());
+var getMapIds = exports.getMapIds = function(request) {
+    var connection = SQLITE.open(getDb(request));
     var statement = connection.createStatement();
     var results = statement.executeQuery(
         "SELECT id FROM maps;"
@@ -172,8 +158,8 @@ var getMapIds = exports.getMapIds = function() {
     return {ids: ids};
 };
 
-var createMap = exports.createMap = function(config) {
-    var connection = SQLITE.open(getDb());
+var createMap = exports.createMap = function(config, request) {
+    var connection = SQLITE.open(getDb(request));
     // store the new map config
     var prep = connection.prepareStatement(
         "INSERT INTO maps (config) VALUES (?);"
@@ -191,9 +177,9 @@ var createMap = exports.createMap = function(config) {
     return {id: id};
 };
 
-var readMap = exports.getMap = function(id) {
+var readMap = exports.getMap = function(id, request) {
     var config;
-    var connection = SQLITE.open(getDb());
+    var connection = SQLITE.open(getDb(request));
     var prep = connection.prepareStatement(
         "SELECT config FROM maps WHERE id = ?;"
     );
@@ -211,9 +197,9 @@ var readMap = exports.getMap = function(id) {
     return config;
 };
 
-var updateMap = exports.updateMap = function(id, config) {
+var updateMap = exports.updateMap = function(id, config, request) {
     var result;
-    var connection = SQLITE.open(getDb());
+    var connection = SQLITE.open(getDb(request));
     var prep = connection.prepareStatement(
         "UPDATE OR FAIL maps SET config = ? WHERE id = ?;"
     );
@@ -229,9 +215,9 @@ var updateMap = exports.updateMap = function(id, config) {
     return result;
 }
 
-var deleteMap = exports.deleteMap = function(id) {
+var deleteMap = exports.deleteMap = function(id, request) {
     var result;
-    var connection = SQLITE.open(getDb());
+    var connection = SQLITE.open(getDb(request));
     var prep = connection.prepareStatement(
         "DELETE FROM maps WHERE id = ?;"
     );
