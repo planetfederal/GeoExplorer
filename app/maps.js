@@ -22,7 +22,7 @@ var getDb = exports.getDb = function(request) {
         var connection = SQLITE.open(db);
     } catch (err) {
         // TODO: nicer exception handling - this is hard for the user to find
-        throw "Can't open '" + db + "' for writing.  Set GEOEXPLORER_DATA to a writable directory.";
+        throw new Error("Can't open '" + db + "' for writing.  Set GEOEXPLORER_DATA to a writable directory.");
     }
     var statement = connection.createStatement();
     statement.executeUpdate(
