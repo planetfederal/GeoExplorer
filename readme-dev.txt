@@ -65,8 +65,17 @@ directory) to your production environment (e.g. a GeoServer servlet container).
 
 GeoExplorer writes to a geoexplorer.db when saving maps.  The location of this
 file is determined by the GEOEXPLORER_DATA value at runtime.  This value can be
-set as a system property or an environment variable.
+set as a servlet initialization parameter or a Java system property.
 
 The GEOEXPLORER_DATA value must be a path to a directory that is writable by 
-the process that runs the application.  The system property is given precedence
-over an environment variable if both exist.
+the process that runs the application.  The servlet initialization parameter
+is given precedence over a system property if both exist.
+
+As an example, if you want the geoexplorer.db file to be written to your /tmp
+directory, modify GeoExplorer's web.xml file to include the following::
+
+    <init-param>
+        <param-name>GEOEXPLORER_DATA</param-name>
+        <param-value>/tmp</param-value>
+    </init-param>
+
