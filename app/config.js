@@ -10,9 +10,7 @@ if (java.lang.System.getProperty("GEOEXPLORER_DEBUG")) {
     var config = FS.normal(FS.join(module.directory, "..", "buildjs.cfg"));
     urls.push(
         [(/^\/script(\/.*)/), require("./autoloader").App(config)]
-    );    
-} else {
-    print("production mode");
+    );
 }
 
 exports.urls = urls;
