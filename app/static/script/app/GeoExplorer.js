@@ -448,8 +448,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
         
         this.toolbar = new Ext.Toolbar({
-            xtype: "toolbar",
-            region: "north",
             disabled: true,
             items: this.createTools()
         });
@@ -505,11 +503,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             activeItem: 0
         });
         
-        this.portalItems = [
-            this.toolbar,
-            this.mapPanelContainer,
-            westPanel
-        ];
+        this.portalItems = [{
+            region: "center",
+            layout: "border",
+            tbar: this.toolbar,
+            items: [
+                this.mapPanelContainer,
+                westPanel
+            ]
+        }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
     },
