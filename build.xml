@@ -32,7 +32,7 @@
         <exec executable="git" dir="externals/buildkit" failonerror="false">
             <arg line="clone -nq git://github.com/tschaub/buildkit.git ."/>
         </exec>
-        <exec executable="git" dir="externals/ringo" failonerror="true">
+        <exec executable="git" dir="externals/buildkit" failonerror="true">
             <arg line="pull origin master"/>
         </exec>
         <exec executable="git" dir="externals/buildkit" failonerror="true">
