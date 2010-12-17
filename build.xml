@@ -39,6 +39,18 @@
             <arg line="checkout 86eacbd7b3bf62b8e99f46911dd5a633464b8570"/>
         </exec>
 
+        <echo message="pulling in gxp (ignore fatal warning)"/>
+        <mkdir dir="app/static/externals/gxp"/>
+        <exec executable="git" dir="app/static/externals/gxp" failonerror="false">
+            <arg line="clone -nq git://github.com/opengeo/gxp.git ."/>
+        </exec>
+        <exec executable="git" dir="app/static/externals/gxp" failonerror="true">
+            <arg line="pull origin master"/>
+        </exec>
+        <exec executable="git" dir="app/static/externals/gxp" failonerror="true">
+            <arg line="checkout 4844258a12201e1eadc5379a2108e9b54b894c19"/>
+        </exec>
+
 
     </target>
     
