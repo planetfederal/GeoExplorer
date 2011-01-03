@@ -48,7 +48,7 @@
             <arg line="pull origin master"/>
         </exec>
         <exec executable="git" dir="app/static/externals/gxp" failonerror="true">
-            <arg line="checkout 4844258a12201e1eadc5379a2108e9b54b894c19"/>
+            <arg line="checkout 16971e1f85dfc9c23fb71c3ed7ce30d703b663c6"/>
         </exec>
 
 
