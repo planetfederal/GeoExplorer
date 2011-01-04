@@ -58,7 +58,7 @@
 
         <mkdir dir="${build}/geoexplorer/WEB-INF/app/static/script"/>
         <java jar="externals/ringo/run.jar" fork="true" failonerror="true">
-            <sysproperty key="ringo.classpath" path="externals/ringo/lib/**"/>
+            <sysproperty key="ringo.home" path="externals/ringo"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${build}/geoexplorer/WEB-INF/app/static/script buildjs.cfg"/>
         </java>
@@ -105,7 +105,7 @@
 
     <target name="debug">
         <java jar="externals/ringo/run.jar" fork="true">
-            <sysproperty key="ringo.classpath" path="externals/ringo/lib/**"/>
+            <sysproperty key="ringo.home" path="externals/ringo"/>
             <arg path="app/main.js"/>
         </java>
     </target>
