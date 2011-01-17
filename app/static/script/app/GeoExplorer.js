@@ -432,10 +432,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     if(oldParent !== newParent) {
                         var store = newParent.loader.store;
                         var index = store.findBy(function(r) {
-                            return r.get("layer") === node.layer;
+                            return r.getLayer() === node.layer;
                         });
-                        var record = store.getAt(index);
-                        record.set("group", newParent.attributes.group);
+                        if (index > -1) {
+                            store.getAt(index).set("group", newParent.attributes.group);
+                        }
                     }
                 },                
                 scope: this
