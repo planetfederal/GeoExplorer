@@ -1326,7 +1326,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             popup = new GeoExt.Popup({
                 title: "Feature Info",
                 layout: "accordion",
-                lonlat: lonlat,
+                location: lonlat,
                 map: this.mapPanel,
                 width: 250,
                 height: 300,
