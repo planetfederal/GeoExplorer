@@ -7,7 +7,14 @@
 Ext.namespace("GeoExplorer");
 GeoExplorer.NewSourceWindow = Ext.extend(Ext.Window, {
     
+    // Begin i18n.
     title: "Add New Web Map Service (WMS) ...",
+    urlText: "URL",
+    cancelText: "Cancel",
+    addServerText: "Add Server",
+    contactingServerText: "Contacting Server...",
+    // End i18n.
+    
     bodyStyle: "padding: 0px",
     width: 300,
     closeAction: 'hide',
@@ -19,7 +26,7 @@ GeoExplorer.NewSourceWindow = Ext.extend(Ext.Window, {
         this.addEvents("server-added");
         
         this.urlTextField = new Ext.form.TextField({
-            fieldLabel: "URL",
+            fieldLabel: this.urlText,
             width: 240,
             msgTarget: "under",
             validator: OpenLayers.Function.bind(function() {
@@ -40,7 +47,7 @@ GeoExplorer.NewSourceWindow = Ext.extend(Ext.Window, {
         
         this.bbar = [
             new Ext.Button({
-                text: "Cancel",
+                text: this.cancelText,
                 handler: function() {
                     this.hide();
                 },
@@ -48,7 +55,7 @@ GeoExplorer.NewSourceWindow = Ext.extend(Ext.Window, {
             }),
             new Ext.Toolbar.Fill(),
             new Ext.Button({
-                text: "Add Server",
+                text: this.addServerText,
                 iconCls: "icon-addlayers",
                 handler: function() {
                     // Clear validation before trying again.
@@ -66,7 +73,7 @@ GeoExplorer.NewSourceWindow = Ext.extend(Ext.Window, {
         GeoExplorer.NewSourceWindow.superclass.initComponent.call(this);
         
         this.form.on("render", function() {
-            this.loadMask = new Ext.LoadMask(this.form.getEl(), {msg:"Contacting Server..."});
+            this.loadMask = new Ext.LoadMask(this.form.getEl(), {msg: this.contactingServerText});
         }, this);
         
         this.on("hide", function() {

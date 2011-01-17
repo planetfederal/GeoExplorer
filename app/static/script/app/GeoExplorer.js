@@ -63,6 +63,59 @@ OpenLayers.Projection.addTransform(
  *     title - {String} Optional title to display for layer.
  */
 var GeoExplorer = Ext.extend(gxp.Viewer, {
+
+    // Begin i18n.
+    zoomSliderText: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}</div>",
+    loadConfigErrorText: "Trouble reading saved configuration: <br />",
+    loadConfigErrorDefaultText: "Server Error.",
+    xhrTroubleText: "Communication Trouble: Status ",
+    addLayersText: "Add Layers",
+    removeLayerText: "Remove Layer",
+    layersText: "Layers",
+    overlaysText: "Overlays",
+    baseLayersText: "Base Layers",
+    layerPropertiesText: "Layer Properties",
+    zoomToLayerExtentText: "Zoom to Layer Extent",
+    legendText: "Legend",
+    abstractTemplateText: "<p><b>Abstract:</b> {abstract}</p>",
+    titleText: "Title",
+    idText: "Id",
+    viewDataText: "View available data from:",
+    addServerText: "Add a New Server",
+    layerSourceDefaultTitleText: "Untitled",
+    addLayerSourceError1Text: "Error getting WMS capabilities (",
+    addLayerSourceError2Text: ").\nPlease check the url and try again.",
+    availableLayersText: "Available Layers",
+    addLayersText: "Add Layers",
+    doneText: "Done",
+    zoomLevelText: "Zoom level",
+    panMapText: "Pan Map",
+    zoomPreviousText: "Zoom to Previous Extent",
+    zoomNextText: "Zoom to Next Extent",
+    featureInfoText: "Get Feature Info",
+    measureText: "Measure",
+    lengthText: "Length",
+    areaText: "Area",
+    switch3dText: "Switch to 3D Viewer",
+    zoomInText: "Zoom In",
+    zoomOutText: "Zoom Out",
+    zoomVisibleText: "Zoom to Visible Extent",
+    previewText: "Print Preview",
+    printText: "Print Map",
+    notAllNotPrintableText: "Not All Layers Can Be Printed", 
+    nonePrintableText: "None of your current map layers can be printed",
+    someNotPrintableText: "Some map layers cannot be printed: ",
+    featureInfoText: "Feature Info",
+    saveErrorText: "Trouble saving: ",
+    bookmarkText: "Bookmark URL",
+    permakinkText: 'Permalink',
+    appInfoText: "GeoExplorer",
+    aboutText: "About GeoExplorer",
+    mapInfoText: "Map Info",
+    descriptionText: "Description",
+    contactText: "Contact",
+    aboutThisMapText: "About this Map",
+    // End i18n.
     
     /**
      * private: property[mapPanel]
@@ -104,7 +157,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             vertical: true,
             height: 100,
             plugins: new GeoExt.ZoomSliderTip({
-                template: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}"
+                template: this.zoomSliderText
             })
         }];
         
@@ -130,11 +183,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     } catch (err) {
                         // pass
                     }
-                    var msg = "Trouble reading saved configuration: <br />";
+                    var msg = this.loadConfigErrorText;
                     if (obj && obj.error) {
                         msg += obj.error;
                     } else {
-                        msg += "Server Error.";
+                        msg += this.loadConfigErrorDefaultText;
                     }
                     this.on({
                         ready: function() {
@@ -162,7 +215,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     displayXHRTrouble: function(msg, status) {
         
         Ext.Msg.show({
-            title: "Communication Trouble: Status " + status,
+            title: this.xhrTroubleText + status,
             msg: msg,
             icon: Ext.MessageBox.WARNING
         });
@@ -179,7 +232,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.mapPanel.add(mapOverlay);
         
         var addLayerButton = new Ext.Button({
-            tooltip : "Add Layers",
+            tooltip : this.addLayersText,
             disabled: true,
             iconCls: "icon-addlayers",
             handler : this.showCapabilitiesGrid,
@@ -204,10 +257,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         };
         
         var removeLayerAction = new Ext.Action({
-            text: "Remove Layer",
+            text: this.removeLayerText,
             iconCls: "icon-removelayers",
             disabled: true,
-            tooltip: "Remove Layer",
+            tooltip: this.removeLayerText,
             handler: function() {
                 var record = getSelectedLayerRecord();
                 if(record) {
@@ -219,13 +272,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         var treeRoot = new Ext.tree.TreeNode({
-            text: "Layers",
+            text: this.layersText,
             expanded: true,
             isTarget: false,
             allowDrop: false
         });
         treeRoot.appendChild(new GeoExt.tree.LayerContainer({
-            text: "Overlays",
+            text: this.overlaysText,
             iconCls: "gx-folder",
             expanded: true,
             loader: new GeoExt.tree.LayerLoader({
@@ -258,7 +311,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }));
         
         treeRoot.appendChild(new GeoExt.tree.LayerContainer({
-            text: "Base Layers",
+            text: this.baseLayersText,
             iconCls: "gx-folder",
             expanded: true,
             group: "background",
@@ -297,12 +350,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }
         }));
         
+        this.treeRoot = treeRoot;
+        
         var layerPropertiesDialog;
         var showPropertiesAction = new Ext.Action({
-            text: "Layer Properties",
+            text: this.layerPropertiesText,
             iconCls: "icon-properties",
             disabled: true,
-            tooltip: "Layer Properties",
+            tooltip: this.layerPropertiesText,
             handler: function() {
                 var record = getSelectedLayerRecord();
                 if (record) {
@@ -312,7 +367,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                             layerPropertiesDialog.close();
                         }
                         layerPropertiesDialog = new Ext.Window({
-                            title: "Layer Properties: " + record.get("title"),
+                            title: this.layerPropertiesText + ": " + record.get("title"),
                             width: 250,
                             height: 250,
                             layout: "fit",
@@ -325,7 +380,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         layerPropertiesDialog.show();
                     }
                 }
-            }
+            },
+            scope: this
         });
         
         var updateLayerActions = function(sel, node) {
@@ -387,7 +443,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             contextMenu: new Ext.menu.Menu({
                 items: [
                     {
-                        text: "Zoom to Layer Extent",
+                        text: this.zoomToLayerExtentText,
                         iconCls: "icon-zoom-to",
                         handler: function() {
                             var node = layerTree.getSelectionModel().getSelectedNode();
@@ -410,7 +466,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             autoScroll: true,
             border: false,
             region: 'center',
-            title: "Layers",
+            title: this.layersText,
             items: [layerTree],
             tbar: [
                 addLayerButton,
@@ -420,7 +476,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         var legendContainer = new GeoExt.LegendPanel({
-            title: "Legend",
+            title: this.legendText,
             border: false,
             region: 'south',
             height: 200,
@@ -535,7 +591,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         var expander = new Ext.grid.RowExpander({
-            tpl: new Ext.Template("<p><b>Abstract:</b> {abstract}</p>")
+            tpl: new Ext.Template(this.abstractTemplateText)
         });
         
         var addLayers = function() {
@@ -568,8 +624,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             plugins: [expander],
             colModel: new Ext.grid.ColumnModel([
                 expander,
-                {id: "title", header: "Title", dataIndex: "title", sortable: true},
-                {header: "Id", dataIndex: "name", width: 150, sortable: true}
+                {id: "title", header: this.titleText, dataIndex: "title", sortable: true},
+                {header: this.idText, dataIndex: "name", width: 150, sortable: true}
             ]),
             listeners: {
                 rowdblclick: addLayers,
@@ -603,7 +659,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         if (this.proxy || data.length > 1) {
             capGridToolbar = [
                 new Ext.Toolbar.TextItem({
-                    text: "View available data from:"
+                    text: this.viewDataText
                 }),
                 sourceComboBox
             ];
@@ -611,7 +667,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         
         if (this.proxy) {
             capGridToolbar.push("-", new Ext.Button({
-                text: "Add a New Server",
+                text: this.addServerText,
                 iconCls: "icon-addserver",
                 handler: function() {
                     newSourceWindow.show();
@@ -630,7 +686,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                             // add to combo and select
                             var record = new sources.recordType({
                                 id: id,
-                                title: this.layerSources[id].title || "Untitled" // TODO: titles
+                                title: this.layerSources[id].title || this.layerSourceDefaultTitleText // TODO: titles
                             });
                             sources.insert(0, [record]);
                             sourceComboBox.onSelect(record, 0);
@@ -638,7 +694,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         },
                         fallback: function(source, msg) {
                             newSourceWindow.setError(
-                                "Error getting WMS capabilities (" + msg + ").\nPlease check the url and try again."
+                                this.addLayerSourceError1Text + msg + this.addLayerSourceError2Text
                             );
                         },
                         scope: this
@@ -649,7 +705,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         this.capGrid = new Ext.Window({
-            title: "Available Layers",
+            title: this.availableLayersText,
             closeAction: "hide",
             layout: "border",
             height: 300,
@@ -660,13 +716,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             bbar: [
                 "->",
                 new Ext.Button({
-                    text: "Add Layers",
+                    text: this.addLayersText,
                     iconCls: "icon-addlayers",
                     handler: addLayers,
                     scope : this
                 }),
                 new Ext.Button({
-                    text: "Done",
+                    text: this.doneText,
                     handler: function() {
                         this.capGrid.hide();
                     },
@@ -719,7 +775,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         var zoomSelector = new Ext.form.ComboBox({
-            emptyText: 'Zoom level',
+            emptyText: this.zoomLevelText,
             tpl: '<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(values.scale)]}</div></tpl>',
             editable: false,
             triggerAction: 'all',
@@ -796,7 +852,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         // create a navigation control
         var navAction = new GeoExt.Action({
-            tooltip: "Pan Map",
+            tooltip: this.panMapText,
             iconCls: "icon-pan",
             enableToggle: true,
             pressed: true,
@@ -812,14 +868,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         // create actions for previous and next
         var navPreviousAction = new GeoExt.Action({
-            tooltip: "Zoom to Previous Extent",
+            tooltip: this.zoomPreviousText,
             iconCls: "icon-zoom-previous",
             disabled: true,
             control: historyControl.previous
         });
         
         var navNextAction = new GeoExt.Action({
-            tooltip: "Zoom to Next Extent",
+            tooltip: this.zoomNextText,
             iconCls: "icon-zoom-next",
             disabled: true,
             control: historyControl.next
@@ -828,7 +884,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         // create a get feature info control
         var info = {controls: []};
         var infoButton = new Ext.Button({
-            tooltip: "Get Feature Info",
+            tooltip: this.featureInfoText,
             iconCls: "icon-getfeatureinfo",
             toggleGroup: toolGroup,
             enableToggle: true,
@@ -891,7 +947,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var activeIndex = 0;
         var measureSplit = new Ext.SplitButton({
             iconCls: "icon-measure-length",
-            tooltip: "Measure",
+            tooltip: this.measureText,
             enableToggle: true,
             toggleGroup: toolGroup, // Ext doesn't respect this, registered with ButtonToggleMgr below
             allowDepress: false, // Ext doesn't respect this, handler deals with it
@@ -921,27 +977,27 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 items: [
                     new Ext.menu.CheckItem(
                         new GeoExt.Action({
-                            text: "Length",
+                            text: this.lengthText,
                             iconCls: "icon-measure-length",
                             toggleGroup: toolGroup,
                             group: toolGroup,
                             allowDepress: false,
                             map: this.mapPanel.map,
                             control: this.createMeasureControl(
-                                OpenLayers.Handler.Path, "Length"
+                                OpenLayers.Handler.Path, this.lengthText
                             )
                         })
                     ),
                     new Ext.menu.CheckItem(
                         new GeoExt.Action({
-                            text: "Area",
+                            text: this.areaText,
                             iconCls: "icon-measure-area",
                             toggleGroup: toolGroup,
                             group: toolGroup,
                             allowDepress: false,
                             map: this.mapPanel.map,
                             control: this.createMeasureControl(
-                                OpenLayers.Handler.Polygon, "Area"
+                                OpenLayers.Handler.Polygon, this.areaText
                             )
                         })
                     )
@@ -960,7 +1016,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         
         var enable3DButton = new Ext.Button({
             iconCls: "icon-3D",
-            tooltip: "Switch to 3D Viewer",
+            tooltip: this.switch3dText,
             enableToggle: true,
             toggleHandler: function(button, state) {
                 if (state === true) {
@@ -985,12 +1041,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 handler: function(){
                     this.mapPanel.map.zoomIn();
                 },
-                tooltip: "Zoom In",
+                tooltip: this.zoomInText,
                 iconCls: "icon-zoom-in",
                 scope: this
             }),
             new Ext.Button({
-                tooltip: "Zoom Out",
+                tooltip: this.zoomOutText,
                 handler: function(){
                     this.mapPanel.map.zoomOut();
                 },
@@ -1000,7 +1056,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             navPreviousAction,
             navNextAction,
             new Ext.Button({
-                tooltip: "Zoom to Visible Extent",
+                tooltip: this.zoomVisibleText,
                 iconCls: "icon-zoom-visible",
                 handler: function() {
                     var extent, layer, extended;
@@ -1087,7 +1143,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             someSupportedLayers = false;
             unsupportedLayers = [];
             printWindow = new Ext.Window({
-                title: "Print Preview",
+                title: this.previewText,
                 modal: true,
                 border: false,
                 resizable: false,
@@ -1158,22 +1214,22 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }
 
         var printButton = new Ext.Button({
-            tooltip: "Print Map",
+            tooltip: this.printText,
             iconCls: "icon-print",
             disabled: true,
             handler: function() {
                 createPrintWindow.call(this);
                 if (!someSupportedLayers) {
                     Ext.Msg.alert(
-                        "Not All Layers Can Be Printed", 
-                        "None of your current map layers can be printed"
+                        this.notAllPrintableText, 
+                        this.nonePrintableText
                     );
                     destroyPrintComponents();
                 } else {
                     if (unsupportedLayers.length) {
                         Ext.Msg.alert(
-                            "Not All Layers Can Be Printed", 
-                            "Some map layers cannot be printed: " + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>",
+                            this.notAllPrintableText, 
+                            this.someNotPrintableText + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>",
                             showPrintWindow,
                             this
                         );                    
@@ -1324,7 +1380,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         if (!(popupKey in this.popupCache)) {
             var lonlat = this.mapPanel.map.getLonLatFromPixel(evt.xy);
             popup = new GeoExt.Popup({
-                title: "Feature Info",
+                title: this.featureInfoText,
                 layout: "accordion",
                 location: lonlat,
                 map: this.mapPanel,
@@ -1398,7 +1454,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 window.location.hash = "#maps/" + mapId;
             }
         } else {
-            throw "Trouble saving: " + request.responseText;
+            throw this.saveErrorText + request.responseText;
         }
     },
     
@@ -1406,7 +1462,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     showUrl: function() {
         var win = new Ext.Window({
-            title: "Bookmark URL",
+            title: this.bookmarkText,
             layout: 'form',
             labelAlign: 'top',
             modal: true,
@@ -1414,7 +1470,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             width: 300,
             items: [{
                 xtype: 'textfield',
-                fieldLabel: 'Permalink',
+                fieldLabel: this.permakinkText,
                 readOnly: true,
                 anchor: "100%",
                 selectOnFocus: true,
@@ -1449,8 +1505,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     displayAppInfo: function() {
         var appInfo = new Ext.Panel({
-            title: "GeoExplorer",
-            html: "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'><a target='_blank' href='about.html'>About GeoExplorer</a> </iframe>"
+            title: this.appInfoText,
+            html: "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'><a target='_blank' href='about.html'>"+this.aboutText+"</a> </iframe>"
         });
 
         var about = Ext.applyIf(this.about, {
@@ -1460,11 +1516,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         var mapInfo = new Ext.Panel({
-            title: "Map Info",
+            title: this.mapInfoText,
             html: '<div class="gx-info-panel">' +
-                  '<h2>Title</h2><p>' + about.title +
-                  '</p><h2>Description</h2><p>' + about['abstract'] +
-                  '</p> <h2>Contact</h2><p>' + about.contact +'</p></div>',
+                  '<h2>'+this.titleText+'</h2><p>' + about.title +
+                  '</p><h2>'+this.descriptionText+'</h2><p>' + about['abstract'] +
+                  '</p> <h2>'+this.contactText+'</h2><p>' + about.contact +'</p></div>',
             height: 'auto',
             width: 'auto'
         });
@@ -1475,7 +1531,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         var win = new Ext.Window({
-            title: "About this Map",
+            title: this.aboutThisMapText,
             modal: true,
             layout: "fit",
             width: 300,

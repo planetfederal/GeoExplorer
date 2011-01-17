@@ -17,7 +17,7 @@ Ext.namespace("GeoExplorer");
  *  Create a GeoExplorer application suitable for embedding in larger pages.
  */
 GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
-
+    
     /** private: method[initPortal]
      * Create the various parts that compose the layout.
      */
@@ -85,7 +85,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         tools.unshift(layerChooser);
 
         var aboutButton = new Ext.Button({
-            tooltip: "About this map",
+            tooltip: this.aboutText,
             iconCls: "icon-about",
             handler: this.displayAppInfo,
             scope: this

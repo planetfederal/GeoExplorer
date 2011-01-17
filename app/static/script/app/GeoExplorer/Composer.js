@@ -17,6 +17,20 @@
  *      Create a GeoExplorer application intended for full-screen display.
  */
 GeoExplorer.Composer = Ext.extend(GeoExplorer, {
+
+    // Begin i18n.
+    publishMapText: "Publish Map",
+    saveMapText: "Save Map",
+    mapSizeText: "Map Size",
+    miniText: "Mini",
+    smallText: "Small",
+    largeText: "Large",
+    heightText: "Height",
+    widthText: "Width",
+    exportMapText: "Export Map",
+    embedText: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
+    // End i18n.
+
     /**
      * api: method[createTools]
      * Create the toolbar configuration for the main view.
@@ -25,7 +39,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         var aboutButton = new Ext.Button({
-            text: "GeoExplorer",
+            text: this.appInfoText,
             iconCls: "icon-geoexplorer",
             handler: this.displayAppInfo,
             scope: this
@@ -33,7 +47,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
         tools.unshift("-");
         tools.unshift(new Ext.Button({
-            tooltip: "Publish Map",
+            tooltip: this.publishMapText,
             handler: function() {
                 this.save(this.showEmbedWindow);
             },
@@ -41,7 +55,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             iconCls: 'icon-export'
         }));
         tools.unshift(new Ext.Button({
-            tooltip: "Save Map",
+            tooltip: this.saveMapText,
             handler: function() {
                 this.save(this.showUrl);
             },
@@ -93,21 +107,21 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 xtype: "box"
             },
             items: [
-                {autoEl: {cls: "gx-field-label", html: "Map Size"}},
+                {autoEl: {cls: "gx-field-label", html: this.mapSizeText}},
                 new Ext.form.ComboBox({
                     editable: false,
                     width: 70,
                     store: new Ext.data.SimpleStore({
                         fields: ["name", "height", "width"],
                         data: [
-                            ["Mini", 100, 100],
-                            ["Small", 200, 300],
-                            ["Large", 400, 600]
+                            [this.miniText, 100, 100],
+                            [this.smallText, 200, 300],
+                            [this.largeText, 400, 600]
                         ]
                     }),
                     triggerAction: 'all',
                     displayField: 'name',
-                    value: "Large",
+                    value: this.largeText,
                     mode: 'local',
                     listeners: {
                         select: function(combo, record, index) {
@@ -117,9 +131,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                         }
                     }
                 }),
-                {autoEl: {cls: "gx-field-label", html: "Height"}},
+                {autoEl: {cls: "gx-field-label", html: this.heightText}},
                 heightField,
-                {autoEl: {cls: "gx-field-label", html: "Width"}},
+                {autoEl: {cls: "gx-field-label", html: this.widthText}},
                 widthField
             ]
         });
@@ -128,7 +142,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             height: 205,
             width: 350,
             modal: true,
-            title: "Export Map",
+            title: this.exportMapText,
             layout: "fit",
             items: [{
                 xtype: "container",
@@ -143,7 +157,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     xtype: "box",
                     autoEl: {
                         tag: "p",
-                        html: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:"
+                        html: this.embedText
                     }
                 }, {
                     items: [snippetArea]
