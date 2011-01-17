@@ -9,56 +9,27 @@
 
     <target name="init">
 
-        <echo message="pulling in ringo (ignore fatal warning)"/>
-        <mkdir dir="externals/ringo"/>
-        <exec executable="git" dir="externals/ringo" failonerror="false">
-            <arg line="clone -nq git://github.com/ringo/ringojs.git ."/>
+        <echo message="pulling in submodules"/>
+        <exec executable="git" failonerror="true">
+            <arg line="submodule init"/>
         </exec>
-        <exec executable="git" dir="externals/ringo" failonerror="true">
-            <arg line="pull origin master"/>
-        </exec>
-        <exec executable="git" dir="externals/ringo" failonerror="true">
-            <arg line="checkout e0dce2be640fc6fb43a1239d252948d10687ba9c"/>
+        <exec executable="git" failonerror="true">
+            <arg line="submodule update"/>
         </exec>
 
         <echo message="building ringo jars"/>
-        <ant dir="externals/ringo" target="jar"/>
-        <copy todir="externals/ringo/lib" flatten="true" includeEmptyDirs="false">
+        <ant dir="externals/ringojs" target="jar"/>
+        <copy todir="externals/ringojs/lib" flatten="true" includeEmptyDirs="false">
             <fileset dir="lib"/>
         </copy>
-
-        <echo message="pulling in buildkit (ignore fatal warning)"/>
-        <mkdir dir="externals/buildkit"/>
-        <exec executable="git" dir="externals/buildkit" failonerror="false">
-            <arg line="clone -nq git://github.com/tschaub/buildkit.git ."/>
-        </exec>
-        <exec executable="git" dir="externals/buildkit" failonerror="true">
-            <arg line="pull origin master"/>
-        </exec>
-        <exec executable="git" dir="externals/buildkit" failonerror="true">
-            <arg line="checkout 86eacbd7b3bf62b8e99f46911dd5a633464b8570"/>
-        </exec>
-
-        <echo message="pulling in gxp (ignore fatal warning)"/>
-        <mkdir dir="app/static/externals/gxp"/>
-        <exec executable="git" dir="app/static/externals/gxp" failonerror="false">
-            <arg line="clone -nq git://github.com/opengeo/gxp.git ."/>
-        </exec>
-        <exec executable="git" dir="app/static/externals/gxp" failonerror="true">
-            <arg line="pull origin master"/>
-        </exec>
-        <exec executable="git" dir="app/static/externals/gxp" failonerror="true">
-            <arg line="checkout 16971e1f85dfc9c23fb71c3ed7ce30d703b663c6"/>
-        </exec>
-
 
     </target>
     
     <target name="buildjs">
 
         <mkdir dir="${build}/geoexplorer/WEB-INF/app/static/script"/>
-        <java jar="externals/ringo/run.jar" fork="true" failonerror="true">
-            <sysproperty key="ringo.home" path="externals/ringo"/>
+        <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${build}/geoexplorer/WEB-INF/app/static/script buildjs.cfg"/>
         </java>
@@ -76,7 +47,7 @@
             </fileset>
         </copy>
         <copy todir="${build}/geoexplorer/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
-            <fileset dir="externals/ringo/lib"/>
+            <fileset dir="externals/ringojs/lib"/>
         </copy>
         <copy todir="${build}/geoexplorer/WEB-INF/app">
             <fileset dir="app">
@@ -104,8 +75,8 @@
     </target>
 
     <target name="debug">
-        <java jar="externals/ringo/run.jar" fork="true">
-            <sysproperty key="ringo.home" path="externals/ringo"/>
+        <java jar="externals/ringojs/run.jar" fork="true">
+            <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg path="app/main.js"/>
         </java>
     </target>
