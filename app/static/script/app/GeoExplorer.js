@@ -97,8 +97,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     lengthText: "Length",
     areaText: "Area",
     switch3dText: "Switch to 3D Viewer",
-    zoomInText: "Zoom In",
-    zoomOutText: "Zoom Out",
     previewText: "Print Preview",
     printText: "Print Map",
     notAllNotPrintableText: "Not All Layers Can Be Printed", 
@@ -162,6 +160,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         config.tools = [
             {
+                ptype: "gxp_zoom",
+                actionTarget: {target: "paneltbar", index: 10}
+            }, {
                 ptype: "gxp_navigationhistory",
                 actionTarget: {target: "paneltbar", index: 12}
             }, {
@@ -1029,22 +1030,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             infoButton,
             measureSplit,
             "-",
-            new Ext.Button({
-                handler: function(){
-                    this.mapPanel.map.zoomIn();
-                },
-                tooltip: this.zoomInText,
-                iconCls: "icon-zoom-in",
-                scope: this
-            }),
-            new Ext.Button({
-                tooltip: this.zoomOutText,
-                handler: function(){
-                    this.mapPanel.map.zoomOut();
-                },
-                iconCls: "icon-zoom-out",
-                scope: this
-            }),
             enable3DButton
         ];
 
