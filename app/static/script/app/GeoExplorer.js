@@ -160,10 +160,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             })
         }];
 
-        config.tools = [{
-            ptype: "gx_zoomtoextent",
-            actionTarget: {target: "paneltbar", index: 14}
-        }];
+        config.tools = [
+            {
+                ptype: "gxp_navigationhistory",
+                actionTarget: {target: "paneltbar", index: 12}
+            }, {
+                ptype: "gx_zoomtoextent",
+                actionTarget: {target: "paneltbar", index: 14}
+            }
+        ];
         
         GeoExplorer.superclass.constructor.apply(this, arguments);
     }, 
@@ -868,25 +873,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             toggleGroup: toolGroup
         });
 
-        // create a navigation history control
-        var historyControl = new OpenLayers.Control.NavigationHistory();
-        this.mapPanel.map.addControl(historyControl);
-
-        // create actions for previous and next
-        var navPreviousAction = new GeoExt.Action({
-            tooltip: this.zoomPreviousText,
-            iconCls: "icon-zoom-previous",
-            disabled: true,
-            control: historyControl.previous
-        });
-        
-        var navNextAction = new GeoExt.Action({
-            tooltip: this.zoomNextText,
-            iconCls: "icon-zoom-next",
-            disabled: true,
-            control: historyControl.next
-        });
-
         // create a get feature info control
         var info = {controls: []};
         var infoButton = new Ext.Button({
@@ -1059,8 +1045,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 iconCls: "icon-zoom-out",
                 scope: this
             }),
-            navPreviousAction,
-            navNextAction,
             enable3DButton
         ];
 
