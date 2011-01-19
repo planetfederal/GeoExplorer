@@ -99,7 +99,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     switch3dText: "Switch to 3D Viewer",
     zoomInText: "Zoom In",
     zoomOutText: "Zoom Out",
-    zoomVisibleText: "Zoom to Visible Extent",
     previewText: "Print Preview",
     printText: "Print Map",
     notAllNotPrintableText: "Not All Layers Can Be Printed", 
@@ -159,6 +158,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             plugins: new GeoExt.ZoomSliderTip({
                 template: this.zoomSliderText
             })
+        }];
+
+        config.tools = [{
+            ptype: "gx_zoomtoextent",
+            actionTarget: {target: "paneltbar", index: 14}
         }];
         
         GeoExplorer.superclass.constructor.apply(this, arguments);
@@ -506,6 +510,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         
         this.toolbar = new Ext.Toolbar({
             disabled: true,
+            id: 'paneltbar',
             items: this.createTools()
         });
         this.on("ready", function() {
@@ -1056,28 +1061,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }),
             navPreviousAction,
             navNextAction,
-            new Ext.Button({
-                tooltip: this.zoomVisibleText,
-                iconCls: "icon-zoom-visible",
-                handler: function() {
-                    var extent, layer, extended;
-                    for (var i=0, len=this.mapPanel.map.layers.length; i<len; ++i) {
-                        layer = this.mapPanel.map.layers[i];
-                        if (layer.getVisibility()) {
-                            extended = layer.restrictedExtent || layer.maxExtent;
-                            if (extent) {
-                                extent.extend(extended);
-                            } else if (extended) {
-                                extent = extended.clone();
-                            }
-                        }
-                    }
-                    if (extent) {
-                        this.mapPanel.map.zoomToExtent(extent);
-                    }
-                },
-                scope: this
-            }),
             enable3DButton
         ];
 
