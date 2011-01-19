@@ -49,6 +49,10 @@
             Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
             OpenLayers.DOTS_PER_INCH = 25.4 / 0.28; // OGC "standardized rendering pixel size"
             OpenLayers.ImgPath = "externals/openlayers/img/";
+            // optionally set locale based on query string parameter
+            if (GeoExt.Lang) {
+                GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
+            }
             var app = new GeoExplorer.Composer({
                 proxy: "proxy/?url=",
                 printService: "/geoserver/pdf/",
