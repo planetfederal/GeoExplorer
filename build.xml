@@ -60,8 +60,8 @@
             <fileset dir="app/static/externals/ext"/>
         </copy>
         <!-- copy GeoExt resources -->
-        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/geoext/resources">
-            <fileset dir="app/static/externals/geoext/resources"/>
+        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/GeoExt/resources">
+            <fileset dir="app/static/externals/GeoExt/resources"/>
         </copy>
         <!-- copy OpenLayers resources -->
         <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/openlayers/theme">
