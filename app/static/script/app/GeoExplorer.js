@@ -163,7 +163,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 ptype: "gxp_navigationhistory",
                 actionTarget: {target: "paneltbar", index: 11}
             }, {
-                ptype: "gx_zoomtoextent",
+                ptype: "gxp_zoomtoextent",
                 actionTarget: {target: "paneltbar", index: 13}
             }
         ];
