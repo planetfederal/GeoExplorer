@@ -89,7 +89,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     addLayersText: "Add Layers",
     doneText: "Done",
     zoomLevelText: "Zoom level",
-    panMapText: "Pan Map",
     zoomPreviousText: "Zoom to Previous Extent",
     zoomNextText: "Zoom to Next Extent",
     featureInfoText: "Get Feature Info",
@@ -149,6 +148,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         config.tools = [
             {
+                ptype: "gxp_panmap", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 6}
+            }, {
                 ptype: "gx_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 7}
             }, {
@@ -857,18 +859,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         var toolGroup = this.toggleGroup;
 
-        // create a navigation control
-        var navAction = new GeoExt.Action({
-            tooltip: this.panMapText,
-            iconCls: "icon-pan",
-            enableToggle: true,
-            pressed: true,
-            allowDepress: false,
-            control: new OpenLayers.Control.Navigation({zoomWheelEnabled: false}),
-            map: this.mapPanel.map,
-            toggleGroup: toolGroup
-        });
-
         var enable3DButton = new Ext.Button({
             iconCls: "icon-3D",
             tooltip: this.switch3dText,
@@ -888,7 +878,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     
         var tools = [
             this.printService && this.createPrintButton() || "-",
-            navAction,
             "-",
             enable3DButton
         ];
