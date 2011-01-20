@@ -93,9 +93,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     zoomPreviousText: "Zoom to Previous Extent",
     zoomNextText: "Zoom to Next Extent",
     featureInfoText: "Get Feature Info",
-    measureText: "Measure",
-    lengthText: "Length",
-    areaText: "Area",
     switch3dText: "Switch to 3D Viewer",
     previewText: "Print Preview",
     printText: "Print Map",
@@ -158,8 +155,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             })
         }];
 
+        this.toggleGroup = 'toolGroup';
+
         config.tools = [
             {
+                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 9}
+            }, {
                 ptype: "gxp_zoom",
                 actionTarget: {target: "paneltbar", index: 10}
             }, {
@@ -860,7 +862,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     createTools: function() {
         
 
-        var toolGroup = "toolGroup";
+        var toolGroup = this.toggleGroup;
 
         // create a navigation control
         var navAction = new GeoExt.Action({
@@ -936,77 +938,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.mapPanel.layers.on("add", updateInfo, this);
         this.mapPanel.layers.on("remove", updateInfo, this);
 
-        // create split button for measure controls
-        var activeIndex = 0;
-        var measureSplit = new Ext.SplitButton({
-            iconCls: "icon-measure-length",
-            tooltip: this.measureText,
-            enableToggle: true,
-            toggleGroup: toolGroup, // Ext doesn't respect this, registered with ButtonToggleMgr below
-            allowDepress: false, // Ext doesn't respect this, handler deals with it
-            handler: function(button, event) {
-                // allowDepress should deal with this first condition
-                if(!button.pressed) {
-                    button.toggle();
-                } else {
-                    button.menu.items.itemAt(activeIndex).setChecked(true);
-                }
-            },
-            listeners: {
-                toggle: function(button, pressed) {
-                    // toggleGroup should handle this
-                    if(!pressed) {
-                        button.menu.items.each(function(i) {
-                            i.setChecked(false);
-                        });
-                    }
-                },
-                render: function(button) {
-                    // toggleGroup should handle this
-                    Ext.ButtonToggleMgr.register(button);
-                }
-            },
-            menu: new Ext.menu.Menu({
-                items: [
-                    new Ext.menu.CheckItem(
-                        new GeoExt.Action({
-                            text: this.lengthText,
-                            iconCls: "icon-measure-length",
-                            toggleGroup: toolGroup,
-                            group: toolGroup,
-                            allowDepress: false,
-                            map: this.mapPanel.map,
-                            control: this.createMeasureControl(
-                                OpenLayers.Handler.Path, this.lengthText
-                            )
-                        })
-                    ),
-                    new Ext.menu.CheckItem(
-                        new GeoExt.Action({
-                            text: this.areaText,
-                            iconCls: "icon-measure-area",
-                            toggleGroup: toolGroup,
-                            group: toolGroup,
-                            allowDepress: false,
-                            map: this.mapPanel.map,
-                            control: this.createMeasureControl(
-                                OpenLayers.Handler.Polygon, this.areaText
-                            )
-                        })
-                    )
-                ]
-            })
-        });
-        measureSplit.menu.items.each(function(item, index) {
-            item.on({checkchange: function(item, checked) {
-                measureSplit.toggle(checked);
-                if(checked) {
-                    activeIndex = index;
-                    measureSplit.setIconClass(item.iconCls);
-                }
-            }});
-        });
-        
         var enable3DButton = new Ext.Button({
             iconCls: "icon-3D",
             tooltip: this.switch3dText,
@@ -1028,7 +959,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.printService && this.createPrintButton() || "-",
             navAction,
             infoButton,
-            measureSplit,
             "-",
             enable3DButton
         ];
@@ -1196,127 +1126,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         return printButton;      
-    },
-
-    /** private: method[createMeasureControl]
-     * :param: handlerType: the :class:`OpenLayers.Handler` for the measurement
-     *     operation
-     * :param: title: the string label to display alongside results
-     *
-     * Convenience method for creating a :class:`OpenLayers.Control.Measure` 
-     * control
-     */
-    createMeasureControl: function(handlerType, title) {
-        
-        var styleMap = new OpenLayers.StyleMap({
-            "default": new OpenLayers.Style(null, {
-                rules: [new OpenLayers.Rule({
-                    symbolizer: {
-                        "Point": {
-                            pointRadius: 4,
-                            graphicName: "square",
-                            fillColor: "white",
-                            fillOpacity: 1,
-                            strokeWidth: 1,
-                            strokeOpacity: 1,
-                            strokeColor: "#333333"
-                        },
-                        "Line": {
-                            strokeWidth: 3,
-                            strokeOpacity: 1,
-                            strokeColor: "#666666",
-                            strokeDashstyle: "dash"
-                        },
-                        "Polygon": {
-                            strokeWidth: 2,
-                            strokeOpacity: 1,
-                            strokeColor: "#666666",
-                            fillColor: "white",
-                            fillOpacity: 0.3
-                        }
-                    }
-                })]
-            })
-        });
-
-        var cleanup = function() {
-            if (measureToolTip) {
-                measureToolTip.destroy();
-            }   
-        };
-
-        var makeString = function(metricData) {
-            var metric = metricData.measure;
-            var metricUnit = metricData.units;
-            
-            measureControl.displaySystem = "english";
-            
-            var englishData = metricData.geometry.CLASS_NAME.indexOf("LineString") > -1 ?
-            measureControl.getBestLength(metricData.geometry) :
-            measureControl.getBestArea(metricData.geometry);
-
-            var english = englishData[0];
-            var englishUnit = englishData[1];
-            
-            measureControl.displaySystem = "metric";
-            var dim = metricData.order == 2 ? 
-            '<sup>2</sup>' :
-            '';
-            
-            return metric.toFixed(2) + " " + metricUnit + dim + "<br>" + 
-                english.toFixed(2) + " " + englishUnit + dim;
-        };
-        
-        var measureToolTip; 
-        var measureControl = new OpenLayers.Control.Measure(handlerType, {
-            geodesic: true,
-            persist: true,
-            handlerOptions: {layerOptions: {styleMap: styleMap}},
-            eventListeners: {
-                measurepartial: function(event) {
-                    cleanup();
-                    measureToolTip = new Ext.ToolTip({
-                        html: makeString(event),
-                        title: title,
-                        autoHide: false,
-                        closable: true,
-                        draggable: false,
-                        mouseOffset: [0, 0],
-                        showDelay: 1,
-                        listeners: {hide: cleanup}
-                    });
-                    if(event.measure > 0) {
-                        var px = measureControl.handler.lastUp;
-                        var p0 = this.mapPanel.getPosition();
-                        measureToolTip.targetXY = [p0[0] + px.x, p0[1] + px.y];
-                        measureToolTip.show();
-                    }
-                },
-                measure: function(event) {
-                    cleanup();                    
-                    measureToolTip = new Ext.ToolTip({
-                        target: Ext.getBody(),
-                        html: makeString(event),
-                        title: title,
-                        autoHide: false,
-                        closable: true,
-                        draggable: false,
-                        mouseOffset: [0, 0],
-                        showDelay: 1,
-                        listeners: {
-                            hide: function() {
-                                measureControl.cancel();
-                                cleanup();
-                            }
-                        }
-                    });
-                },
-                deactivate: cleanup,
-                scope: this
-            }
-        });
-
-        return measureControl;
     },
 
     /** private: method[displayPopup]
