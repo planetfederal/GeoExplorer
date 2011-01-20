@@ -134,18 +134,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     capGrid: null,
 
-    /**
-     * private: property[popupCache]
-     * :class:`Object` An object containing references to visible popups so that
-     * we can insert responses from multiple requests.
-     *
-     * ..seealso:: :method:`GeoExplorer.displayPopup()`
-     */
-    popupCache: null,
-    
     constructor: function(config) {
 
-        this.popupCache = {};
         this.mapItems = [{
             xtype: "gx_zoomslider",
             vertical: true,
@@ -159,17 +149,20 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         config.tools = [
             {
+                ptype: "gx_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 7}
+            }, {
                 ptype: "gxp_measure", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 9}
+                actionTarget: {target: "paneltbar", index: 8}
             }, {
                 ptype: "gxp_zoom",
-                actionTarget: {target: "paneltbar", index: 10}
+                actionTarget: {target: "paneltbar", index: 9}
             }, {
                 ptype: "gxp_navigationhistory",
-                actionTarget: {target: "paneltbar", index: 12}
+                actionTarget: {target: "paneltbar", index: 11}
             }, {
                 ptype: "gx_zoomtoextent",
-                actionTarget: {target: "paneltbar", index: 14}
+                actionTarget: {target: "paneltbar", index: 13}
             }
         ];
         
@@ -876,68 +869,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             toggleGroup: toolGroup
         });
 
-        // create a get feature info control
-        var info = {controls: []};
-        var infoButton = new Ext.Button({
-            tooltip: this.featureInfoText,
-            iconCls: "icon-getfeatureinfo",
-            toggleGroup: toolGroup,
-            enableToggle: true,
-            allowDepress: false,
-            toggleHandler: function(button, pressed) {
-                for (var i = 0, len = info.controls.length; i < len; i++){
-                    if(pressed) {
-                        info.controls[i].activate();
-                    } else {
-                        info.controls[i].deactivate();
-                    }
-                }
-            }
-        });
-
-        var updateInfo = function() {
-            var queryableLayers = this.mapPanel.layers.queryBy(function(x){
-                return x.get("queryable");
-            });
-
-            var map = this.mapPanel.map;
-            var control;
-            for (var i = 0, len = info.controls.length; i < len; i++){
-                control = info.controls[i];
-                control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
-                control.destroy();
-            }
-
-            info.controls = [];
-            queryableLayers.each(function(x){
-                var control = new OpenLayers.Control.WMSGetFeatureInfo({
-                    url: x.get("layer").url,
-                    queryVisible: true,
-                    layers: [x.get("layer")],
-                    eventListeners: {
-                        getfeatureinfo: function(evt) {
-                            var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-                            if (match && !match[1].match(/^\s*$/)) {
-                                this.displayPopup(
-                                    evt, x.get("title") || x.get("name"), match[1]
-                                );
-                            }
-                        },
-                        scope: this
-                    }
-                });
-                map.addControl(control);
-                info.controls.push(control);
-                if(infoButton.pressed) {
-                    control.activate();
-                }
-            }, this);
-        };
-
-        this.mapPanel.layers.on("update", updateInfo, this);
-        this.mapPanel.layers.on("add", updateInfo, this);
-        this.mapPanel.layers.on("remove", updateInfo, this);
-
         var enable3DButton = new Ext.Button({
             iconCls: "icon-3D",
             tooltip: this.switch3dText,
@@ -958,7 +889,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var tools = [
             this.printService && this.createPrintButton() || "-",
             navAction,
-            infoButton,
             "-",
             enable3DButton
         ];
@@ -1127,54 +1057,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         return printButton;      
     },
-
-    /** private: method[displayPopup]
-     * :arg evt: the event object from a 
-     *     :class:`OpenLayers.Control.GetFeatureInfo` control
-     * :arg title: a String to use for the title of the results section 
-     *     reporting the info to the user
-     * :arg text: ``String`` Body text.
-     */
-    displayPopup: function(evt, title, text) {
-        var popup;
-        var popupKey = evt.xy.x + "." + evt.xy.y;
-
-        if (!(popupKey in this.popupCache)) {
-            var lonlat = this.mapPanel.map.getLonLatFromPixel(evt.xy);
-            popup = new GeoExt.Popup({
-                title: this.featureInfoText,
-                layout: "accordion",
-                location: lonlat,
-                map: this.mapPanel,
-                width: 250,
-                height: 300,
-                listeners: {
-                    close: (function(key) {
-                        return function(panel){
-                            delete this.popupCache[key];
-                        };
-                    })(popupKey),
-                    scope: this
-                }
-            });
-            popup.show();
-            this.popupCache[popupKey] = popup;
-        } else {
-            popup = this.popupCache[popupKey];
-        }
-
-        // extract just the body content
-        popup.add({
-            title: title,
-            layout: "fit",
-            html: text,
-            autoScroll: true,
-            autoWidth: true,
-            collapsible: true
-        });
-        popup.doLayout();
-    },
-
 
     /** private: method[save]
      *
