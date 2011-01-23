@@ -148,7 +148,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         config.tools = [
             {
-                ptype: "gxp_panmap", toggleGroup: this.toggleGroup,
+                ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 6}
             }, {
                 ptype: "gx_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
