@@ -213,7 +213,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         // TODO: make a proper component out of this
         var mapOverlay = this.createMapOverlay();
         this.mapPanel.add(mapOverlay);
-        
+
         var getRecordFromNode = function(node) {
             if(node && node.layer) {
                 var layer = node.layer;
@@ -364,7 +364,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 var count = this.mapPanel.layers.queryBy(function(r) {
                     return !(r.get("layer") instanceof OpenLayers.Layer.Vector);
                 }).getCount();
-                if(count > 1) {
+                if (count > 1) {
                     removeLayerAction.enable();
                 } else {
                     removeLayerAction.disable();
@@ -382,6 +382,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         };
 
         var layerTree = new Ext.tree.TreePanel({
+            id: 'layerTree',
             root: treeRoot,
             rootVisible: false,
             border: false,
@@ -438,6 +439,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
         
         var layersContainer = new Ext.Panel({
+            id: 'layersContainer',
             autoScroll: true,
             border: false,
             region: 'center',
@@ -453,6 +455,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         var legendContainer = new GeoExt.LegendPanel({
+            id: 'legendContainer',
             title: this.legendText,
             border: false,
             region: 'south',
@@ -465,9 +468,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             defaults: {cls: 'legend-item'}
             // TODO: remove when http://trac.geoext.org/ticket/305 is fixed
             //,items: []
-        });        
+        });
 
         var westPanel = new Ext.Panel({
+            id: 'westPanel',
             border: true,
             layout: "border",
             region: "west",
@@ -533,6 +537,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             },
             items: [
                 this.mapPanel,
+                // This needs commenting out to be able to open with Firebug open
                 googleEarthPanel
             ],
             activeItem: 0
@@ -550,7 +555,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
     },
-    
+
     /** private: method[createMapOverlay]
      * Builds the :class:`Ext.Panel` containing components to be overlaid on the
      * map, setting up the special configuration for its layout and 
@@ -945,9 +950,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var mapInfo = new Ext.Panel({
             title: this.mapInfoText,
             html: '<div class="gx-info-panel">' +
-                  '<h2>'+this.titleText+'</h2><p>' + about.title +
-                  '</p><h2>'+this.descriptionText+'</h2><p>' + about['abstract'] +
-                  '</p> <h2>'+this.contactText+'</h2><p>' + about.contact +'</p></div>',
+                  '<h2>' + this.titleText + '</h2><p>' + about.title +
+                  '</p><h2>' + this.descriptionText + '</h2><p>' + about['abstract'] +
+                  '</p> <h2>' + this.contactText + '</h2><p>' + about.contact +'</p></div>',
             height: 'auto',
             width: 'auto'
         });
