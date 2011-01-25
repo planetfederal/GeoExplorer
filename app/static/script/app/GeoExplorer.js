@@ -143,7 +143,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 6}
             }, {
-                ptype: "gx_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
+                ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 7}
             }, {
                 ptype: "gxp_measure", toggleGroup: this.toggleGroup,
@@ -788,7 +788,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                 }
                             }, this.mapPanel.initialConfig.map),
                             items: [{
-                                xtype: "gx_zoomslider",
+                                xtype: "gxp_zoomslider",
                                 vertical: true,
                                 height: 100,
                                 aggressive: true

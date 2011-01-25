@@ -17,7 +17,7 @@
         <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/ext-all.css">
         <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/xtheme-gray.css">
         <script type="text/javascript" src="externals/ext/adapter/ext/ext-base.js"></script>
-        <script type="text/javascript" src="externals/ext/ext-all.js"></script>
+        <script type="text/javascript" src="externals/ext/ext-all-debug.js"></script>
 
         <!-- OpenLayers resources -->
         <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
@@ -46,6 +46,12 @@
         <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
         <script type="text/javascript" src="script/PrintPreview.js"></script> 
         <script>
+            // backwards compatibility for reading saved maps
+            // these three source plugins were renamed after 2.3.2
+            Ext.preg("gx_wmssource", gxp.plugins.WMSSource);
+            Ext.preg("gx_olsource", gxp.plugins.OLSource);
+            Ext.preg("gx_googlesource", gxp.plugins.GoogleSource);
+            
             // optionally set locale based on query string parameter
             if (GeoExt.Lang) {
                 GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
@@ -66,7 +72,7 @@
                         "in any web page.",
                     contact: "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
                 },
-                defaultSourceType: "gx_wmssource",
+                defaultSourceType: "gxp_wmssource",
                 sources: {
                     local: {
                         url: "/geoserver/ows",
@@ -77,16 +83,16 @@
                         title: "Remote Suite GeoServer"
                     },
                     osm: {
-                        ptype: "gx_osmsource"
+                        ptype: "gxp_osmsource"
                     },
                     google: {
-                        ptype: "gx_googlesource"
+                        ptype: "gxp_googlesource"
                     },
                     bing: {
-                        ptype: "gx_bingsource"
+                        ptype: "gxp_bingsource"
                     },
                     ol: {
-                        ptype: "gx_olsource"
+                        ptype: "gxp_olsource"
                     }
                 },
                 map: {
