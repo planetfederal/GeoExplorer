@@ -115,13 +115,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     alignToGrid: false,
     
-    /**
-     * private: property[capGrid]
-     * :class:`Ext.Window` The window containing the CapabilitiesGrid panel to 
-     * use when the user is adding new layers to the map.
-     */
-    capGrid: null,
-
     constructor: function(config) {
 
         this.mapItems = [{
@@ -137,8 +130,25 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         config.tools = [
             {
+                ptype: "gxp_layertree",
+                outputConfig: {
+                    id: "layertree",
+                    tbar: []
+                },
+                outputTarget: "tree"
+            },
+            {
                 ptype: "gxp_addlayers",
-                actionTarget: {target: "treetbar", index: 0}
+                actionTarget: "layertree.tbar"
+            }, {
+                ptype: "gxp_removelayer",
+                actionTarget: ["layertree.tbar", "layertree.contextMenu"]
+            }, {
+                ptype: "gxp_layerproperties",
+                actionTarget: ["layertree.tbar", "layertree.contextMenu"]
+            }, {
+                ptype: "gxp_zoomtolayerextent",
+                actionTarget: {target: "layertree.contextMenu", index: 0}
             }, {
                 ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 6}
@@ -229,244 +239,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         // TODO: make a proper component out of this
         var mapOverlay = this.createMapOverlay();
         this.mapPanel.add(mapOverlay);
-        
-        var getRecordFromNode = function(node) {
-            if(node && node.layer) {
-                var layer = node.layer;
-                var store = node.layerStore;
-                record = store.getAt(store.findBy(function(r) {
-                    return r.get("layer") === layer;
-                }));
-            }
-            return record;
-        };
-
-        var getSelectedLayerRecord = function() {
-            var node = layerTree.getSelectionModel().getSelectedNode();
-            return getRecordFromNode(node);
-        };
-        
-        var removeLayerAction = new Ext.Action({
-            text: this.removeLayerText,
-            iconCls: "icon-removelayers",
-            disabled: true,
-            tooltip: this.removeLayerText,
-            handler: function() {
-                var record = getSelectedLayerRecord();
-                if(record) {
-                    this.mapPanel.layers.remove(record);
-                    removeLayerAction.disable();
-                }
-            },
-            scope: this
-        });
-
-        var treeRoot = new Ext.tree.TreeNode({
-            text: this.layersText,
-            expanded: true,
-            isTarget: false,
-            allowDrop: false
-        });
-        treeRoot.appendChild(new GeoExt.tree.LayerContainer({
-            text: this.overlaysText,
-            iconCls: "gx-folder",
-            expanded: true,
-            loader: new GeoExt.tree.LayerLoader({
-                store: this.mapPanel.layers,
-                filter: function(record) {
-                    return !record.get("group") &&
-                        record.get("layer").displayInLayerSwitcher == true;
-                },
-                createNode: function(attr) {
-                    var layer = attr.layer;
-                    var store = attr.layerStore;
-                    if (layer && store) {
-                        var record = store.getAt(store.findBy(function(r) {
-                            return r.get("layer") === layer;
-                        }));
-                        if (record && !record.get("queryable")) {
-                            attr.iconCls = "gx-tree-rasterlayer-icon";
-                        }
-                    }
-                    return GeoExt.tree.LayerLoader.prototype.createNode.apply(this, [attr]);
-                }
-            }),
-            singleClickExpand: true,
-            allowDrag: false,
-            listeners: {
-                append: function(tree, node) {
-                    node.expand();
-                }
-            }
-        }));
-        
-        treeRoot.appendChild(new GeoExt.tree.LayerContainer({
-            text: this.baseLayersText,
-            iconCls: "gx-folder",
-            expanded: true,
-            group: "background",
-            loader: new GeoExt.tree.LayerLoader({
-                baseAttrs: {checkedGroup: "background"},
-                store: this.mapPanel.layers,
-                filter: function(record) {
-                    return record.get("group") === "background" &&
-                        record.get("layer").displayInLayerSwitcher == true;
-                },
-                createNode: function(attr) {
-                    var layer = attr.layer;
-                    var store = attr.layerStore;
-                    if (layer && store) {
-                        var record = store.getAt(store.findBy(function(r) {
-                            return r.get("layer") === layer;
-                        }));
-                        if (record) {
-                            if (!record.get("queryable")) {
-                                attr.iconCls = "gx-tree-rasterlayer-icon";
-                            }
-                            if (record.get("fixed")) {
-                                attr.allowDrag = false;
-                            }
-                        }
-                    }
-                    return GeoExt.tree.LayerLoader.prototype.createNode.apply(this, arguments);
-                }
-            }),
-            singleClickExpand: true,
-            allowDrag: false,
-            listeners: {
-                append: function(tree, node) {
-                    node.expand();
-                }
-            }
-        }));
-        
-        this.treeRoot = treeRoot;
-        
-        var layerPropertiesDialog;
-        var showPropertiesAction = new Ext.Action({
-            text: this.layerPropertiesText,
-            iconCls: "icon-properties",
-            disabled: true,
-            tooltip: this.layerPropertiesText,
-            handler: function() {
-                var record = getSelectedLayerRecord();
-                if (record) {
-                    var type = record.get("properties");
-                    if (type) {
-                        if(layerPropertiesDialog) {
-                            layerPropertiesDialog.close();
-                        }
-                        layerPropertiesDialog = new Ext.Window({
-                            title: this.layerPropertiesText + ": " + record.get("title"),
-                            width: 250,
-                            height: 250,
-                            layout: "fit",
-                            items: [{
-                                xtype: type,
-                                layerRecord: record,
-                                defaults: {style: "padding: 10px"}
-                            }]
-                        });
-                        layerPropertiesDialog.show();
-                    }
-                }
-            },
-            scope: this
-        });
-        
-        var updateLayerActions = function(sel, node) {
-            if(node && node.layer) {
-                // allow removal if more than one non-vector layer
-                var count = this.mapPanel.layers.queryBy(function(r) {
-                    return !(r.get("layer") instanceof OpenLayers.Layer.Vector);
-                }).getCount();
-                if(count > 1) {
-                    removeLayerAction.enable();
-                } else {
-                    removeLayerAction.disable();
-                }
-                var record = getRecordFromNode(node);
-                if (record.get("properties")) {
-                    showPropertiesAction.enable();                    
-                } else {
-                    showPropertiesAction.disable();
-                }
-            } else {
-                removeLayerAction.disable();
-                showPropertiesAction.disable();
-            }
-        };
-
-        var layerTree = new Ext.tree.TreePanel({
-            root: treeRoot,
-            rootVisible: false,
-            border: false,
-            enableDD: true,
-            selModel: new Ext.tree.DefaultSelectionModel({
-                listeners: {
-                    beforeselect: updateLayerActions,
-                    scope: this
-                }
-            }),
-            listeners: {
-                contextmenu: function(node, e) {
-                    if(node && node.layer) {
-                        node.select();
-                        var c = node.getOwnerTree().contextMenu;
-                        c.contextNode = node;
-                        c.showAt(e.getXY());
-                    }
-                },
-                beforemovenode: function(tree, node, oldParent, newParent, index) {
-                    // change the group when moving to a new container
-                    if(oldParent !== newParent) {
-                        var store = newParent.loader.store;
-                        var index = store.findBy(function(r) {
-                            return r.getLayer() === node.layer;
-                        });
-                        if (index > -1) {
-                            store.getAt(index).set("group", newParent.attributes.group);
-                        }
-                    }
-                },                
-                scope: this
-            },
-            contextMenu: new Ext.menu.Menu({
-                items: [
-                    {
-                        text: this.zoomToLayerExtentText,
-                        iconCls: "icon-zoom-to",
-                        handler: function() {
-                            var node = layerTree.getSelectionModel().getSelectedNode();
-                            if (node && node.layer) {
-                                var map = this.mapPanel.map;
-                                var layer = node.layer;
-                                var extent = layer.restrictedExtent || layer.maxExtent || map.maxExtent;
-                                map.zoomToExtent(extent, true);
-                            }
-                        },
-                        scope: this
-                    },
-                    removeLayerAction,
-                    showPropertiesAction
-                ]
-            })
-        });
-        
-        var layersContainer = new Ext.Panel({
-            autoScroll: true,
-            border: false,
-            region: 'center',
-            title: this.layersText,
-            items: [layerTree],
-            tbar: {
-                id: 'treetbar',
-                items: [
-                    Ext.apply(new Ext.Button(removeLayerAction), {text: ""}),
-                    Ext.apply(new Ext.Button(showPropertiesAction), {text: ""})
-                ]
-            }
-        });
 
         var legendContainer = new GeoExt.LegendPanel({
             title: this.legendText,
@@ -492,7 +264,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapsible: true,
             collapseMode: "mini",
             items: [
-                layersContainer, legendContainer
+                {region: 'center', id: 'tree', tbar: [], title: this.layersText}, 
+                legendContainer
             ]
         });
         
@@ -522,14 +295,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         googleEarthPanel.on("show", function() {
-            if (layersContainer.rendered) {
+/*            if (layersContainer.rendered) {
                 layersContainer.getTopToolbar().disable();
             }
             layerTree.getSelectionModel().un("beforeselect", updateLayerActions, this);
+*/
         }, this);
 
         googleEarthPanel.on("hide", function() {
-            if (layersContainer.rendered) {
+/*            if (layersContainer.rendered) {
                 layersContainer.getTopToolbar().enable();
             }
             var sel = layerTree.getSelectionModel();
@@ -537,7 +311,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             updateLayerActions.apply(this, [sel, node]);
             sel.on(
                 "beforeselect", updateLayerActions, this
-            );
+            );*/
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({

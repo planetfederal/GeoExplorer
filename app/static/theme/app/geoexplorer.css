@@ -252,7 +252,7 @@ div.map-overlay div.overlay-element {
     background-image: url(img/geosilk/vector.png);
 }
 
-.x-tree-node-leaf  .gx-tree-rasterlayer-icon {
+.x-tree-node-leaf  .gxp-tree-rasterlayer-icon {
     background-image: url(img/geosilk/raster.png);
 }
 
