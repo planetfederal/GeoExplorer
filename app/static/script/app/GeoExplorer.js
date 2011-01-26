@@ -18,8 +18,6 @@
  *     Valid config properties:
  *     map - {Object} Map configuration object.
  *     sources - {Object} An object with properties whose values are WMS endpoint URLs
- *     alignToGrid - {boolean} if true, align tile requests to the grid 
- *         enforced by tile caches such as GeoWebCache or Tilecache
  *
  *     Valid map config properties:
  *         projection - {String} EPSG:xxxx
@@ -76,16 +74,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     mapPanel: null,
 
-    /**
-     * api: config[alignToGrid]
-     * A boolean indicating whether or not to restrict tile request to tiled
-     * mapping service recommendation.
-     *
-     * True => align to grid 
-     * False => unrestrained tile requests
-     */
-    alignToGrid: false,
-    
     constructor: function(config) {
 
         this.mapItems = [{
