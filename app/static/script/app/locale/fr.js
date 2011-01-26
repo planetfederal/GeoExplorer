@@ -66,12 +66,5 @@ GeoExt.Lang.add("fr", {
         widthText: "Largeur",
         exportMapText: "Carte Export",
         embedText: "Votre carte est prête à être publiée sur le web Il suffit de copier le code HTML suivant pour intégrer la carte dans votre site Web:"
-    },
-    "GeoExplorer.NewSourceWindow.prototype": {
-        title: "Ajouter un nouveau service de cartographie Web (WMS) ...",
-        urlText: "URL",
-        cancelText: "Annuler",
-        addServerText: "Ajouter un serveur",
-        contactingServerText: "Contacte Server ..."
     }
 });

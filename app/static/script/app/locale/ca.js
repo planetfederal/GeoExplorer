@@ -66,12 +66,5 @@ GeoExt.Lang.add("ca", {
         widthText: "Amplada",
         exportMapText: "Exporta el Mapa",
         embedText: "Ja podeu incloure el vostre mapa a altres webs! Simplement copieu el següent codi HTML allà on desitgeu incrustar-ho:"
-    },
-    "GeoExplorer.NewSourceWindow.prototype": {
-        title: "Afegeix nou Web Map Service (WMS)...",
-        urlText: "URL",
-        cancelText: "Cancel·la",
-        addServerText: "Afegeix servidor",
-        contactingServerText: "Connectant amb el servidor..."
     }
 });

@@ -66,12 +66,5 @@ GeoExt.Lang.add("es", {
         widthText: "Ancho",
         exportMapText: "Exportar Mapa",
         embedText: "¡Su mapa ya puede publicarse en otras webs! Simplemente copie el siguiente código HTML en el lugar donde desee incrustarlo:"
-    },
-    "GeoExplorer.NewSourceWindow.prototype": {
-        title: "Añadir nuevo Web Map Service (WMS)...",
-        urlText: "URL",
-        cancelText: "Cancelar",
-        addServerText: "Añadir servidor",
-        contactingServerText: "Conectando con servidor..."
     }
 });
