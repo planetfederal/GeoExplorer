@@ -210,8 +210,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             ascending: false,
             map: this.mapPanel.map,
             defaults: {cls: 'legend-item'}
-            // TODO: remove when http://trac.geoext.org/ticket/305 is fixed
-            ,items: []
         });        
 
         var westPanel = new Ext.Panel({
