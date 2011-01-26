@@ -295,23 +295,17 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         googleEarthPanel.on("show", function() {
-/*            if (layersContainer.rendered) {
-                layersContainer.getTopToolbar().disable();
+            var layersContainer = Ext.getCmp('layertree');
+            if (layersContainer) {
+                layersContainer.setDisabled(true);
             }
-            layerTree.getSelectionModel().un("beforeselect", updateLayerActions, this);
-*/
         }, this);
 
         googleEarthPanel.on("hide", function() {
-/*            if (layersContainer.rendered) {
-                layersContainer.getTopToolbar().enable();
+            var layersContainer = Ext.getCmp('layertree');
+            if (layersContainer) {
+                layersContainer.setDisabled(false);
             }
-            var sel = layerTree.getSelectionModel();
-            var node = sel.getSelectedNode();
-            updateLayerActions.apply(this, [sel, node]);
-            sel.on(
-                "beforeselect", updateLayerActions, this
-            );*/
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({
