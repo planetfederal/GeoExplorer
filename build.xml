@@ -67,6 +67,10 @@
         <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/openlayers/theme">
             <fileset dir="app/static/externals/openlayers/theme"/>
         </copy>
+        <!-- copy OpenLayers resources -->
+        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/gxp/src/theme">
+            <fileset dir="app/static/externals/gxp/src/theme"/>
+        </copy>
         <!-- copy PrintPreview resources -->
         <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/PrintPreview/resources">
             <fileset dir="app/static/externals/PrintPreview/resources"/>
