@@ -131,10 +131,6 @@ body {
     margin: 2px;
 }
 
-.legend-item {
-    margin: 0.5em 10px;
-}
-
 div.map-overlay {
     z-index: 1000; 
     position: absolute; 

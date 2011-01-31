@@ -39,7 +39,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     loadConfigErrorDefaultText: "Server Error.",
     xhrTroubleText: "Communication Trouble: Status ",
     layersText: "Layers",
-    legendText: "Legend",
     titleText: "Title",
     zoomLevelText: "Zoom level",
     switch3dText: "Switch to 3D Viewer",
@@ -147,19 +146,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var mapOverlay = this.createMapOverlay();
         this.mapPanel.add(mapOverlay);
 
-        var legendContainer = new GeoExt.LegendPanel({
-            title: this.legendText,
-            border: false,
-            region: 'south',
-            height: 200,
-            collapsible: true,
-            split: true,
-            autoScroll: true,
-            ascending: false,
-            map: this.mapPanel.map,
-            defaults: {cls: 'legend-item'}
-        });        
-
         var westPanel = new Ext.Panel({
             border: true,
             layout: "border",
@@ -170,7 +156,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapseMode: "mini",
             items: [
                 {region: 'center', id: 'tree', tbar: [], title: this.layersText}, 
-                legendContainer
+                {region: 'south', height: 200, id: 'legend'}
             ]
         });
         

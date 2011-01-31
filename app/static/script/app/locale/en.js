@@ -9,7 +9,6 @@ GeoExt.Lang.add("en", {
         loadConfigErrorDefaultText: "Server Error.",
         xhrTroubleText: "Communication Trouble: Status ",
         layersText: "Layers",
-        legendText: "Legend",
         titleText: "Title",
         zoomLevelText: "Zoom level",
         switch3dText: "Switch to 3D Viewer",
