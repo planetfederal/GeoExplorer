@@ -30,14 +30,6 @@ GeoExt.Lang.add("fr", {
     },
     "GeoExplorer.Composer.prototype": {
         publishMapText: "Publier la carte",
-        saveMapText: "Enregistrez la carte",
-        mapSizeText: "Taille de la carte",
-        miniText: "Mini",
-        smallText: "Petit",
-        largeText: "Large",
-        heightText: "Hauteur",
-        widthText: "Largeur",
-        exportMapText: "Carte Export",
-        embedText: "Votre carte est prête à être publiée sur le web Il suffit de copier le code HTML suivant pour intégrer la carte dans votre site Web:"
+        saveMapText: "Enregistrez la carte"
     }
 });

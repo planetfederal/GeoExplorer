@@ -30,14 +30,6 @@ GeoExt.Lang.add("ca", {
     },
     "GeoExplorer.Composer.prototype": {
         publishMapText: "Publica el Mapa",
-        saveMapText: "Desa el Mapa",
-        mapSizeText: "Mida",
-        miniText: "Mínima",
-        smallText: "Petita",
-        largeText: "Gran",
-        heightText: "Alçària",
-        widthText: "Amplada",
-        exportMapText: "Exporta el Mapa",
-        embedText: "Ja podeu incloure el vostre mapa a altres webs! Simplement copieu el següent codi HTML allà on desitgeu incrustar-ho:"
+        saveMapText: "Desa el Mapa"
     }
 });

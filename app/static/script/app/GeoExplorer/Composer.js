@@ -21,14 +21,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // Begin i18n.
     publishMapText: "Publish Map",
     saveMapText: "Save Map",
-    mapSizeText: "Map Size",
-    miniText: "Mini",
-    smallText: "Small",
-    largeText: "Large",
-    heightText: "Height",
-    widthText: "Width",
-    exportMapText: "Export Map",
-    embedText: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
     // End i18n.
 
     constructor: function(config) {

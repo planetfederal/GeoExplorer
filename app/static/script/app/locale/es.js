@@ -30,14 +30,6 @@ GeoExt.Lang.add("es", {
     },
     "GeoExplorer.Composer.prototype": {
         publishMapText: "Publicar Mapa",
-        saveMapText: "Guardar Mapa",
-        mapSizeText: "Tamaño",
-        miniText: "Mínimo",
-        smallText: "Pequeño",
-        largeText: "Grande",
-        heightText: "Alto",
-        widthText: "Ancho",
-        exportMapText: "Exportar Mapa",
-        embedText: "¡Su mapa ya puede publicarse en otras webs! Simplemente copie el siguiente código HTML en el lugar donde desee incrustarlo:"
+        saveMapText: "Guardar Mapa"
     }
 });
