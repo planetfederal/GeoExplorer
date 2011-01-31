@@ -5,7 +5,7 @@ var urls = [
 ];
 
 // debug mode loads unminified scripts
-if (java.lang.System.getProperty("GEOEXPLORER_DEBUG")) {
+if (java.lang.System.getProperty("app.debug")) {
     var FS = require("fs");
     var config = FS.normal(FS.join(module.directory, "..", "buildjs.cfg"));
     urls.push(
