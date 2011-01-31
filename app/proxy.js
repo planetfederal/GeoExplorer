@@ -10,7 +10,7 @@ var app = exports.app = function(env) {
     var request = new Request(env);
     var url = request.queryParams.url;
     if (url) {
-        response = proxyPass(request, url);
+        response = proxyPass(request, url, true);
     } else {
         response = responseForStatus(400, "Request must contain url parameter.");
     }
