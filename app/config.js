@@ -11,7 +11,21 @@ if (java.lang.System.getProperty("app.debug")) {
     urls.push(
         [(/^\/script(\/.*)/), require("./autoloader").App(config)]
     );
+
+    // proxy a remote geoserver on /geoserver by setting proxy.geoserver to remote URL
+    // only recommended for debug mode
+    var geoserver = java.lang.System.getProperty("app.proxy.geoserver");
+    if (geoserver) {
+        if (geoserver.charAt(geoserver.length-1) !== "/") {
+            geoserver = geoserver + "/";
+        }
+        // debug specific proxy
+        urls.push(
+            [(/^\/geoserver\/(.*)/), require("./proxy").pass({url: geoserver, preserveHost: true})]
+        );
+    }
 }
+
 
 exports.urls = urls;
 

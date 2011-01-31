@@ -6,6 +6,7 @@
     </description>
 
     <property name="build" location="build"/>
+    <property name="app.proxy.geoserver" value=""/>
 
     <target name="init">
 
@@ -80,6 +81,7 @@
 
     <target name="debug">
         <java jar="externals/ringojs/run.jar" fork="true">
+            <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg path="app/main.js"/>
         </java>
