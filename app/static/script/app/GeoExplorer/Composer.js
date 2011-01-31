@@ -119,103 +119,16 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      */
     showEmbedWindow: function() {
 
-        // TODO: Get rid of viewer.html
-        var obj = OpenLayers.Util.createUrlObject("viewer.html");
-        var port = (obj.port === "80") ? "" : ":" + obj.port;
-        var url = obj.protocol + "//" + obj.host + port + obj.pathname + "#maps/" + this.id;
-
-        var snippetArea = new Ext.form.TextArea({
-            height: 70,
-            selectOnFocus: true,
-            readOnly: true
-        });
- 
-        var updateSnippet = function() {
-            snippetArea.setValue(
-                '<iframe height="' + heightField.getValue() +
-                ' " width="' + widthField.getValue() + '" src="' + url + '"> </iframe>'
-            );
-        };
-
-        var heightField = new Ext.form.NumberField({
-            width: 50,
-            value: 400,
-            listeners: {change: updateSnippet}
-        });
-        var widthField = new Ext.form.NumberField({
-            width: 50,
-            value: 600,
-            listeners: {change: updateSnippet}
-        });        
-
-        var adjustments = new Ext.Container({
-            layout: "column",
-            defaults: {
-                border: false,
-                xtype: "box"
-            },
-            items: [
-                {autoEl: {cls: "gx-field-label", html: this.mapSizeText}},
-                new Ext.form.ComboBox({
-                    editable: false,
-                    width: 70,
-                    store: new Ext.data.SimpleStore({
-                        fields: ["name", "height", "width"],
-                        data: [
-                            [this.miniText, 100, 100],
-                            [this.smallText, 200, 300],
-                            [this.largeText, 400, 600]
-                        ]
-                    }),
-                    triggerAction: 'all',
-                    displayField: 'name',
-                    value: this.largeText,
-                    mode: 'local',
-                    listeners: {
-                        select: function(combo, record, index) {
-                            widthField.setValue(record.get("width"));
-                            heightField.setValue(record.get("height"));
-                            updateSnippet();
-                        }
-                    }
-                }),
-                {autoEl: {cls: "gx-field-label", html: this.heightText}},
-                heightField,
-                {autoEl: {cls: "gx-field-label", html: this.widthText}},
-                widthField
-            ]
-        });
-
-        var win = new Ext.Window({
-            height: 205,
-            width: 350,
-            modal: true,
-            title: this.exportMapText,
+       new Ext.Window({
+            title: "Export Map",
             layout: "fit",
+            width: 380,
+            autoHeight: true,
             items: [{
-                xtype: "container",
-                border: false,
-                defaults: {
-                    border: false,
-                    cls: "gx-export-section",
-                    xtype: "container",
-                    layout: "fit"
-                },
-                items: [{
-                    xtype: "box",
-                    autoEl: {
-                        tag: "p",
-                        html: this.embedText
-                    }
-                }, {
-                    items: [snippetArea]
-                }, {
-                    items: [adjustments]
-                }]
-            }],
-            listeners: {afterrender: updateSnippet}
-        });
-        win.show();
+                xtype: "gxp_embedmapdialog",
+                url: "viewer.html" + "#maps/" + this.id
+            }]
+        }).show();
     }
 
 });
