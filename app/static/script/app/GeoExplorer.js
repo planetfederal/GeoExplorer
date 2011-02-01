@@ -46,7 +46,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     printText: "Print Map",
     notAllNotPrintableText: "Not All Layers Can Be Printed", 
     nonePrintableText: "None of your current map layers can be printed",
-    someNotPrintableText: "Some map layers cannot be printed: ",
     saveErrorText: "Trouble saving: ",
     bookmarkText: "Bookmark URL",
     permakinkText: 'Permalink',
@@ -272,7 +271,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 this.mapPanel.map.zoomTo(record.data.level);
             },
             scope: this
-        })
+        });
 
         var zoomSelectorWrapper = new Ext.Panel({
             items: [zoomSelector],
@@ -361,6 +360,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         var printProvider = new GeoExt.data.PrintProvider({
             url: this.printService,
+            autoLoad: false,
             listeners: {
                 beforeprint: function() {
                     // The print module does not like array params.
@@ -372,18 +372,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                 params[p] = params[p].join(",");
                             }
                         }
-                    })
+                    });
                 },
                 loadcapabilities: function() {
-                    // TODO: http://trac.geoext.org/ticket/304
-                    // so we don't have to race to define the button
                     printButton.initialConfig.disabled = false;
-                    printButton.disabled = false;
                     printButton.enable();
                 },
                 print: function() {
                     try {
-                        printWindow.close();                        
+                        printWindow.close();
                     } catch (err) {
                         // TODO: improve destroy
                     }
@@ -391,9 +388,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }
         });
         
-        var unsupportedLayers;
         var printWindow;
-        var someSupportedLayers;
         
         function destroyPrintComponents() {
             if (printWindow) {
@@ -408,10 +403,27 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 printWindow = null;
             }
         }
+        
+        var mapPanel = this.mapPanel;
+        function getSupportedLayers() {
+            var supported = [];
+            mapPanel.layers.each(function(record) {
+                var layer = record.getLayer();
+                if (isSupported(layer)) {
+                    supported.push(layer);
+                }
+            });
+            return supported;
+        }
+        
+        function isSupported(layer) {
+            return (
+                layer instanceof OpenLayers.Layer.WMS ||
+                layer instanceof OpenLayers.Layer.OSM
+            );
+        }
 
         function createPrintWindow() {
-            someSupportedLayers = false;
-            unsupportedLayers = [];
             printWindow = new Ext.Window({
                 title: this.previewText,
                 modal: true,
@@ -433,21 +445,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                                 ],
                                 eventListeners: {
                                     preaddlayer: function(evt) {
-                                        if (!(evt.layer instanceof OpenLayers.Layer.WMS) && !(evt.layer instanceof OpenLayers.Layer.OSM)) {
-                                            // special treatment for "None" layer
-                                            if (evt.layer.CLASS_NAME !== "OpenLayers.Layer") {
-                                                unsupportedLayers.push(evt.layer.name);
-                                            }
-                                            return false;
-                                        } else {
-                                            someSupportedLayers = true;
-                                        }
-                                    },
-                                    scope: this
+                                        return isSupported(evt.layer);
+                                    }
                                 }
                             }, this.mapPanel.initialConfig.map),
                             items: [{
-                                xtype: "gxp_zoomslider",
+                                xtype: "gx_zoomslider",
                                 vertical: true,
                                 height: 100,
                                 aggressive: true
@@ -488,28 +491,25 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             iconCls: "icon-print",
             disabled: true,
             handler: function() {
-                createPrintWindow.call(this);
-                if (!someSupportedLayers) {
+                var supported = getSupportedLayers();
+                if (supported.length > 0) {
+                    createPrintWindow.call(this);
+                    showPrintWindow.call(this);
+                } else {
+                    // no layers supported
                     Ext.Msg.alert(
-                        this.notAllPrintableText, 
+                        this.notAllNotPrintableText,
                         this.nonePrintableText
                     );
-                    destroyPrintComponents();
-                } else {
-                    if (unsupportedLayers.length) {
-                        Ext.Msg.alert(
-                            this.notAllPrintableText, 
-                            this.someNotPrintableText + "<ul><li>" + unsupportedLayers.join("</li><li>") + "</li></ul>",
-                            showPrintWindow,
-                            this
-                        );                    
-                    } else {
-                        showPrintWindow.call(this);
-                    }                    
                 }
-
             },
-            scope: this
+            scope: this,
+            listeners: {
+                render: function() {
+                    // wait to load until render so we can enable on success
+                    printProvider.loadCapabilities();
+                }
+            }
         });
 
         return printButton;      
@@ -527,7 +527,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             url = "maps/" + this.id;
         } else {
             method = "POST";
-            url = "maps"
+            url = "maps";
         }
         OpenLayers.Request.issue({
             method: method,

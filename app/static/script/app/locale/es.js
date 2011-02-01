@@ -16,7 +16,6 @@ GeoExt.Lang.add("es", {
         printText: "Imprimir",
         notAllNotPrintableText: "No se pueden imprimir todas las capas", 
         nonePrintableText: "No se puede imprimir ninguna de las capas del mapa",
-        someNotPrintableText: "No se puede imprimir alguna de las capas del mapa: ",
         saveErrorText: "Problemas guardando: ",
         bookmarkText: "URL del marcador",
         permakinkText: "Enlace permanente",

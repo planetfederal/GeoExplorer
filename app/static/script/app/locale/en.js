@@ -16,7 +16,6 @@ GeoExt.Lang.add("en", {
         printText: "Print Map",
         notAllNotPrintableText: "Not All Layers Can Be Printed", 
         nonePrintableText: "None of your current map layers can be printed",
-        someNotPrintableText: "Some map layers cannot be printed: ",
         saveErrorText: "Trouble saving: ",
         bookmarkText: "Bookmark URL",
         permakinkText: 'Permalink',

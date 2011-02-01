@@ -16,7 +16,6 @@ GeoExt.Lang.add("fr", {
         printText: "Imprimer carte",
         notAllNotPrintableText: "Non Tous les couches peuvent être imprimés",
         nonePrintableText: "Aucune de vos couches de carte peut être imprimée",
-        someNotPrintableText: "Certaines couches de la carte ne peut pas être imprimé: ",
         saveErrorText: "Sauver Trouble:",
         bookmarkText: "Mettre en favori URL",
         permakinkText: "Permalink",

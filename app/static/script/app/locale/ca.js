@@ -16,7 +16,6 @@ GeoExt.Lang.add("ca", {
         printText: "Imprimeix",
         notAllNotPrintableText: "No es poden imprimir totes les capes", 
         nonePrintableText: "No es pot imprimir cap de les capes del mapa",
-        someNotPrintableText: "No es pot imprimir alguna de les capes del mapa: ",
         saveErrorText: "Problemes desant: ",
         bookmarkText: "URL del marcador",
         permakinkText: "Enllaç permanent",
