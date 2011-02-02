@@ -124,10 +124,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      */
     showEmbedWindow: function() {
        var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, 
-           autoHeight: true, autoScroll: true,
+           autoScroll: true,
            root: {
                nodeType: 'async', 
-               text: "",
                expanded: true, 
                children: this.viewerTools
            }, 
@@ -151,7 +150,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
            id:'geobuilder-wizard-panel',
            layout:'card',
            activeItem: 0,
-           bodyStyle: 'padding:15px',
            defaults: {border:false, hideMode:'offsets'},
            bbar: [{
                id: 'preview',
