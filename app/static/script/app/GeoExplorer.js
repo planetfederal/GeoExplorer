@@ -103,6 +103,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 leaf: true, text: gxp.plugins.ZoomToExtent.prototype.tooltip, checked: true, iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
                 ptype: "gxp_zoomtoextent",
                 actionTarget: {target: "paneltbar", index: 9}
+            }, {
+                leaf: true, text: gxp.plugins.Legend.prototype.tooltip, checked: true, iconCls: "gxp-icon-legend",
+                ptype: "gxp_legend",
+                actionTarget: {target: "paneltbar", index: 10}
             }
         ]; 
 
