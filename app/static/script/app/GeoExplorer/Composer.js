@@ -152,7 +152,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
            layout:'card',
            activeItem: 0,
            bodyStyle: 'padding:15px',
-           defaults: {border:false},
+           defaults: {border:false, hideMode:'offsets'},
            bbar: [{
                id: 'preview',
                text: this.previewText,
