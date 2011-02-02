@@ -21,6 +21,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // Begin i18n.
     publishMapText: "Publish Map",
     saveMapText: "Save Map",
+    exportMapText: "Export Map",
+    toolsTitle: "Choose tools to include in the toolbar:",
+    saveButtonText: "Apply",
     // End i18n.
 
     constructor: function(config) {
@@ -113,13 +116,20 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      */
     showEmbedWindow: function() {
 
+        var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, autoHeight: true, autoScroll: true,
+           root: {nodeType: 'async', text: "foo", expanded: true, children: this.viewerTools}, rootVisible: false,
+           bbar: [{text: this.saveButtonText, handler: function() {
+               this.save();
+            }, scope: this}],
+       });
+
        new Ext.Window({
-            title: "Export Map",
+            title: this.exportMapText,
             layout: "fit",
             width: 380,
-            autoHeight: true,
-            items: [{
+            autoHeight: true, items: [{
                 xtype: "gxp_embedmapdialog",
+                toolsArea: toolsArea,
                 url: "viewer.html" + "#maps/" + this.id
             }]
         }).show();
