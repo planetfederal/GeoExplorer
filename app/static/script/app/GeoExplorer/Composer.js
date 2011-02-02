@@ -131,7 +131,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                expanded: true, 
                children: this.viewerTools
            }, 
-           rootVisible: false
+           rootVisible: false,
+           id: 'geobuilder-0'
        });
 
        var previousNext = function(incr){
@@ -171,17 +172,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                handler: previousNext.createDelegate(this, [1]),
                scope: this
            }],
-           items: [{
-               id: 'geobuilder-0',
-               items: [toolsArea]
-           },{
+           items: [toolsArea, {
                id: 'geobuilder-1',
-               items: [{xtype: "gxp_embedmapdialog", url: "viewer.html" + "#maps/" + this.id}]
+               xtype: "gxp_embedmapdialog", 
+               url: "viewer.html" + "#maps/" + this.id
            }]
        };
 
        new Ext.Window({
-            width: 500, height: 400,
+            width: 500, height: 300,
             title: this.exportMapText,
             items: [wizard]
        }).show();
