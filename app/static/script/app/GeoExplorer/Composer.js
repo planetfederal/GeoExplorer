@@ -23,7 +23,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     saveMapText: "Save Map",
     exportMapText: "Export Map",
     toolsTitle: "Choose tools to include in the toolbar:",
-    saveButtonText: "Apply",
+    previewText: "Preview",
+    backText: "Back",
+    nextText: "Next",
     // End i18n.
 
     constructor: function(config) {
@@ -112,27 +114,77 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         return tools;
     },
 
+    /** private: method[openPreview]
+     */
+    openPreview: function() {
+        window.open("viewer.html" + "#maps/" + this.id);
+    },
+
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {
-
-        var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, autoHeight: true, autoScroll: true,
-           root: {nodeType: 'async', text: "foo", expanded: true, children: this.viewerTools}, rootVisible: false,
-           bbar: [{text: this.saveButtonText, handler: function() {
-               this.save();
-            }, scope: this}],
+       var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, 
+           autoHeight: true, autoScroll: true,
+           root: {
+               nodeType: 'async', 
+               text: "",
+               expanded: true, 
+               children: this.viewerTools
+           }, 
+           rootVisible: false
        });
 
+       var previousNext = function(incr){
+           var l = Ext.getCmp('geobuilder-wizard-panel').getLayout();
+           var i = l.activeItem.id.split('geobuilder-')[1];
+           var next = parseInt(i, 10) + incr;
+           l.setActiveItem(next);
+           Ext.getCmp('wizard-prev').setDisabled(next==0);
+           Ext.getCmp('wizard-next').setDisabled(next==1);
+           if (incr == 1) {
+               this.save();
+           }
+       };
+
+       var wizard = {
+           id:'geobuilder-wizard-panel',
+           layout:'card',
+           activeItem: 0,
+           bodyStyle: 'padding:15px',
+           defaults: {border:false},
+           bbar: [{
+               id: 'preview',
+               text: this.previewText,
+               handler: function() {
+                   this.save(this.openPreview);
+               },
+               scope: this
+           }, '->', {
+               id: 'wizard-prev',
+               text: this.backText,
+               handler: previousNext.createDelegate(this, [-1]),
+               scope: this,
+               disabled: true
+           },{
+               id: 'wizard-next',
+               text: this.nextText,
+               handler: previousNext.createDelegate(this, [1]),
+               scope: this
+           }],
+           items: [{
+               id: 'geobuilder-0',
+               items: [toolsArea]
+           },{
+               id: 'geobuilder-1',
+               items: [{xtype: "gxp_embedmapdialog", url: "viewer.html" + "#maps/" + this.id}]
+           }]
+       };
+
        new Ext.Window({
+            width: 500, height: 400,
             title: this.exportMapText,
-            layout: "fit",
-            width: 380,
-            autoHeight: true, items: [{
-                xtype: "gxp_embedmapdialog",
-                toolsArea: toolsArea,
-                url: "viewer.html" + "#maps/" + this.id
-            }]
-        }).show();
+            items: [wizard]
+       }).show();
     }
 
 });
