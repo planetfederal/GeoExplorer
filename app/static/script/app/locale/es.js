@@ -28,6 +28,7 @@ GeoExt.Lang.add("es", {
     },
     "GeoExplorer.Composer.prototype": {
         publishMapText: "Publicar Mapa",
+        exportMapText: "Exportar Mapa",
         saveMapText: "Guardar Mapa"
     }
 });

@@ -75,6 +75,41 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             })
         }];
 
+        // both the Composer and the Viewer need to know about the viewerTools
+        // First row in each object is needed to correctly render a tool in the treeview
+        // of the embed map dialog. TODO: make this more flexible so this is not needed.
+        config.viewerTools = [
+            {
+                leaf: true, text: gxp.plugins.Navigation.prototype.tooltip, checked: true, iconCls: "gxp-icon-pan",
+                ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 2}
+            }, {
+                leaf: true, text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, checked: true, iconCls: "gxp-icon-getfeatureinfo",
+                ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 3}
+            }, {
+                leaf: true, text: gxp.plugins.Measure.prototype.measureTooltip, checked: true, iconCls: "gxp-icon-measure-length",
+                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 4}
+            }, {
+                leaf: true, text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, checked: true, iconCls: "gxp-icon-zoom-in",
+                ptype: "gxp_zoom",
+                actionTarget: {target: "paneltbar", index: 5}
+            }, {
+                leaf: true, text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, checked: true, iconCls: "gxp-icon-zoom-previous",
+                ptype: "gxp_navigationhistory",
+                actionTarget: {target: "paneltbar", index: 7}
+            }, {
+                leaf: true, text: gxp.plugins.ZoomToExtent.prototype.tooltip, checked: true, iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
+                ptype: "gxp_zoomtoextent",
+                actionTarget: {target: "paneltbar", index: 9}
+            }, {
+                leaf: true, text: gxp.plugins.Legend.prototype.tooltip, checked: true, iconCls: "gxp-icon-legend",
+                ptype: "gxp_legend",
+                actionTarget: {target: "paneltbar", index: 10}
+            }
+        ]; 
+
         GeoExplorer.superclass.constructor.apply(this, arguments);
     }, 
 
