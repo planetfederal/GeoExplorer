@@ -4,11 +4,10 @@
  * @requires GeoExplorer.js
  */
 
-/**
- * api: (define)
- * module = GeoExplorer
- * class = GeoExplorer.Composer(config)
- * extends = GeoExplorer
+/** api: (define)
+ *  module = GeoExplorer
+ *  class = GeoExplorer.Composer(config)
+ *  extends = GeoExplorer
  */
 
 /** api: constructor
