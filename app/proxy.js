@@ -46,11 +46,19 @@ function proxyPass(request, url, preserveHost) {
             data: request.contentLength && request.input,
             async: true,
             complete: function() {
-                response.resolve({
-                    status: exchange.status,
-                    headers: exchange.headers,
-                    body: new MemoryStream(exchange.contentBytes)
-                });
+                if (exchange) {
+                    response.resolve({
+                        status: exchange.status,
+                        headers: exchange.headers,
+                        body: new MemoryStream(exchange.contentBytes)
+                    });
+                } else {
+                    response.resolve({
+                        status: 408,
+                        headers: {"Content-Type": "text/plain"},
+                        body: ["Request Timeout"]
+                    });
+                }
             }
         });
     }
