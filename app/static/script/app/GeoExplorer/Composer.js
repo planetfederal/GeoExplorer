@@ -42,7 +42,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 outputTarget: 'legend'
             }, {
                 ptype: "gxp_addlayers",
-                actionTarget: "layertree.tbar"
+                actionTarget: "layertree.tbar",
+                upload: true
             }, {
                 ptype: "gxp_removelayer",
                 actionTarget: ["layertree.tbar", "layertree.contextMenu"]
