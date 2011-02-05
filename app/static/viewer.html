@@ -48,7 +48,6 @@
             var app = new GeoExplorer.Viewer({
                 proxy: "proxy/?url=",
                 printService: "/geoserver/pdf/",
-                alignToGrid: true,
                 about: {
                     title: "GeoExplorer Demo Map",
                     "abstract": "This is a demonstration of GeoExplorer, " +
@@ -56,7 +55,7 @@
                         "based maps.",
                     contact: "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
                 },
-                defaultSourceType: "gx_wmssource",
+                defaultSourceType: "gxp_wmscsource",
                 sources: {
                     suite: {
                         url: "http://v2.suite.opengeo.org/geoserver/ows"

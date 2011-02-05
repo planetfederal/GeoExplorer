@@ -4,11 +4,10 @@
  * @requires GeoExplorer.js
  */
 
-/**
- * api: (define)
- * module = GeoExplorer
- * class = GeoExplorer.Composer(config)
- * extends = GeoExplorer
+/** api: (define)
+ *  module = GeoExplorer
+ *  class = GeoExplorer.Composer(config)
+ *  extends = GeoExplorer
  */
 
 /** api: constructor
@@ -21,15 +20,73 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // Begin i18n.
     publishMapText: "Publish Map",
     saveMapText: "Save Map",
-    mapSizeText: "Map Size",
-    miniText: "Mini",
-    smallText: "Small",
-    largeText: "Large",
-    heightText: "Height",
-    widthText: "Width",
     exportMapText: "Export Map",
-    embedText: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
+    toolsTitle: "Choose tools to include in the toolbar:",
+    previewText: "Preview",
+    backText: "Back",
+    nextText: "Next",
     // End i18n.
+
+    constructor: function(config) {
+        
+        config.tools = [
+            {
+                ptype: "gxp_layertree",
+                outputConfig: {
+                    id: "layertree",
+                    tbar: []
+                },
+                outputTarget: "tree"
+            }, {
+                ptype: "gxp_legend",
+                outputTarget: 'legend'
+            }, {
+                ptype: "gxp_addlayers",
+                actionTarget: "layertree.tbar",
+                upload: true
+            }, {
+                ptype: "gxp_removelayer",
+                actionTarget: ["layertree.tbar", "layertree.contextMenu"]
+            }, {
+                ptype: "gxp_layerproperties",
+                actionTarget: ["layertree.tbar", "layertree.contextMenu"]
+            }, {
+                ptype: "gxp_zoomtolayerextent",
+                actionTarget: {target: "layertree.contextMenu", index: 0}
+            }, {
+                ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 6}
+            }, {
+                ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 7}
+            }, {
+                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 8}
+            }, {
+                ptype: "gxp_featuremanager",
+                id: "featuremanager",
+                maxFeatures: 20
+            }, {
+                ptype: "gxp_featureeditor",
+                featureManager: "featuremanager",
+                autoLoadFeatures: true,
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 9}
+            }, {
+                ptype: "gxp_zoom",
+                actionTarget: {target: "paneltbar", index: 11}
+            }, {
+                ptype: "gxp_navigationhistory",
+                actionTarget: {target: "paneltbar", index: 13}
+            }, {
+                ptype: "gxp_zoomtoextent",
+                actionTarget: {target: "paneltbar", index: 15}
+            }
+        ];
+        
+        GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
+    }, 
+    
 
     /**
      * api: method[createTools]
@@ -67,107 +124,74 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         return tools;
     },
 
+    /** private: method[openPreview]
+     */
+    openPreview: function() {
+        window.open("viewer.html" + "#maps/" + this.id);
+    },
+
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {
+       var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, 
+           autoScroll: true,
+           root: {
+               nodeType: 'async', 
+               expanded: true, 
+               children: this.viewerTools
+           }, 
+           rootVisible: false,
+           id: 'geobuilder-0'
+       });
 
-        // TODO: Get rid of viewer.html
-        var obj = OpenLayers.Util.createUrlObject("viewer.html");
-        var port = (obj.port === "80") ? "" : ":" + obj.port;
-        var url = obj.protocol + "//" + obj.host + port + obj.pathname + "#maps/" + this.id;
+       var previousNext = function(incr){
+           var l = Ext.getCmp('geobuilder-wizard-panel').getLayout();
+           var i = l.activeItem.id.split('geobuilder-')[1];
+           var next = parseInt(i, 10) + incr;
+           l.setActiveItem(next);
+           Ext.getCmp('wizard-prev').setDisabled(next==0);
+           Ext.getCmp('wizard-next').setDisabled(next==1);
+           if (incr == 1) {
+               this.save();
+           }
+       };
 
-        var snippetArea = new Ext.form.TextArea({
-            height: 70,
-            selectOnFocus: true,
-            readOnly: true
-        });
- 
-        var updateSnippet = function() {
-            snippetArea.setValue(
-                '<iframe height="' + heightField.getValue() +
-                ' " width="' + widthField.getValue() + '" src="' + url + '"> </iframe>'
-            );
-        };
+       var wizard = {
+           id:'geobuilder-wizard-panel',
+           layout:'card',
+           activeItem: 0,
+           defaults: {border:false, hideMode:'offsets'},
+           bbar: [{
+               id: 'preview',
+               text: this.previewText,
+               handler: function() {
+                   this.save(this.openPreview);
+               },
+               scope: this
+           }, '->', {
+               id: 'wizard-prev',
+               text: this.backText,
+               handler: previousNext.createDelegate(this, [-1]),
+               scope: this,
+               disabled: true
+           },{
+               id: 'wizard-next',
+               text: this.nextText,
+               handler: previousNext.createDelegate(this, [1]),
+               scope: this
+           }],
+           items: [toolsArea, {
+               id: 'geobuilder-1',
+               xtype: "gxp_embedmapdialog", 
+               url: "viewer.html" + "#maps/" + this.id
+           }]
+       };
 
-        var heightField = new Ext.form.NumberField({
-            width: 50,
-            value: 400,
-            listeners: {change: updateSnippet}
-        });
-        var widthField = new Ext.form.NumberField({
-            width: 50,
-            value: 600,
-            listeners: {change: updateSnippet}
-        });        
-
-        var adjustments = new Ext.Container({
-            layout: "column",
-            defaults: {
-                border: false,
-                xtype: "box"
-            },
-            items: [
-                {autoEl: {cls: "gx-field-label", html: this.mapSizeText}},
-                new Ext.form.ComboBox({
-                    editable: false,
-                    width: 70,
-                    store: new Ext.data.SimpleStore({
-                        fields: ["name", "height", "width"],
-                        data: [
-                            [this.miniText, 100, 100],
-                            [this.smallText, 200, 300],
-                            [this.largeText, 400, 600]
-                        ]
-                    }),
-                    triggerAction: 'all',
-                    displayField: 'name',
-                    value: this.largeText,
-                    mode: 'local',
-                    listeners: {
-                        select: function(combo, record, index) {
-                            widthField.setValue(record.get("width"));
-                            heightField.setValue(record.get("height"));
-                            updateSnippet();
-                        }
-                    }
-                }),
-                {autoEl: {cls: "gx-field-label", html: this.heightText}},
-                heightField,
-                {autoEl: {cls: "gx-field-label", html: this.widthText}},
-                widthField
-            ]
-        });
-
-        var win = new Ext.Window({
-            height: 205,
-            width: 350,
-            modal: true,
+       new Ext.Window({
+            width: 500, height: 300,
             title: this.exportMapText,
-            layout: "fit",
-            items: [{
-                xtype: "container",
-                border: false,
-                defaults: {
-                    border: false,
-                    cls: "gx-export-section",
-                    xtype: "container",
-                    layout: "fit"
-                },
-                items: [{
-                    xtype: "box",
-                    autoEl: {
-                        tag: "p",
-                        html: this.embedText
-                    }
-                }, {
-                    items: [snippetArea]
-                }, {
-                    items: [adjustments]
-                }]
-            }],
-            listeners: {afterrender: updateSnippet}
-        });
-        win.show();
+            items: [wizard]
+       }).show();
     }
 
 });

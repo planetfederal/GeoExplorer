@@ -18,6 +18,19 @@ Ext.namespace("GeoExplorer");
  */
 GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
     
+    applyConfig: function(config) {
+        var allTools = config.viewerTools || this.viewerTools;
+        var tools = [];
+        for (var i=0, len=allTools.length; i<len; i++) {
+            var tool = allTools[i];
+            if (tool.checked === true) {
+                tools.push({ptype: tool.ptype, toggleGroup: tool.toggleGroup, actionTarget: tool.actionTarget});
+            }
+        }
+        config.tools = tools;
+        GeoExplorer.Viewer.superclass.applyConfig.call(this, config);
+    },
+
     /** private: method[initPortal]
      * Create the various parts that compose the layout.
      */
@@ -29,6 +42,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 
         this.toolbar = new Ext.Toolbar({
             disabled: true,
+            id: "paneltbar",
             items: this.createTools()
         });
         this.on("ready", function() {this.toolbar.enable();}, this);

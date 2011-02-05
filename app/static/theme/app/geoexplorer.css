@@ -131,10 +131,6 @@ body {
     margin: 2px;
 }
 
-.legend-item {
-    margin: 0.5em 10px;
-}
-
 div.map-overlay {
     z-index: 1000; 
     position: absolute; 
@@ -252,7 +248,7 @@ div.map-overlay div.overlay-element {
     background-image: url(img/geosilk/vector.png);
 }
 
-.x-tree-node-leaf  .gx-tree-rasterlayer-icon {
+.x-tree-node-leaf  .gxp-tree-rasterlayer-icon {
     background-image: url(img/geosilk/raster.png);
 }
 

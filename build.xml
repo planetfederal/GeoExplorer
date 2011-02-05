@@ -6,6 +6,8 @@
     </description>
 
     <property name="build" location="build"/>
+    <property name="app.proxy.geoserver" value=""/>
+    <property name="app.port" value="8080"/>
 
     <target name="init">
 
@@ -67,6 +69,10 @@
         <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/openlayers/theme">
             <fileset dir="app/static/externals/openlayers/theme"/>
         </copy>
+        <!-- copy gxp resources -->
+        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/gxp/src/theme">
+            <fileset dir="app/static/externals/gxp/src/theme"/>
+        </copy>
         <!-- copy PrintPreview resources -->
         <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/PrintPreview/resources">
             <fileset dir="app/static/externals/PrintPreview/resources"/>
@@ -76,8 +82,10 @@
 
     <target name="debug">
         <java jar="externals/ringojs/run.jar" fork="true">
+            <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg path="app/main.js"/>
+            <arg line="-p ${app.port}"/>
         </java>
     </target>
 
