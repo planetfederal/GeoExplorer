@@ -60,9 +60,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 7}
             }, {
-                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 8}
-            }, {
                 ptype: "gxp_featuremanager",
                 id: "featuremanager",
                 maxFeatures: 20
@@ -71,7 +68,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 featureManager: "featuremanager",
                 autoLoadFeatures: true,
                 toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 9}
+                actionTarget: {target: "paneltbar", index: 8}
+            }, {
+                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 10}
             }, {
                 ptype: "gxp_zoom",
                 actionTarget: {target: "paneltbar", index: 11}

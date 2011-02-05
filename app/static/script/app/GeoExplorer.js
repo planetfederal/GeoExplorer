@@ -181,16 +181,17 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.mapPanel.add(mapOverlay);
 
         var westPanel = new Ext.Panel({
-            border: true,
+            border: false,
             layout: "border",
             region: "west",
             width: 250,
             split: true,
             collapsible: true,
             collapseMode: "mini",
+            header: false,
             items: [
-                {region: 'center', id: 'tree', tbar: [], title: this.layersText}, 
-                {region: 'south', height: 200, id: 'legend'}
+                {region: 'center', border: false, id: 'tree', tbar: [], title: this.layersText}, 
+                {region: 'south', border: false, height: 200, id: 'legend'}
             ]
         });
         
