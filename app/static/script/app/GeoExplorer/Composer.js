@@ -80,6 +80,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_zoomtoextent",
                 actionTarget: {target: "paneltbar", index: 15}
+            }, {
+                ptype: "gxp_print",
+                printService: config.printService,
+                actionTarget: {target: "paneltbar", index: 5}
             }
         ];
         
