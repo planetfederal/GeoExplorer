@@ -27,7 +27,6 @@ GeoExt.Lang.add("ca", {
         aboutThisMapText: "Quant a aquest mapa"
     },
     "GeoExplorer.Composer.prototype": {
-        publishMapText: "Publica el Mapa",
         exportMapText: "Exporta el Mapa",
         saveMapText: "Desa el Mapa"
     }

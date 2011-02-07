@@ -18,7 +18,6 @@
 GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
     // Begin i18n.
-    publishMapText: "Publish Map",
     saveMapText: "Save Map",
     exportMapText: "Export Map",
     toolsTitle: "Choose tools to include in the toolbar:",
@@ -104,7 +103,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
         tools.unshift("-");
         tools.unshift(new Ext.Button({
-            tooltip: this.publishMapText,
+            tooltip: this.exportMapText,
             handler: function() {
                 this.save(this.showEmbedWindow);
             },
