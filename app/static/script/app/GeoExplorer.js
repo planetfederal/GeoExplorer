@@ -222,15 +222,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         googleEarthPanel.on("show", function() {
             var layersContainer = Ext.getCmp('layertree');
-            if (layersContainer) {
-                layersContainer.setDisabled(true);
+            if (layersContainer && layersContainer.getTopToolbar()) {
+                layersContainer.getTopToolbar().setDisabled(true);
             }
         }, this);
 
         googleEarthPanel.on("hide", function() {
             var layersContainer = Ext.getCmp('layertree');
-            if (layersContainer) {
-                layersContainer.setDisabled(false);
+            if (layersContainer && layersContainer.getTopToolbar()) {
+                layersContainer.getTopToolbar().setDisabled(false);
             }
         }, this);
 
