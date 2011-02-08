@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="GeoExplorer" default="dist" basedir=".">
+<project name="geoexplorer" default="dist" basedir=".">
 
     <description>
         GeoExplorer Build File
@@ -29,11 +29,11 @@
     
     <target name="buildjs">
 
-        <mkdir dir="${build}/geoexplorer/WEB-INF/app/static/script"/>
+        <mkdir dir="${build}/${ant.project.name}/WEB-INF/app/static/script"/>
         <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
-            <arg line="-o ${build}/geoexplorer/WEB-INF/app/static/script buildjs.cfg"/>
+            <arg line="-o ${build}/${ant.project.name}/WEB-INF/app/static/script buildjs.cfg"/>
         </java>
 
     </target>
@@ -42,39 +42,39 @@
     
     <target name="redist">
 
-        <mkdir dir="${build}/geoexplorer"/>
+        <mkdir dir="${build}/${ant.project.name}"/>
         
-        <copy todir="${build}/geoexplorer">
+        <copy todir="${build}/${ant.project.name}">
             <fileset dir="src/main/webapp/">
             </fileset>
         </copy>
-        <copy todir="${build}/geoexplorer/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
+        <copy todir="${build}/${ant.project.name}/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
             <fileset dir="externals/ringojs/lib"/>
         </copy>
-        <copy todir="${build}/geoexplorer/WEB-INF/app">
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app">
             <fileset dir="app">
                 <exclude name="**/externals/**"/>
                 <exclude name="**/script/**"/>
             </fileset>
         </copy>
         <!-- copy Ext resources -->
-        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/ext">
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/ext">
             <fileset dir="app/static/externals/ext"/>
         </copy>
-        <!-- copy GeoExt resources -->
-        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/GeoExt/resources">
-            <fileset dir="app/static/externals/GeoExt/resources"/>
-        </copy>
         <!-- copy OpenLayers resources -->
-        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/openlayers/theme">
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/openlayers/theme">
             <fileset dir="app/static/externals/openlayers/theme"/>
         </copy>
+        <!-- copy GeoExt resources -->
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/GeoExt/resources">
+            <fileset dir="app/static/externals/GeoExt/resources"/>
+        </copy>
         <!-- copy gxp resources -->
-        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/gxp/src/theme">
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/gxp/src/theme">
             <fileset dir="app/static/externals/gxp/src/theme"/>
         </copy>
         <!-- copy PrintPreview resources -->
-        <copy todir="${build}/geoexplorer/WEB-INF/app/static/externals/PrintPreview/resources">
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/PrintPreview/resources">
             <fileset dir="app/static/externals/PrintPreview/resources"/>
         </copy>
         
