@@ -24,11 +24,11 @@ var pass = exports.pass = function(config) {
     return function(env, match) {
         var request = new Request(env);
         var newUrl = config.url + match + (request.queryString ? "?" + request.queryString : "");
-        return proxyPass(request, newUrl, config.preserveHost);
+        return proxyPass(request, newUrl, config.preserveHost, config.allowAuth);
     };
 };
 
-function proxyPass(request, url, preserveHost) {
+function proxyPass(request, url, preserveHost, allowAuth) {
     var parts = url.split("/");
     var response;
     if (parts[0] !== (request.scheme + ":") || parts[1] !== "") {
@@ -39,17 +39,31 @@ function proxyPass(request, url, preserveHost) {
         var host = parts[2];
         var client = new Client();
         response = defer();
+        // deal with headers
+        var headers = preserveHost ? merge({host: host}, request.headers) : request.headers;
+        if (!allowAuth) {
+            // strip authorization and cookie headers
+            delete headers["Authorization"];
+            delete headers["Cookie"];
+        }
+
         var exchange = client.request({
             url: url,
             method: request.method,
-            headers: preserveHost ? merge({host: host}, request.headers) : request.headers,
+            headers: headers,
             data: request.contentLength && request.input,
             async: true,
             complete: function() {
                 if (exchange) {
+                    var headers = merge({}, exchange.headers);
+                    if (!allowAuth) {
+                        // strip out authorization and cookie headers
+                        delete headers["WWW-Authenticate"];
+                        delete headers["Set-Cookie"];
+                    }
                     response.resolve({
                         status: exchange.status,
-                        headers: exchange.headers,
+                        headers: headers,
                         body: new MemoryStream(exchange.contentBytes)
                     });
                 } else {
