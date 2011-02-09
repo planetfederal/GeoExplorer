@@ -37,16 +37,26 @@ function proxyPass(request, url, preserveHost, allowAuth) {
     } else {
         // re-issue request
         var host = parts[2];
+
+        // deal with headers and authorization information in url
+        var headers = merge({}, request.headers);
+        if (host.indexOf("@") >= 0) {
+            var auth;
+            [auth, host] = host.split("@");
+            headers["Authorization"] = "Basic " + require("ringo/base64").encode(auth);
+            url = url.replace(auth + "@", "");
+        }
+        if (preserveHost) {
+            headers["Host"] = host;
+        }
+
         var client = new Client();
         response = defer();
-        // deal with headers
-        var headers = preserveHost ? merge({host: host}, request.headers) : request.headers;
         if (!allowAuth) {
             // strip authorization and cookie headers
             delete headers["Authorization"];
             delete headers["Cookie"];
         }
-
         var exchange = client.request({
             url: url,
             method: request.method,
