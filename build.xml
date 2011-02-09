@@ -89,7 +89,13 @@
         </java>
     </target>
 
-    
+    <target name="test">
+        <java jar="externals/ringojs/run.jar" fork="true" failonerror="yes">
+            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <arg path="tests/all.js"/>
+        </java>
+    </target>
+
     <target name="clean" description="remove previous build">
         <delete dir="${build}"/>
     </target>
