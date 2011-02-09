@@ -1,16 +1,22 @@
 var Client = require("ringo/httpclient").Client;
 var Request = require("ringo/webapp/request").Request;
+var Headers = require("ringo/utils/http").Headers;
 var MemoryStream = require("io").MemoryStream;
-var merge = require("ringo/utils/objects").merge;
+var objects = require("ringo/utils/objects");
 var responseForStatus = require("./util").responseForStatus;
 var defer = require("ringo/promise").defer;
+
+var URL = java.net.URL;
 
 var app = exports.app = function(env) {
     var response;
     var request = new Request(env);
     var url = request.queryParams.url;
     if (url) {
-        response = proxyPass(request, url, true);
+        response = proxyPass({
+            request: request, 
+            url: url
+        });
     } else {
         response = responseForStatus(400, "Request must contain url parameter.");
     }
@@ -24,52 +30,102 @@ var pass = exports.pass = function(config) {
     return function(env, match) {
         var request = new Request(env);
         var newUrl = config.url + match + (request.queryString ? "?" + request.queryString : "");
-        return proxyPass(request, newUrl, config.preserveHost, config.allowAuth);
+        return proxyPass(objects.merge({
+            request: request, 
+            url: newUrl
+        }, config));
     };
 };
 
-function proxyPass(request, url, preserveHost, allowAuth) {
-    var parts = url.split("/");
+var getUrlProps = exports.getUrlProps = function(url) {
+    var o, props;
+    try {
+        o = new URL(url);
+    } catch(err) {
+        // pass
+    }
+    if (o) {
+        var username, password;
+        var userInfo = o.getUserInfo();
+        if (userInfo) {
+            // this could potentially be removed if the following ticket is closed
+            // https://github.com/ringo/ringojs/issues/issue/121
+            // but, it could make sense to keep it here as well
+            [username, password] = userInfo.split(":");
+            url = url.replace(userInfo + "@", "");
+        }
+        var port = o.getPort();
+        if (port < 0) {
+            port = null;
+        }
+        props = {
+            url: url,
+            scheme: o.getProtocol(),
+            username: username || null,
+            password: password || null,
+            host: o.getHost(),
+            port: port,
+            path: o.getPath() || "/",
+            query: o.getQuery(),
+            hash: o.getRef()
+        };
+    }
+    return props;
+};
+
+var createProxyRequestProps = exports.createProxyRequestProps = function(config) {
+    var props;
+    var request = config.request;
+    var url = config.url;
+    var urlProps = getUrlProps(url);
+    if (urlProps) {
+        var headers = new Headers(objects.clone(request.headers));
+        if (!config.preserveHost) {
+            headers.set("Host", urlProps.host + (urlProps.port ? ":" + urlProps.port : ""));
+        }
+        if (!config.allowAuth) {
+            // strip authorization and cookie headers
+            headers.unset("Authorization");
+            headers.unset("Cookie");
+        }
+        props = {
+            url: urlProps.url,
+            method: request.method,
+            scheme: urlProps.scheme,
+            username: urlProps.username,
+            password: urlProps.password,
+            headers: headers,
+            data: request.contentLength && request.input,
+        };        
+    }
+    return props;
+}
+
+function proxyPass(config) {
     var response;
-    if (parts[0] !== (request.scheme + ":") || parts[1] !== "") {
-        print(parts);
+    var outgoing = createProxyRequestProps(config);
+    var incoming = config.request;
+    if (!outgoing || outgoing.scheme !== incoming.scheme) {
         response = responseForStatus(400, "The url parameter value must be absolute url with same scheme as request.");
     } else {
         // re-issue request
-        var host = parts[2];
-
-        // deal with headers and authorization information in url
-        var headers = merge({}, request.headers);
-        if (host.indexOf("@") >= 0) {
-            var auth;
-            [auth, host] = host.split("@");
-            headers["Authorization"] = "Basic " + require("ringo/base64").encode(auth);
-            url = url.replace(auth + "@", "");
-        }
-        if (preserveHost) {
-            headers["Host"] = host;
-        }
-
         var client = new Client();
         response = defer();
-        if (!allowAuth) {
-            // strip authorization and cookie headers
-            delete headers["Authorization"];
-            delete headers["Cookie"];
-        }
         var exchange = client.request({
-            url: url,
-            method: request.method,
-            headers: headers,
-            data: request.contentLength && request.input,
+            url: outgoing.url,
+            method: outgoing.method,
+            username: outgoing.username,
+            password: outgoing.password,
+            headers: outgoing.headers,
+            data: outgoing.data,
             async: true,
             complete: function() {
                 if (exchange) {
-                    var headers = merge({}, exchange.headers);
-                    if (!allowAuth) {
+                    var headers = new Headers(objects.clone(exchange.headers));
+                    if (!config.allowAuth) {
                         // strip out authorization and cookie headers
-                        delete headers["WWW-Authenticate"];
-                        delete headers["Set-Cookie"];
+                        headers.unset("WWW-Authenticate");
+                        headers.unset("Set-Cookie");
                     }
                     response.resolve({
                         status: exchange.status,
