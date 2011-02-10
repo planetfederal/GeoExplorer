@@ -159,9 +159,14 @@ var getMapIds = exports.getMapIds = function(request) {
 };
 
 var createMap = exports.createMap = function(config, request) {
-    if (typeof config !== "string") {
-        config = JSON.stringify(config);
+    if (typeof config === "string") {
+        config = JSON.parse(config);
     }
+    // add creation & modified date
+    var now = Date.now();
+    config.created = now;
+    config.modified = now;
+    config = JSON.stringify(config);
     var connection = SQLITE.open(getDb(request));
     // store the new map config
     var prep = connection.prepareStatement(
@@ -201,9 +206,12 @@ var readMap = exports.readMap = function(id, request) {
 };
 
 var updateMap = exports.updateMap = function(id, config, request) {
-    if (typeof config !== "string") {
-        config = JSON.stringify(config);
+    if (typeof config === "string") {
+        config = JSON.parse(config);
     }
+    // update modified date
+    config.modified = Date.now();
+    config = JSON.stringify(config);
     var result;
     var connection = SQLITE.open(getDb(request));
     var prep = connection.prepareStatement(

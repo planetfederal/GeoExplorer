@@ -25,7 +25,7 @@ exports["test: create"] = function() {
     var response = maps.createMap(config);
     assert.ok(response, "got a response");
     assert.ok("id" in response, "response includes map id");
-    
+
 };
 
 exports["test: read"] = function() {
@@ -34,6 +34,11 @@ exports["test: read"] = function() {
     var response = maps.createMap(config);
     
     var got = maps.readMap(response.id);
+    
+    // confirm created & modified are added
+    assert.equal(typeof got.created, "number", "created member");
+    assert.equal(typeof got.modified, "number", "modified member");
+    
     assert.deepEqual(got, config, "map config stored");
 
     assert.throws(function() {
@@ -52,6 +57,8 @@ exports["test: update"] = function() {
     maps.updateMap(response.id, updated);
     var got = maps.readMap(response.id);
     assert.deepEqual(got, updated, "map config updated");
+    
+    assert.isTrue(updated.modified > config.modified, "update increases modified date");
 
     assert.throws(function() {
         maps.updateMap("xxx", config)
@@ -155,3 +162,7 @@ exports["test: getDb(precedence)"] = function() {
     
 };
 
+// start the test runner if we're called directly from command line
+if (require.main == module.id) {
+    system.exit(require("test").run(exports));
+}
