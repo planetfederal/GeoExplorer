@@ -1,7 +1,15 @@
+var Response = require("ringo/webapp/response").Response;
 
 var urls = [
     [(/^\/proxy/), require("./proxy").app],
-    [(/^\/maps(\/\d+)?/), require("./maps").app]
+    [(/^\/(maps(\/\d+)?)/), require("./maps").app],
+    [(/^\/(index(.html)?)?/), require("./index").app],
+    [(/^\/(composer(.html)?)/), function(app) {
+        return Response.skin(module.resolve("skins/composer.html"));
+    }],
+    [(/^\/(viewer(.html)?)/), function(app) {
+        return Response.skin(module.resolve("skins/viewer.html"));
+    }]
 ];
 
 // debug mode loads unminified scripts
@@ -50,14 +58,14 @@ function slash(config) {
                 }
             }
             return app(request);
-        }
-    }
+        };
+    };
 }
 
 exports.middleware = [
     slash(),
     require("ringo/middleware/gzip").middleware,
-    require("ringo/middleware/static").middleware({base: module.resolve("static"), index: "index.html"}),
+    require("ringo/middleware/static").middleware({base: module.resolve("static")}),
     require("ringo/middleware/error").middleware,
     require("ringo/middleware/notfound").middleware
 ];

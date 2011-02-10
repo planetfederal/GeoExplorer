@@ -1,0 +1,20 @@
+body {
+    font-family: tahoma,arial,helvetica,sans-serif;
+    font-size: 1.25em;
+    background-color: white;
+}
+
+h2 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.75em;
+}
+
+div.logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: center;
+    height: 70px;
+    background: url('img/GeoExt_Logo.png') center no-repeat;
+}

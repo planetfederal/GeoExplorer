@@ -1,0 +1,23 @@
+<% extends ./base.html %>
+<% subskin extrahead %>
+    <link rel="stylesheet" type="text/css" href="theme/app/index.css"/>
+    <script>
+        Ext.onReady(function() {
+            var status = <% status %>;
+            if (status === 401) {
+                //displayLogin();
+            }
+            var mapStore = new Ext.data.JsonStore({
+                url: "maps",
+                root: "maps",
+                fields: ["id", "title", "abstract", "modified"],
+                autoLoad: true
+            });
+        });
+    </script>
+
+<% subskin content %>
+    <p><br>
+    <div class="logo"></div>
+    <h2>GeoExplorer</h2>
+    </p>
