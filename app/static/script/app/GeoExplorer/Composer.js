@@ -32,26 +32,26 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             {
                 ptype: "gxp_layertree",
                 outputConfig: {
-                    id: "layertree",
-                    tbar: []
+                    id: "layertree"
                 },
                 outputTarget: "tree"
             }, {
                 ptype: "gxp_legend",
-                outputTarget: 'legend'
+                outputTarget: 'legend',
+                outputConfig: {autoScroll: true}
             }, {
                 ptype: "gxp_addlayers",
-                actionTarget: "layertree.tbar",
+                actionTarget: "tree.tbar",
                 upload: true
             }, {
                 ptype: "gxp_removelayer",
-                actionTarget: ["layertree.tbar", "layertree.contextMenu"]
+                actionTarget: ["tree.tbar", "layertree.contextMenu"]
             }, {
                 ptype: "gxp_layerproperties",
-                actionTarget: ["layertree.tbar", "layertree.contextMenu"]
+                actionTarget: ["tree.tbar", "layertree.contextMenu"]
             }, {
                 ptype: "gxp_styler",
-                actionTarget: ["layertree.tbar", "layertree.contextMenu"],
+                actionTarget: ["tree.tbar", "layertree.contextMenu"],
                 outputConfig: {
                     width: 265,
                     autoHeight: true
