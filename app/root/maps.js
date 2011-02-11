@@ -1,4 +1,4 @@
-var SQLITE = require("./sqlite");
+var SQLITE = require("../sqlite");
 var Request = require("ringo/webapp/request").Request;
 var FILE = require("fs");
 
