@@ -28,6 +28,19 @@ exports["test: create"] = function() {
 
 };
 
+exports["test: list"] = function() {
+    
+    maps.createMap({"about": {"title": "test 1"}});
+    var items = maps.getMapList().maps;
+    assert.equal(items.length, 1, "got one item");
+    assert.equal(items[0].title, "test 1")
+    
+    maps.createMap({"about": {"title": "test 2"}});    
+    var items = maps.getMapList().maps;
+    assert.equal(items.length, 2, "got two items");
+
+};
+
 exports["test: read"] = function() {
     
     var config = {"test": "read"};
@@ -71,12 +84,12 @@ exports["test: delete"] = function() {
     var config = {"test": "delete"};
     var response = maps.createMap(config);
     
-    var {ids} = maps.getMapIds();
-    assert.ok(ids.indexOf(response.id) > -1, "map index in list before delete");
+    var items = maps.getMapList().maps;
+    assert.equal(items.length, 1, "one item before deletion");
 
     maps.deleteMap(response.id);
-    var {ids} = maps.getMapIds();
-    assert.ok(ids.indexOf(response.id) < 0, "map index not in list after delete")
+    var items = maps.getMapList().maps;
+    assert.equal(items.length, 0, "no items after deletion");
     
     assert.throws(function() {
         maps.readMap(response.id)

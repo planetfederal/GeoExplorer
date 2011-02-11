@@ -1,5 +1,5 @@
 var SQLITE = require("./sqlite");
-var {Request} = require("ringo/webapp/request");
+var Request = require("ringo/webapp/request").Request;
 var FILE = require("fs");
 
 var System = Packages.java.lang.System;
@@ -84,7 +84,7 @@ var handlers = {
         var id = getId(env);
         if (id === null) {
             // retrieve all map identifiers
-            resp = createResponse(getMapIds(env));
+            resp = createResponse(getMapList(env));
         } else if (id === false) {
             // invalid id
             resp = createResponse({error: "Invalid map id."}, 400);
@@ -142,20 +142,28 @@ var handlers = {
     }
 };
 
-var getMapIds = exports.getMapIds = function(request) {
+var getMapList = exports.getMapList = function(request) {
     var connection = SQLITE.open(getDb(request));
     var statement = connection.createStatement();
     var results = statement.executeQuery(
-        "SELECT id FROM maps;"
+        "SELECT id, config FROM maps;"
     );
-    var ids = [];
+    var items = [];
+    var config;
     while (results.next()) {
-        ids.push(results.getInt("id"));
+        config = JSON.parse(results.getString("config"));
+        items.push({
+            id: results.getInt("id"), 
+            title: config.about && config.about.title,
+            "abstract": config.about && config.about["abstract"],
+            created: config.created,
+            modified: config.modified
+        });
     }
     results.close();
     connection.close();
-    // return all ids
-    return {ids: ids};
+    // return all items
+    return {maps: items};
 };
 
 var createMap = exports.createMap = function(config, request) {
