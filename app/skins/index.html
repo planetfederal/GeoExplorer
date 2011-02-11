@@ -10,9 +10,53 @@
             var mapStore = new Ext.data.JsonStore({
                 url: "maps",
                 root: "maps",
-                fields: ["id", "title", "abstract", "modified"],
-                autoLoad: true
+                fields: [
+                    "id", "title", "abstract", 
+                    {name: "created", type: "date", dateFormat: "time"},
+                    {name: "modified", type: "date", dateFormat: "time"}
+                ],
+                autoLoad: true,
+                listeners: {
+                    load: function() {
+                        showMapList();
+                    }
+                }
             });
+            var mapList;
+            function showMapList() {
+                if (!mapList) {
+                    createMapList();
+                }
+                if (!mapList.rendered && mapStore.getCount() > 0) {
+                    mapList.render("maplist");
+                }
+            }
+            function createMapList() {
+                mapList = new Ext.list.ListView({
+                    store: mapStore,
+                    columns: [{
+                        header: "ID",
+                        dataIndex: "id",
+                        width: 0.1
+                    }, {
+                        header: "Title",
+                        dataIndex: "title"
+                    }, {
+                        header: "Created",
+                        dataIndex: "created",
+                        xtype: "datecolumn",
+                        format: 'Y/m/d h:i a',
+                        width: 0.2
+                    }, {
+                        header: "Modified",
+                        dataIndex: "modified",
+                        xtype: "datecolumn",
+                        format: 'Y/m/d h:i a',
+                        width: 0.2
+                    }]
+                });
+            }
+            
         });
     </script>
 
@@ -21,3 +65,4 @@
     <div class="logo"></div>
     <h2>GeoExplorer</h2>
     </p>
+    <div id="maplist"></div>

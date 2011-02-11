@@ -18,3 +18,8 @@ div.logo {
     height: 70px;
     background: url('img/GeoExt_Logo.png') center no-repeat;
 }
+
+div#maplist {
+    margin: 1em auto;
+    width: 60%;
+}
