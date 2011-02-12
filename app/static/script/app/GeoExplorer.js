@@ -210,8 +210,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapseMode: "mini",
             header: false,
             items: [
-                {region: 'center', border: false, id: 'tree', title: this.layersText}, 
-                {region: 'south', border: false, height: 200, id: 'legend'}
+                {region: 'center', autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}, 
+                {region: 'south', xtype: "container", layout: "fit", border: false, height: 200, id: 'legend'}
             ]
         });
         
