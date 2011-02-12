@@ -25,7 +25,7 @@ if (java.lang.System.getProperty("app.debug")) {
         }
         // debug specific proxy
         urls.push(
-            [(/^\/geoserver\/(.*)/), require("./proxy").pass({url: geoserver, preserveHost: true, allowAuth: true})]
+            [(/^\/geoserver\/(.*)/), require("./root/proxy").pass({url: geoserver, preserveHost: true, allowAuth: true})]
         );
     }
 }
