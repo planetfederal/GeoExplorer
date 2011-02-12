@@ -1,9 +1,10 @@
 var Response = require("ringo/webapp/response").Response;
 
 var urls = [
+    [(/^\/(index(.html)?)?/), require("./root/index").app],
+    [(/^\/(login)/), require("./root/login").app],
     [(/^\/(proxy)/), require("./root/proxy").app],
     [(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
-    [(/^\/(index(.html)?)?/), require("./root/index").app],
     [(/^\/(composer)/), require("./root/composer").app],
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
 ];
