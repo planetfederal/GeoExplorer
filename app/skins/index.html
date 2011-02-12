@@ -71,6 +71,8 @@
                     }
                 }, {
                     xtype: "actioncolumn",
+                    id: "editcolumn",
+                    hidden: (status === 401),
                     width: 30,
                     iconCls: "icon-editmap",
                     tooltip: "Edit Map",
@@ -80,6 +82,8 @@
                     }
                 }, {
                     xtype: "actioncolumn",
+                    id: "removecolumn",
+                    hidden: (status === 401),
                     width: 30,
                     iconCls: "icon-removemap",
                     tooltip: "Delete Map",
@@ -109,6 +113,12 @@
                     }
                 }]
             });
+            
+            function onLogin() {
+                var cm = mapList.getColumnModel();
+                cm.setHidden(cm.getIndexById("editcolumn"), false);
+                cm.setHidden(cm.getIndexById("removecolumn"), false);
+            }
 
             
         });

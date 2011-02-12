@@ -95,8 +95,8 @@ var createProxyRequestProps = exports.createProxyRequestProps = function(config)
             username: urlProps.username,
             password: urlProps.password,
             headers: headers,
-            data: request.contentLength && request.input,
-        };        
+            data: request.contentLength && request.input
+        };
     }
     return props;
 }
