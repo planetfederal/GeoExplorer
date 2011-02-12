@@ -1,15 +1,11 @@
 var Response = require("ringo/webapp/response").Response;
 
 var urls = [
-    [(/^\/proxy/), require("./proxy").app],
-    [(/^\/(maps(\/\d+)?)/), require("./maps").app],
-    [(/^\/(index(.html)?)?/), require("./index").app],
-    [(/^\/(composer(.html)?)/), function(app) {
-        return Response.skin(module.resolve("skins/composer.html"));
-    }],
-    [(/^\/(viewer(.html)?)/), function(app) {
-        return Response.skin(module.resolve("skins/viewer.html"));
-    }]
+    [(/^\/(proxy)/), require("./root/proxy").app],
+    [(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
+    [(/^\/(index(.html)?)?/), require("./root/index").app],
+    [(/^\/(composer)/), require("./root/composer").app],
+    [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
 ];
 
 // debug mode loads unminified scripts
@@ -29,7 +25,7 @@ if (java.lang.System.getProperty("app.debug")) {
         }
         // debug specific proxy
         urls.push(
-            [(/^\/geoserver\/(.*)/), require("./proxy").pass({url: geoserver, preserveHost: true, allowAuth: true})]
+            [(/^\/geoserver\/(.*)/), require("./root/proxy").pass({url: geoserver, preserveHost: true, allowAuth: true})]
         );
     }
 }

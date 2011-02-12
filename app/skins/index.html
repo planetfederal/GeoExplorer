@@ -3,6 +3,7 @@
     <link rel="stylesheet" type="text/css" href="theme/app/index.css"/>
     <script>
         Ext.onReady(function() {
+            Ext.QuickTips.init();
             var status = <% status %>;
             if (status === 401) {
                 //displayLogin();
@@ -15,47 +16,110 @@
                     {name: "created", type: "date", dateFormat: "time"},
                     {name: "modified", type: "date", dateFormat: "time"}
                 ],
-                autoLoad: true,
-                listeners: {
-                    load: function() {
-                        showMapList();
-                    }
-                }
+                autoLoad: true
             });
-            var mapList;
-            function showMapList() {
-                if (!mapList) {
-                    createMapList();
-                }
-                if (!mapList.rendered && mapStore.getCount() > 0) {
-                    mapList.render("maplist");
-                }
+            
+            var mapList = new Ext.grid.GridPanel({
+                renderTo: "maps",
+                autoHeight: true,
+                store: mapStore,
+                singleSelect: true,
+                enableHdMenu: false,
+                autoExpandColumn: "title",
+                viewConfig: {
+                    forceFit: true
+                },
+                columns: [{
+                    header: "ID",
+                    dataIndex: "id",
+                    width: 40,
+                    fixed: true,
+                    sortable: true,
+                    align: "center"
+                }, {
+                    id: "title",
+                    header: "Title",
+                    align: "left",
+                    width: 300,
+                    dataIndex: "title",
+                    sortable: true
+                }, {
+                    header: "Created",
+                    dataIndex: "created",
+                    width: 90,
+                    xtype: "datecolumn",
+                    format: 'Y/m/d',
+                    sortable: true,
+                    align: "center"
+                }, {
+                    header: "Modified",
+                    dataIndex: "modified",
+                    width: 90,
+                    xtype: "datecolumn",
+                    format: 'Y/m/d',
+                    sortable: true,
+                    align: "center"
+                }, {
+                    xtype: "actioncolumn",
+                    width: 30,
+                    iconCls: "icon-viewmap",
+                    tooltip: "View Map",
+                    align: "center",
+                    handler: function(grid, rowIndex, colIndex) {
+                        var id = mapStore.getAt(rowIndex).get("id");
+                        window.location = "viewer#maps/" + id;
+                    }
+                }, {
+                    xtype: "actioncolumn",
+                    id: "editcolumn",
+                    hidden: (status === 401),
+                    width: 30,
+                    iconCls: "icon-editmap",
+                    tooltip: "Edit Map",
+                    handler: function(grid, rowIndex, colIndex) {
+                        var id = mapStore.getAt(rowIndex).get("id");
+                        window.location = "composer#maps/" + id;
+                    }
+                }, {
+                    xtype: "actioncolumn",
+                    id: "removecolumn",
+                    hidden: (status === 401),
+                    width: 30,
+                    iconCls: "icon-removemap",
+                    tooltip: "Delete Map",
+                    handler: function(grid, rowIndex, colIndex) {
+                        var rec = mapStore.getAt(rowIndex);
+                        var id = rec.get("id");
+                        Ext.Msg.show({
+                            title: "Confirm Deletion",
+                            msg: "Are you sure you want to delete this map?",
+                            buttons: Ext.Msg.YESNO,
+                            fn: function(button) {
+                                if (button === "yes") {
+                                    Ext.Ajax.request({
+                                        method: "DELETE",
+                                        url: "maps/" + id,
+                                        success: function() {
+                                            mapStore.reload();
+                                        },
+                                        failure: function() {
+                                            alert("failed to delete");
+                                        }
+                                    });
+                                }
+                            },
+                            icon: Ext.MessageBox.QUESTION
+                        });
+                    }
+                }]
+            });
+            
+            function onLogin() {
+                var cm = mapList.getColumnModel();
+                cm.setHidden(cm.getIndexById("editcolumn"), false);
+                cm.setHidden(cm.getIndexById("removecolumn"), false);
             }
-            function createMapList() {
-                mapList = new Ext.list.ListView({
-                    store: mapStore,
-                    columns: [{
-                        header: "ID",
-                        dataIndex: "id",
-                        width: 0.1
-                    }, {
-                        header: "Title",
-                        dataIndex: "title"
-                    }, {
-                        header: "Created",
-                        dataIndex: "created",
-                        xtype: "datecolumn",
-                        format: 'Y/m/d h:i a',
-                        width: 0.2
-                    }, {
-                        header: "Modified",
-                        dataIndex: "modified",
-                        xtype: "datecolumn",
-                        format: 'Y/m/d h:i a',
-                        width: 0.2
-                    }]
-                });
-            }
+
             
         });
     </script>
@@ -65,4 +129,4 @@
     <div class="logo"></div>
     <h2>GeoExplorer</h2>
     </p>
-    <div id="maplist"></div>
+    <div id="maps"></div>

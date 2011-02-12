@@ -3,7 +3,7 @@ var Request = require("ringo/webapp/request").Request;
 var Headers = require("ringo/utils/http").Headers;
 var MemoryStream = require("io").MemoryStream;
 var objects = require("ringo/utils/objects");
-var responseForStatus = require("./util").responseForStatus;
+var responseForStatus = require("../util").responseForStatus;
 var defer = require("ringo/promise").defer;
 
 var URL = java.net.URL;
@@ -95,8 +95,8 @@ var createProxyRequestProps = exports.createProxyRequestProps = function(config)
             username: urlProps.username,
             password: urlProps.password,
             headers: headers,
-            data: request.contentLength && request.input,
-        };        
+            data: request.contentLength && request.input
+        };
     }
     return props;
 }
