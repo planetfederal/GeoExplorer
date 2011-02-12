@@ -1,12 +1,15 @@
 <% extends ./base.html %>
 <% subskin extrahead %>
+    
     <link rel="stylesheet" type="text/css" href="theme/app/index.css"/>
     <script>
         Ext.onReady(function() {
             Ext.QuickTips.init();
-            var status = <% status %>;
+            var status = 401;
             if (status === 401) {
-                //displayLogin();
+                displayLoginLink();
+            } else {
+                hideLoginLink();
             }
             var mapStore = new Ext.data.JsonStore({
                 url: "maps",
@@ -19,7 +22,7 @@
                 autoLoad: true
             });
             
-            var mapList = new Ext.grid.GridPanel({
+            var mapGrid = new Ext.grid.GridPanel({
                 renderTo: "maps",
                 autoHeight: true,
                 store: mapStore,
@@ -114,10 +117,87 @@
                 }]
             });
             
-            function onLogin() {
-                var cm = mapList.getColumnModel();
-                cm.setHidden(cm.getIndexById("editcolumn"), false);
-                cm.setHidden(cm.getIndexById("removecolumn"), false);
+            function displayLoginLink() {
+                Ext.fly("login").on({
+                    click: function(event, target) {
+                        showLoginDialog();
+                        event.stopEvent();
+                    }
+                });
+            }
+            function hideLoginLink() {
+                Ext.fly("login").hide();
+            }
+            function showLoginDialog() {
+                var panel = new Ext.FormPanel({
+                    url: "login",
+                    frame: true,
+                    labelWidth: 60,
+                    defaultType: "textfield",
+                    items: [{
+                        fieldLabel: "User",
+                        name: "user",
+                        allowBlank: false
+                    }, {
+                        fieldLabel: "Password",
+                        name: "password",
+                        inputType: "password",
+                        allowBlank: false
+                    }]
+                });
+                
+                var win = new Ext.Window({
+                    title: "Login",
+                    layout: "fit",
+                    width: 235,
+                    height: 130,
+                    plain: true,
+                    border: false,
+                    modal: true,
+                    items: [panel],
+                    buttons: [{
+                        text: "Login",
+                        handler: function(button) {
+                            var form = panel.getForm();
+                            button.disable();
+                            submitLogin(
+                                form.getValues(), 
+                                function success(response) {
+                                    var cookie = response.getResponseHeader("Set-Cookie");
+                                    if (cookie) {
+                                        document.cookie = cookie;
+                                    }
+                                    hideLoginLink();
+                                    var cm = mapGrid.getColumnModel();
+                                    cm.setHidden(cm.getIndexById("editcolumn"), false);
+                                    cm.setHidden(cm.getIndexById("removecolumn"), false);
+                                    win.close();
+                                },
+                                function failure() {
+                                    var cookie = response.getResponseHeader("Set-Cookie");
+                                    if (cookie) {
+                                        document.cookie = cookie;
+                                    }
+                                    form.markInvalid({
+                                        "user": "Invalid username or password.",
+                                        "password": "Invalid username or password."
+                                    });
+                                    button.enable();
+                                }
+                            );
+                        }
+                    }]
+                });
+                win.show();
+            }
+            function submitLogin(values, success, failure) {
+                Ext.Ajax.request({
+                    method: "POST",
+                    url: "login",
+                    params: values,
+                    success: success,
+                    failure: failure
+                });
             }
 
             
@@ -125,8 +205,7 @@
     </script>
 
 <% subskin content %>
-    <p><br>
+    <a id="login" href="login">Log in</a>
     <div class="logo"></div>
     <h2>GeoExplorer</h2>
-    </p>
     <div id="maps"></div>

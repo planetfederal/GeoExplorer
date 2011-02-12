@@ -12,8 +12,7 @@ h2 {
 }
 
 div.logo {
-    margin-left: auto;
-    margin-right: auto;
+    margin: 20px auto 0;
     width: 100%;
     text-align: center;
     height: 70px;
@@ -40,4 +39,12 @@ img.icon-removemap {
     width: 16px;
     height: 16px;
     background: url(img/silk/delete.png) no-repeat;
+}
+
+#login {
+    font-size: 12px;
+    display: block;
+    position: absolute;
+    top: 20px;
+    right: 200px;
 }
