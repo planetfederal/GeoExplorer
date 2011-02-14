@@ -2,6 +2,8 @@
  * Copyright (c) 2009-2011 The Open Planning Project
  */
 
+Ext.USE_NATIVE_JSON = true;
+
 (function() {
     // backwards compatibility for reading saved maps
     // these source plugins were renamed after 2.3.2
