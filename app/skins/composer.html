@@ -37,12 +37,6 @@
     <script type="text/javascript" src="script/PrintPreview.js"></script>
 
     <script>
-        // backwards compatibility for reading saved maps
-        // these three source plugins were renamed after 2.3.2
-        Ext.preg("gx_wmssource", gxp.plugins.WMSSource);
-        Ext.preg("gx_olsource", gxp.plugins.OLSource);
-        Ext.preg("gx_googlesource", gxp.plugins.GoogleSource);
-        
         // optionally set locale based on query string parameter
         if (GeoExt.Lang) {
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
