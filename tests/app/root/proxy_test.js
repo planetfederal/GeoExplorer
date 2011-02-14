@@ -1,6 +1,6 @@
 var assert = require("assert");
 var fs = require("fs");
-var proxy = require("../../app/proxy");
+var proxy = require("../../../app/root/proxy");
 
 exports["test: getUrlProps"] = function() {
     

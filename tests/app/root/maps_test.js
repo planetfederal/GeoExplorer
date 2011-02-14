@@ -1,6 +1,6 @@
 var assert = require("assert");
 var fs = require("fs");
-var maps = require("../../app/maps");
+var maps = require("../../../app/root/maps");
 
 var System = Packages.java.lang.System;
 
