@@ -194,6 +194,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
        };
 
        new Ext.Window({
+            layout: 'fit',
             width: 500, height: 300,
             title: this.exportMapText,
             items: [wizard]
