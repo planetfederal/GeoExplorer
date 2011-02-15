@@ -17,6 +17,9 @@
             <arg line="submodule init"/>
         </exec>
         <exec executable="git" failonerror="true">
+            <arg line="submodule sync"/>
+        </exec>
+        <exec executable="git" failonerror="true">
             <arg line="submodule update"/>
         </exec>
 
