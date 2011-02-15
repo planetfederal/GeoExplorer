@@ -1,4 +1,5 @@
 var Client = require("ringo/httpclient").Client;
+var Headers = require("ringo/utils/http").Headers;
 
 function getAuthUrl(request) {
     var url = java.lang.System.getProperty("app.proxy.geoserver");
@@ -9,22 +10,28 @@ function getAuthUrl(request) {
     } else {
         url = request.scheme + "://" + request.host + (request.port ? ":" + request.port : "") + "/geoserver/";
     }
-    return url + "j_spring_security_check";
+    return url + "rest";
 }
 
-var checkStatus = exports.checkStatus = function(request) {
-    return requestAuthorization(request).status;
-};
-
-var requestAuthorization = exports.requestAuthorization = function(request) {
+var getDetails = exports.getDetails = function(request) {
+    var token;  // TODO: get token from request cookie
+    var status; 
     var url = getAuthUrl(request);
-    var client = new Client();
+    var client = new Client(undefined, false);
     var exchange = client.request({
         url: url,
         method: "GET",
-        headers: request.headers,
-        async: false
+        async: false,
+        headers: request.headers
     });
     exchange.wait();
-    return exchange;
+    var cookie = exchange.headers.get("Set-Cookie");
+    if (cookie) {
+        token = cookie.split(";").shift();
+        status = 401;
+    } else {
+        status = 404;
+    }
+    return {status: status, token: token, url: url};
 };
+

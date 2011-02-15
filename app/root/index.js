@@ -4,9 +4,9 @@ var auth = require("../auth");
 
 exports.app = function(env) {
     var request = new Request(env);
-    var status = auth.checkStatus(request);
+    var details = auth.getDetails(request);
     return Response.skin(module.resolve("../skins/index.html"), {
-        status: status
+        status: details.status
     });
 };
 
