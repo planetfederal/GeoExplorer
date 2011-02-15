@@ -1,6 +1,6 @@
 [submodule "externals/ringojs"]
 	path = externals/ringojs
-	url = https://github.com/ringo/ringojs.git
+	url = git://github.com/tschaub/ringojs.git
 [submodule "externals/buildkit"]
 	path = externals/buildkit
 	url = git://github.com/tschaub/buildkit.git
