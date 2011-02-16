@@ -30,7 +30,8 @@
                 enableHdMenu: false,
                 autoExpandColumn: "title",
                 viewConfig: {
-                    forceFit: true
+                    forceFit: true,
+                    emptyText: "No maps found.  Create a new one with the link below."
                 },
                 columns: [{
                     header: "ID",
@@ -106,7 +107,7 @@
                                             mapStore.reload();
                                         },
                                         failure: function() {
-                                            alert("failed to delete");
+                                            // TODO: failure handling
                                         }
                                     });
                                 }
@@ -114,6 +115,15 @@
                             icon: Ext.MessageBox.QUESTION
                         });
                     }
+                }],
+                buttons: [{
+                    text: "Create new map",
+                    id: "new-map-button",
+                    iconCls: "add",
+                    handler: function() {
+                        window.location = "composer";
+                    },
+                    hidden: (status === 401)
                 }]
             });
             
@@ -171,6 +181,7 @@
                                     var cm = mapGrid.getColumnModel();
                                     cm.setHidden(cm.getIndexById("editcolumn"), false);
                                     cm.setHidden(cm.getIndexById("removecolumn"), false);
+                                    Ext.getCmp("new-map-button").show();
                                     win.close();
                                 },
                                 function failure(response) {

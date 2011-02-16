@@ -41,6 +41,10 @@ img.icon-removemap {
     background: url(img/silk/delete.png) no-repeat;
 }
 
+.x-btn .add {
+    background-image: url(img/silk/add.png);
+}
+
 #login {
     font-size: 12px;
     display: block;
