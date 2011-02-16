@@ -13,6 +13,7 @@ exports.app = function(req) {
         var params = request.postParams;
         var headers = new Headers(objects.clone(request.headers));
         headers.set("Authorization", "Basic " + base64.encode(params.username + ":" + params.password));
+        headers.set("Cookie", details.token);
         var client = new Client(undefined, false);
         var exchange = client.request({
             url: details.url,
@@ -23,10 +24,17 @@ exports.app = function(req) {
         exchange.wait();
         status = exchange.status;
     }
+    var cookie;
+    if (status === 200) {
+        cookie = details.token;
+    } else {
+        // clear any previously set cookie
+        cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
     return {
         status: status,
         headers: {
-            "Set-Cookie": details.token + ";Path=/"
+            "Set-Cookie": cookie
         },
         body: []
     };
