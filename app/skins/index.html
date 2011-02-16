@@ -173,13 +173,9 @@
                                     cm.setHidden(cm.getIndexById("removecolumn"), false);
                                     win.close();
                                 },
-                                function failure() {
-                                    var cookie = response.getResponseHeader("Set-Cookie");
-                                    if (cookie) {
-                                        document.cookie = cookie;
-                                    }
+                                function failure(response) {
                                     form.markInvalid({
-                                        "user": "Invalid username or password.",
+                                        "username": "Invalid username or password.",
                                         "password": "Invalid username or password."
                                     });
                                     button.enable();
