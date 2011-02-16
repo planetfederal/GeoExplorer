@@ -16,26 +16,51 @@ function getAuthUrl(request) {
 
 var getDetails = exports.getDetails = function(request) {
     var url = getAuthUrl(request);
-    var status; 
+    var status = 401;
     var headers = new Headers(objects.clone(request.headers));
+    var client = new Client(undefined, false);
     var token = headers.get("Cookie");
+    var exchange;
     if (token) {
-        status = 401; // TODO: determine if authenticated
-    } else {
-        var client = new Client(undefined, false);
-        var exchange = client.request({
+        // already have a cookie, check if authorized
+        exchange = client.request({
             url: url,
             method: "GET",
             async: false,
-            headers: request.headers
+            headers: headers
+        });
+        exchange.wait();
+        status = exchange.status;
+    } else {
+        // no cookie, first get one (without Authorization header)
+        var auth = headers.get("Authorization");
+        if (auth) {
+            headers.unset("Authorization");
+        }
+        exchange = client.request({
+            url: url,
+            method: "GET",
+            async: false,
+            headers: headers
         });
         exchange.wait();
         var cookie = exchange.headers.get("Set-Cookie");
         if (cookie) {
             token = cookie.split(";").shift();
-            status = 401;
         } else {
             status = 404;
+        }
+        // finally, if we got a cookie and we had auth header, check if authorized
+        if (cookie && auth) {
+            headers.set("Authorization", auth);
+            exchange = client.request({
+                url: url,
+                method: "GET",
+                async: false,
+                headers: headers
+            });
+            exchange.wait();
+            status = exchange.status;
         }
     }
     return {
