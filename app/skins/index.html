@@ -5,7 +5,7 @@
     <script>
         Ext.onReady(function() {
             Ext.QuickTips.init();
-            var status = 401;
+            var status = <% status %>;
             if (status === 401) {
                 displayLoginLink();
             } else {
