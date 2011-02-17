@@ -148,6 +148,24 @@
                     frame: true,
                     labelWidth: 60,
                     defaultType: "textfield",
+                    errorReader: {
+                        read: function(response) {
+                            var success = false;
+                            var records = [];
+                            if (response.status === 200) {
+                                success = true;
+                            } else {
+                                records = [
+                                    {data: {id: "username", msg: "Invalid username or password."}},
+                                    {data: {id: "password", msg: "Invalid username or password."}}
+                                ];
+                            }
+                            return {
+                                success: success,
+                                records: records
+                            };
+                        }
+                    },
                     items: [{
                         fieldLabel: "User",
                         name: "username",
@@ -157,8 +175,46 @@
                         name: "password",
                         inputType: "password",
                         allowBlank: false
+                    }],
+                    buttons: [{
+                        text: "Login",
+                        formBind: true,
+                        handler: submitLogin
+                    }],
+                    keys: [{ 
+                        key: [Ext.EventObject.ENTER], 
+                        handler: submitLogin
                     }]
                 });
+                
+                function submitLogin() {
+                    panel.buttons[0].disable();
+                    panel.getForm().submit({
+                        success: function(form, action) {
+                            var cookie = action.response.getResponseHeader("Set-Cookie");
+                            if (cookie) {
+                                // TODO: old browser workaround, confirm or remove
+                                document.cookie = cookie;
+                            }
+                            hideLoginLink();
+                            var cm = mapGrid.getColumnModel();
+                            cm.setHidden(cm.getIndexById("editcolumn"), false);
+                            cm.setHidden(cm.getIndexById("removecolumn"), false);
+                            Ext.getCmp("new-map-button").show();
+                            var view = mapGrid.getView();
+                            view.emptyText = emptyMapGridTextAuth;
+                            view.refresh();
+                            win.close();
+                        },
+                        failure: function(form, action) {
+                            panel.buttons[0].enable();
+                            form.markInvalid({
+                                "username": "Invalid username or password.",
+                                "password": "Invalid username or password."
+                            });
+                        }
+                    });
+                }
                 
                 var win = new Ext.Window({
                     title: "Login",
@@ -169,49 +225,8 @@
                     border: false,
                     modal: true,
                     items: [panel],
-                    buttons: [{
-                        text: "Login",
-                        handler: function(button) {
-                            var form = panel.getForm();
-                            button.disable();
-                            submitLogin(
-                                form.getValues(), 
-                                function success(response) {
-                                    var cookie = response.getResponseHeader("Set-Cookie");
-                                    if (cookie) {
-                                        document.cookie = cookie;
-                                    }
-                                    hideLoginLink();
-                                    var cm = mapGrid.getColumnModel();
-                                    cm.setHidden(cm.getIndexById("editcolumn"), false);
-                                    cm.setHidden(cm.getIndexById("removecolumn"), false);
-                                    Ext.getCmp("new-map-button").show();
-                                    var view = mapGrid.getView();
-                                    view.emptyText = emptyMapGridTextAuth;
-                                    view.refresh();
-                                    win.close();
-                                },
-                                function failure(response) {
-                                    form.markInvalid({
-                                        "username": "Invalid username or password.",
-                                        "password": "Invalid username or password."
-                                    });
-                                    button.enable();
-                                }
-                            );
-                        }
-                    }]
                 });
                 win.show();
-            }
-            function submitLogin(values, success, failure) {
-                Ext.Ajax.request({
-                    method: "POST",
-                    url: "login",
-                    params: values,
-                    success: success,
-                    failure: failure
-                });
             }
 
             
