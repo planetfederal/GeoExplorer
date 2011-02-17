@@ -1,6 +1,7 @@
 var SQLITE = require("../sqlite");
 var Request = require("ringo/webapp/request").Request;
 var FILE = require("fs");
+var auth = require("../auth");
 
 var System = Packages.java.lang.System;
 
@@ -78,6 +79,10 @@ var getId = function(env) {
     return id;
 };
 
+function isAuthorized(env) {
+    return auth.getDetails(new Request(env)).status !== 401;
+}
+
 var handlers = {
     "GET": function(env) {
         var resp;
@@ -96,47 +101,59 @@ var handlers = {
     },
     "POST": function(env) {
         var resp;
-        var id = getId(env);
-        if (id !== null) {
-            resp = createResponse({error: "Can't POST to map " + id}, 405);
-        } else {
-            var config = getConfig(env);
-            if (!config) {
-                resp = createResponse({error: "Bad map config."}, 400);
+        if (isAuthorized(env)) {
+            var id = getId(env);
+            if (id !== null) {
+                resp = createResponse({error: "Can't POST to map " + id}, 405);
             } else {
-                // return the map id
-                resp = createResponse(createMap(config, env));
+                var config = getConfig(env);
+                if (!config) {
+                    resp = createResponse({error: "Bad map config."}, 400);
+                } else {
+                    // return the map id
+                    resp = createResponse(createMap(config, env));
+                }
             }
+        } else {
+            resp = createResponse({error: "Not authorized"}, 401);
         }
         return resp;
     },
     "PUT": function(env) {
         var resp;
-        var id = getId(env);
-        if (id === null) {
-            resp = createResponse({error: "Can't PUT without map id."}, 405);
-        } else if (id === false) {
-            resp = createResponse({error: "Invalid map id."}, 400);
-        } else {
-            // valid map id
-            var config = getConfig(env);
-            if (!config) {
-                resp = createResponse({error: "Bad map config."}, 400);
+        if (isAuthorized(env)) {
+            var id = getId(env);
+            if (id === null) {
+                resp = createResponse({error: "Can't PUT without map id."}, 405);
+            } else if (id === false) {
+                resp = createResponse({error: "Invalid map id."}, 400);
             } else {
-                resp = createResponse(updateMap(id, config, env));
+                // valid map id
+                var config = getConfig(env);
+                if (!config) {
+                    resp = createResponse({error: "Bad map config."}, 400);
+                } else {
+                    resp = createResponse(updateMap(id, config, env));
+                }
             }
+        } else {
+            resp = createResponse({error: "Not authorized"}, 401);
         }
         return resp;
     },
     "DELETE": function(env) {
         var resp;
-        var id = getId(env);
-        if (id === null) {
-            resp = createResponse({error: "Can't DELETE without map id."}, 405);
-        } else if (id === false) {
-            resp = createResponse({error: "Invalid map id."}, 400);
+        if (isAuthorized(env)) {
+            var id = getId(env);
+            if (id === null) {
+                resp = createResponse({error: "Can't DELETE without map id."}, 405);
+            } else if (id === false) {
+                resp = createResponse({error: "Invalid map id."}, 400);
+            } else {
+                resp = createResponse(deleteMap(id, env));
+            }
         } else {
-            resp = createResponse(deleteMap(id, env));
+            resp = createResponse({error: "Not authorized"}, 401);
         }
         return resp;
     }
