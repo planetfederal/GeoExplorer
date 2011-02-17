@@ -4,6 +4,10 @@
     <link rel="stylesheet" type="text/css" href="theme/app/index.css"/>
     <script>
         Ext.onReady(function() {
+            
+            var emptyMapGridTextAnon = "No maps found.  Log in to create a new map.";
+            var emptyMapGridTextAuth = "No maps found.  Create a new one with the link below.";
+            
             Ext.QuickTips.init();
             var status = <% status %>;
             if (status === 401) {
@@ -31,7 +35,7 @@
                 autoExpandColumn: "title",
                 viewConfig: {
                     forceFit: true,
-                    emptyText: "No maps found.  Create a new one with the link below."
+                    emptyText: (status === 401) ? emptyMapGridTextAnon : emptyMapGridTextAuth
                 },
                 columns: [{
                     header: "ID",
@@ -182,6 +186,9 @@
                                     cm.setHidden(cm.getIndexById("editcolumn"), false);
                                     cm.setHidden(cm.getIndexById("removecolumn"), false);
                                     Ext.getCmp("new-map-button").show();
+                                    var view = mapGrid.getView();
+                                    view.emptyText = emptyMapGridTextAuth;
+                                    view.refresh();
                                     win.close();
                                 },
                                 function failure(response) {
