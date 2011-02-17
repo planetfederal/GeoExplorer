@@ -178,10 +178,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
        });
 
        var wizard = {
-           id:'geobuilder-wizard-panel',
-           layout:'card',
+           id: 'geobuilder-wizard-panel',
+           border: false,
+           layout: 'card',
            activeItem: 0,
-           defaults: {border:false, hideMode:'offsets'},
+           defaults: {border: false, hideMode: 'offsets'},
            bbar: [{
                id: 'preview',
                text: this.previewText,
