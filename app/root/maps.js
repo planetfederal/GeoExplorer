@@ -1,7 +1,7 @@
 var SQLITE = require("../sqlite");
 var Request = require("ringo/webapp/request").Request;
 var FILE = require("fs");
-var auth = require("../auth");
+// var auth = require("../auth");
 
 var System = Packages.java.lang.System;
 
@@ -80,7 +80,8 @@ var getId = function(env) {
 };
 
 function isAuthorized(env) {
-    return auth.getDetails(new Request(env)).status !== 401;
+    return true;
+    // return auth.getDetails(new Request(env)).status !== 401;
 }
 
 var handlers = {
