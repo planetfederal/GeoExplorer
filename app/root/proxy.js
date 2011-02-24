@@ -119,28 +119,6 @@ function proxyPass(config) {
             headers: outgoing.headers,
             data: outgoing.data,
             async: false
-            // async: true,
-            // complete: function() {
-            //     if (exchange) {
-            //         var headers = new Headers(objects.clone(exchange.headers));
-            //         if (!config.allowAuth) {
-            //             // strip out authorization and cookie headers
-            //             headers.unset("WWW-Authenticate");
-            //             headers.unset("Set-Cookie");
-            //         }
-            //         response.resolve({
-            //             status: exchange.status,
-            //             headers: headers,
-            //             body: new MemoryStream(exchange.contentBytes)
-            //         });
-            //     } else {
-            //         response.resolve({
-            //             status: 408,
-            //             headers: {"Content-Type": "text/plain"},
-            //             body: ["Request Timeout"]
-            //         });
-            //     }
-            // }
         });
     }
     exchange.wait();
