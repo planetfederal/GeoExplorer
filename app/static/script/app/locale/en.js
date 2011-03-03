@@ -24,6 +24,10 @@ GeoExt.Lang.add("en", {
     },
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Export Map",
-        saveMapText: "Save Map"
+        saveMapText: "Save Map",
+        toolsTitle: "Choose tools to include in the toolbar:",
+        previewText: "Preview",
+        backText: "Back",
+        nextText: "Next"
     }
 });

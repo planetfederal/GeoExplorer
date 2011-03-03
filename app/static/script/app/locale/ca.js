@@ -24,6 +24,10 @@ GeoExt.Lang.add("ca", {
     },
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Exporta el Mapa",
-        saveMapText: "Desa el Mapa"
+        saveMapText: "Desa el Mapa",
+        toolsTitle: "Escolliu els elements que desitgeu incloure a la barra d'eines:",
+        previewText: "Vista prèvia",
+        backText: "Anterior",
+        nextText: "Següent"
     }
 });
