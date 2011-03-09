@@ -253,6 +253,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         googleEarthPanel.on("show", function() {
+            // loop over all the tools and remove their output
+            for (var key in this.tools) {
+                var tool = this.tools[key];
+                if (tool.outputTarget === "map") {
+                    tool.removeOutput();
+                }
+            }
             var layersContainer = Ext.getCmp('layertree');
             if (layersContainer && layersContainer.getTopToolbar()) {
                 layersContainer.getTopToolbar().setDisabled(true);
