@@ -25,7 +25,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     backText: "Back",
     nextText: "Next",
     loginText: "Login",
-    logoutText: "Logout",
     loginErrorText: "Invalid username or password.",
     userFieldText: "User",
     passwordFieldText: "Password", 
@@ -189,31 +188,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         win.show();
     },
 
-    /** private: method[logOut]
-     * Log out the user from the application.
-     */
-    logOut: function() {
-        document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT;Path=/";
-        this.authorizedRoles = [];
-        this.showLoginButton();
-    },
-
-    /** private: method[showLoginButton]
-     * Replace the logout button with the login button.
-     */
-    showLoginButton: function() {
-        this.loginButton.setText(this.loginText);
-        this.loginButton.setHandler(this.showLoginDialog, this);
-    },
-
-    /** private: method[showLogoutButton]
-     * Replace the login button with the logout button.
-     */
-    showLogoutButton: function() {
-        this.loginButton.setText(this.logoutText);
-        this.loginButton.setHandler(this.logOut, this);
-    },
-
     /**
      * api: method[createTools]
      * Create the toolbar configuration for the main view.
@@ -221,21 +195,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     createTools: function() {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
-        // unauthorized
+        // unauthorized, show login button
         if (this.status === 401) {
-            this.loginButton = new Ext.Button({
+            var loginButton = new Ext.Button({
                 text: this.loginText,
                 handler: this.showLoginDialog,
                 scope: this
             });
-        } else {
-            this.loginButton = new Ext.Button({
-                text: this.logoutText,
-                handler: this.logOut,
-                scope: this
-            });
+            tools.push(['->', loginButton]);
         }
-        tools.push(['->', this.loginButton]);
 
         var aboutButton = new Ext.Button({
             text: this.appInfoText,

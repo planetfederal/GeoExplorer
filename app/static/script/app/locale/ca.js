@@ -30,7 +30,6 @@ GeoExt.Lang.add("ca", {
         backText: "Anterior",
         nextText: "Següent",
         loginText: "Login",
-        logoutText: "Logout",
         loginErrorText: "Invalid username or password.",
         userFieldText: "User",
         passwordFieldText: "Password"
