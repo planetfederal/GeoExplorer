@@ -24,6 +24,15 @@ GeoExt.Lang.add("fr", {
     },
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Carte Export",
-        saveMapText: "Enregistrez la carte"
+        saveMapText: "Enregistrez la carte",
+        toolsTitle: "Choose tools to include in the toolbar:",
+        previewText: "Preview",
+        backText: "Back",
+        nextText: "Next",
+        loginText: "Login",
+        logoutText: "Logout",
+        loginErrorText: "Invalid username or password.",
+        userFieldText: "User",
+        passwordFieldText: "Password"
     }
 });

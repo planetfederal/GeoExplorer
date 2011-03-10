@@ -28,6 +28,11 @@ GeoExt.Lang.add("ca", {
         toolsTitle: "Escolliu els elements que desitgeu incloure a la barra d'eines:",
         previewText: "Vista prèvia",
         backText: "Anterior",
-        nextText: "Següent"
+        nextText: "Següent",
+        loginText: "Login",
+        logoutText: "Logout",
+        loginErrorText: "Invalid username or password.",
+        userFieldText: "User",
+        passwordFieldText: "Password"
     }
 });

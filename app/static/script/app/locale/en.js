@@ -28,6 +28,11 @@ GeoExt.Lang.add("en", {
         toolsTitle: "Choose tools to include in the toolbar:",
         previewText: "Preview",
         backText: "Back",
-        nextText: "Next"
+        nextText: "Next",
+        loginText: "Login",
+        logoutText: "Logout",
+        loginErrorText: "Invalid username or password.",
+        userFieldText: "User",
+        passwordFieldText: "Password"
     }
 });

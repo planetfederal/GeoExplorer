@@ -28,6 +28,11 @@ GeoExt.Lang.add("es", {
         toolsTitle: "Escoja los elementos que desea incluir en la barra de herramientas:",
         previewText: "Vista previa",
         backText: "Anterior",
-        nextText: "Siguiente"
+        nextText: "Siguiente",
+        loginText: "Login",
+        logoutText: "Logout",
+        loginErrorText: "Invalid username or password.",
+        userFieldText: "User",
+        passwordFieldText: "Password"
     }
 });

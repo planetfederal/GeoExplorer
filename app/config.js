@@ -3,7 +3,7 @@ var Request = require("ringo/webapp/request").Request;
 
 var urls = [
     [(/^\/(index(.html)?)?/), require("./root/index").app],
-    // [(/^\/(login)/), require("./root/login").app],
+    [(/^\/(login)/), require("./root/login").app],
     [(/^\/(proxy)/), require("./root/proxy").app],
     [(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
     [(/^\/(composer)/), require("./root/composer").app],

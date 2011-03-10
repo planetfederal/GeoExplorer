@@ -24,10 +24,18 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     previewText: "Preview",
     backText: "Back",
     nextText: "Next",
+    loginText: "Login",
+    logoutText: "Logout",
+    loginErrorText: "Invalid username or password.",
+    userFieldText: "User",
+    passwordFieldText: "Password", 
     // End i18n.
 
     constructor: function(config) {
-        
+        if (config.status === 401) {
+            // user is not authorized
+            config.authorizedRoles = [];
+        }
         config.tools = [
             {
                 ptype: "gxp_layertree",
@@ -91,8 +99,120 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         ];
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
-    }, 
-    
+    },
+
+    /** private: method[showLoginDialog]
+     * Show the login dialog for the user to login.
+     */
+    showLoginDialog: function() {
+        var panel = new Ext.FormPanel({
+            url: "login",
+            frame: true,
+            labelWidth: 60,
+            defaultType: "textfield",
+            errorReader: {
+                read: function(response) {
+                    var success = false;
+                    var records = [];
+                    if (response.status === 200) {
+                        success = true;
+                    } else {
+                        records = [
+                            {data: {id: "username", msg: this.loginErrorText}},
+                            {data: {id: "password", msg: this.loginErrorText}}
+                        ];
+                    }
+                    return {
+                        success: success,
+                        records: records
+                    };
+                }
+            },
+            items: [{
+                fieldLabel: this.userFieldText,
+                name: "username",
+                allowBlank: false
+            }, {
+                fieldLabel: this.passwordFieldText,
+                name: "password",
+                inputType: "password",
+                allowBlank: false
+            }],
+            buttons: [{
+                text: this.loginText,
+                formBind: true,
+                handler: submitLogin,
+                scope: this
+            }],
+            keys: [{ 
+                key: [Ext.EventObject.ENTER], 
+                handler: submitLogin,
+                scope: this
+            }]
+        });
+
+        function submitLogin() {
+            panel.buttons[0].disable();
+            panel.getForm().submit({
+                success: function(form, action) {
+                    var cookie = action.response.getResponseHeader("Set-Cookie");
+                    if (cookie) {
+                        // TODO: old browser workaround, confirm or remove
+                        document.cookie = cookie;
+                    }
+                    this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
+                    this.showLogoutButton();
+                    win.close();
+                },
+                failure: function(form, action) {
+                    this.authorizedRoles = [];
+                    panel.buttons[0].enable();
+                    form.markInvalid({
+                        "username": this.loginErrorText,
+                        "password": this.loginErrorText
+                    });
+                },
+                scope: this
+            });
+        }
+                
+        var win = new Ext.Window({
+            title: this.loginText,
+            layout: "fit",
+            width: 235,
+            height: 130,
+            plain: true,
+            border: false,
+            modal: true,
+            items: [panel],
+        });
+        win.show();
+    },
+
+    /** private: method[logOut]
+     * Log out the user from the application.
+     */
+    logOut: function() {
+        document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT;Path=/";
+        this.authorizedRoles = [];
+        this.showLoginButton();
+    },
+
+    /** private: method[showLoginButton]
+     * Replace the logout button with the login button.
+     */
+    showLoginButton: function() {
+        this.loginButton.setText(this.loginText);
+        this.loginButton.setHandler(this.showLoginDialog, this);
+    },
+
+    /** private: method[showLogoutButton]
+     * Replace the login button with the logout button.
+     */
+    showLogoutButton: function() {
+        this.loginButton.setText(this.logoutText);
+        this.loginButton.setHandler(this.logOut, this);
+    },
 
     /**
      * api: method[createTools]
@@ -100,6 +220,22 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      */
     createTools: function() {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
+
+        // unauthorized
+        if (this.status === 401) {
+            this.loginButton = new Ext.Button({
+                text: this.loginText,
+                handler: this.showLoginDialog,
+                scope: this
+            });
+        } else {
+            this.loginButton = new Ext.Button({
+                text: this.logoutText,
+                handler: this.logOut,
+                scope: this
+            });
+        }
+        tools.push(['->', this.loginButton]);
 
         var aboutButton = new Ext.Button({
             text: this.appInfoText,
