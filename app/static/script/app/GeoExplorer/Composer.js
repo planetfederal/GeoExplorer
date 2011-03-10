@@ -33,7 +33,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     constructor: function(config) {
         if (config.status === 401) {
             // user is not authorized
-            config.authorizedRoles = [];
+            this.authorizedRoles = [];
+        } else {
+            this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
         }
         config.tools = [
             {
@@ -100,6 +102,13 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
 
+    /** api: method[destroy]
+     */
+    destroy: function() {
+        this.loginButton = null;
+        GeoExplorer.Composer.superclass.destroy.apply(this, arguments);
+    },
+
     /** private: method[showLoginDialog]
      * Show the login dialog for the user to login.
      */
@@ -160,7 +169,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                         document.cookie = cookie;
                     }
                     this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
-                    this.showLogoutButton();
+                    Ext.getCmp('paneltbar').items.each(function(tool) {
+                        if (tool.needsAuthorization === true) {
+                            tool.enable();
+                        }
+                    });
+                    this.loginButton.hide();
                     win.close();
                 },
                 failure: function(form, action) {
@@ -197,12 +211,13 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
         // unauthorized, show login button
         if (this.status === 401) {
-            var loginButton = new Ext.Button({
+            this.loginButton = new Ext.Button({
                 text: this.loginText,
                 handler: this.showLoginDialog,
                 scope: this
             });
-            tools.push(['->', loginButton]);
+            tools.push(['->', this.loginButton]);
+        } else {
         }
 
         var aboutButton = new Ext.Button({
@@ -215,6 +230,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         tools.unshift("-");
         tools.unshift(new Ext.Button({
             tooltip: this.exportMapText,
+            needsAuthorization: true,
+            disabled: !this.isAuthorized(),
             handler: function() {
                 this.save(this.showEmbedWindow);
             },
@@ -223,6 +240,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         }));
         tools.unshift(new Ext.Button({
             tooltip: this.saveMapText,
+            needsAuthorization: true,
+            disabled: !this.isAuthorized(),
             handler: function() {
                 this.save(this.showUrl);
             },
