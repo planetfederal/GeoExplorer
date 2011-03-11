@@ -117,20 +117,6 @@ body {
     background-image: url(img/geosilk/google_earth.png);
 }
 
-.x-menu-group-item .x-menu-item-icon {
-    background: transparent url(../../externals/ext/resources/images/default/form/radio.gif) no-repeat 0 0;
-    height: 13px;
-    width: 13px;
-    margin: 2px;
-}
-
-.x-menu-item-checked .x-menu-group-item .x-menu-item-icon {
-    background: transparent url(../../externals/ext/resources/images/default/form/radio.gif) no-repeat -13px -13px;
-    height: 13px;
-    width: 13px;
-    margin: 2px;
-}
-
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
