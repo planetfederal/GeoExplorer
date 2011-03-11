@@ -10,7 +10,6 @@ GeoExt.Lang.add("es", {
         xhrTroubleText: "Problemas de comunicación: Estado ",
         layersText: "Capas",
         titleText: "Título",
-        zoomLevelText: "Escala",
         switch3dText: "Vista 3D",
         saveErrorText: "Problemas guardando: ",
         bookmarkText: "URL del marcador",

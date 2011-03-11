@@ -10,7 +10,6 @@ GeoExt.Lang.add("ca", {
         xhrTroubleText: "Problemes de comunicació. Estat ",
         layersText: "Capes",
         titleText: "Títol",
-        zoomLevelText: "Escala",
         switch3dText: "Vista 3D",
         saveErrorText: "Problemes desant: ",
         bookmarkText: "URL del marcador",

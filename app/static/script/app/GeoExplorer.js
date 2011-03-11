@@ -52,7 +52,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     xhrTroubleText: "Communication Trouble: Status ",
     layersText: "Layers",
     titleText: "Title",
-    zoomLevelText: "Zoom level",
     switch3dText: "Switch to 3D Viewer",
     saveErrorText: "Trouble saving: ",
     bookmarkText: "Bookmark URL",
@@ -74,14 +73,18 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     toggleGroup: "toolGroup",
 
     constructor: function(config) {
-        this.mapItems = [{
-            xtype: "gx_zoomslider",
-            vertical: true,
-            height: 100,
-            plugins: new GeoExt.ZoomSliderTip({
-                template: this.zoomSliderText
-            })
-        }];
+        this.mapItems = [
+            {
+                xtype: "gxp_scaleoverlay"
+            }, {
+                xtype: "gx_zoomslider",
+                vertical: true,
+                height: 100,
+                plugins: new GeoExt.ZoomSliderTip({
+                    template: this.zoomSliderText
+                })
+            }
+        ];
 
         // both the Composer and the Viewer need to know about the viewerTools
         // First row in each object is needed to correctly render a tool in the treeview
@@ -208,10 +211,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     initPortal: function() {
         
-        // TODO: make a proper component out of this
-        var mapOverlay = this.createMapOverlay();
-        this.mapPanel.add(mapOverlay);
-
         var westPanel = new Ext.Panel({
             border: false,
             layout: "border",
@@ -299,98 +298,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
     },
     
-    /** private: method[createMapOverlay]
-     * Builds the :class:`Ext.Panel` containing components to be overlaid on the
-     * map, setting up the special configuration for its layout and 
-     * map-friendliness.
-     */
-    createMapOverlay: function() {
-        var scaleLinePanel = new Ext.BoxComponent({
-            autoEl: {
-                tag: "div",
-                cls: "olControlScaleLine overlay-element overlay-scaleline"
-            }
-        });
-
-        scaleLinePanel.on('render', function(){
-            var scaleLine = new OpenLayers.Control.ScaleLine({
-                div: scaleLinePanel.getEl().dom
-            });
-
-            this.mapPanel.map.addControl(scaleLine);
-            scaleLine.activate();
-        }, this);
-
-        var zoomStore = new GeoExt.data.ScaleStore({
-            map: this.mapPanel.map
-        });
-
-        var zoomSelector = new Ext.form.ComboBox({
-            emptyText: this.zoomLevelText,
-            tpl: '<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(values.scale)]}</div></tpl>',
-            editable: false,
-            triggerAction: 'all',
-            mode: 'local',
-            store: zoomStore,
-            width: 110
-        });
-
-        zoomSelector.on({
-            click: function(evt) {
-                evt.stopEvent();
-            },
-            mousedown: function(evt) {
-                evt.stopEvent();
-            },
-            select: function(combo, record, index) {
-                this.mapPanel.map.zoomTo(record.data.level);
-            },
-            scope: this
-        });
-
-        var zoomSelectorWrapper = new Ext.Panel({
-            items: [zoomSelector],
-            cls: 'overlay-element overlay-scalechooser',
-            border: false 
-        });
-
-        this.mapPanel.map.events.register('zoomend', this, function() {
-            var scale = zoomStore.queryBy(function(record) {
-                return this.mapPanel.map.getZoom() == record.data.level;
-            }, this);
-
-            if (scale.length > 0) {
-                scale = scale.items[0];
-                zoomSelector.setValue("1 : " + parseInt(scale.data.scale, 10));
-            } else {
-                if (!zoomSelector.rendered) {
-                    return;
-                }
-                zoomSelector.clearValue();
-            }
-        });
-
-        var mapOverlay = new Ext.Panel({
-            // title: "Overlay",
-            cls: 'map-overlay',
-            items: [
-                scaleLinePanel,
-                zoomSelectorWrapper
-            ]
-        });
-
-
-        mapOverlay.on("afterlayout", function(){
-            scaleLinePanel.getEl().dom.style.position = 'relative';
-            scaleLinePanel.getEl().dom.style.display = 'inline';
-
-            mapOverlay.getEl().on("click", function(x){x.stopEvent();});
-            mapOverlay.getEl().on("mousedown", function(x){x.stopEvent();});
-        }, this);
-
-        return mapOverlay;
-    },
-
     /** private: method[createTools]
      * Create the toolbar configuration for the main panel.  This method can be 
      * overridden in derived explorer classes such as :class:`GeoExplorer.Composer`
