@@ -33,6 +33,10 @@ body {
     background: url(../../externals/ext/resources/images/default/tree/folder-open.gif);
 }
 
+.x-btn .login {
+    background-image: url(img/silk/door_in.png);
+}
+
 .x-btn .icon-geoexplorer {
     background-image: url(img/geoexplorer.png);
 }

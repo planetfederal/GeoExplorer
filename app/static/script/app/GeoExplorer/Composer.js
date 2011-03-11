@@ -213,6 +213,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         // unauthorized, show login button
         if (this.status === 401) {
             this.loginButton = new Ext.Button({
+                iconCls: 'login',
                 text: this.loginText,
                 handler: this.showLoginDialog,
                 scope: this
