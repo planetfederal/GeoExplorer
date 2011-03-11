@@ -259,14 +259,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     tool.removeOutput();
                 }
             }
-            var layersContainer = Ext.getCmp('layertree');
+            var layersContainer = Ext.getCmp('tree');
             if (layersContainer && layersContainer.getTopToolbar()) {
                 layersContainer.getTopToolbar().setDisabled(true);
             }
         }, this);
 
         googleEarthPanel.on("hide", function() {
-            var layersContainer = Ext.getCmp('layertree');
+            var layersContainer = Ext.getCmp('tree');
             if (layersContainer && layersContainer.getTopToolbar()) {
                 layersContainer.getTopToolbar().setDisabled(false);
             }
