@@ -268,8 +268,16 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         googleEarthPanel.on("hide", function() {
             var layersContainer = Ext.getCmp('tree');
             if (layersContainer && layersContainer.getTopToolbar()) {
+                // enable only those items that were not specifically disabled
+                var disabled = layersContainer.getTopToolbar().items.filterBy(function(item) {
+                    return item.initialConfig && item.initialConfig.disabled;
+                });
                 layersContainer.getTopToolbar().setDisabled(false);
+                disabled.each(function(item) {
+                    item.disable();
+                });
             }
+
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({
