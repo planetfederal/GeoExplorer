@@ -215,14 +215,6 @@ body {
     margin-top: 1em;
 }
 
-.x-tree-node-leaf  .gx-tree-layer-icon {
-    background-image: url(img/geosilk/vector.png);
-}
-
-.x-tree-node-leaf  .gxp-tree-rasterlayer-icon {
-    background-image: url(img/geosilk/raster.png);
-}
-
 /* TODO: Remove this if GetFeatureInfo is changed from text/html */
 
 table.featureInfo, table.featureInfo td, table.featureInfo th {
