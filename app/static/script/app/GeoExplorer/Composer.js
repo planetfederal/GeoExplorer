@@ -97,6 +97,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 customParams: {outputFilename: 'GeoExplorer-print'},
                 printService: config.printService,
                 actionTarget: {target: "paneltbar", index: 5}
+            }, {
+                ptype: "gxp_googleearth",
+                actionTarget: {target: "paneltbar", index: 17},
+                apiKey: 'ABQIAAAAeDjUod8ItM9dBg5_lz0esxTnme5EwnLVtEDGnh-lFVzRJhbdQhQBX5VH8Rb3adNACjSR5kaCLQuBmw' 
             }
         ];
         

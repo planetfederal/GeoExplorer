@@ -11,7 +11,6 @@ GeoExt.Lang.add("en", {
         layersText: "Layers",
         titleText: "Title",
         zoomLevelText: "Zoom level",
-        switch3dText: "Switch to 3D Viewer",
         saveErrorText: "Trouble saving: ",
         bookmarkText: "Bookmark URL",
         permakinkText: 'Permalink',

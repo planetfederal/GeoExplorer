@@ -52,7 +52,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     xhrTroubleText: "Communication Trouble: Status ",
     layersText: "Layers",
     titleText: "Title",
-    switch3dText: "Switch to 3D Viewer",
     saveErrorText: "Trouble saving: ",
     bookmarkText: "Bookmark URL",
     permakinkText: 'Permalink',
@@ -142,8 +141,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 iconCls: "gxp-icon-legend",
                 ptype: "gxp_legend",
                 actionTarget: {target: "paneltbar", index: 10}
-            }
-        ]; 
+            }, {
+                leaf: true,
+                text: gxp.plugins.GoogleEarth.prototype.tooltip,
+                checked: true,
+                iconCls: "gxp-icon-googleearth",
+                ptype: "gxp_googleearth",
+                actionTarget: {target: "paneltbar", index: 11}
+        }];
 
         GeoExplorer.superclass.constructor.apply(this, arguments);
     }, 
@@ -252,6 +257,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
 
         googleEarthPanel.on("show", function() {
+            this.toolbar.disable();
             // loop over all the tools and remove their output
             for (var key in this.tools) {
                 var tool = this.tools[key];
@@ -266,6 +272,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }, this);
 
         googleEarthPanel.on("hide", function() {
+            this.toolbar.enable();
             var layersContainer = Ext.getCmp('tree');
             if (layersContainer && layersContainer.getTopToolbar()) {
                 // enable only those items that were not specifically disabled
@@ -312,32 +319,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      * or :class:`GeoExplorer.Viewer` to provide specialized controls.
      */
     createTools: function() {
-        
-
-        var toolGroup = this.toggleGroup;
-
-        var enable3DButton = new Ext.Button({
-            iconCls: "icon-3D",
-            tooltip: this.switch3dText,
-            enableToggle: true,
-            toggleHandler: function(button, state) {
-                if (state === true) {
-                    this.mapPanelContainer.getLayout().setActiveItem(1);
-                    this.toolbar.disable();
-                    button.enable();
-                } else {
-                    this.mapPanelContainer.getLayout().setActiveItem(0);
-                    this.toolbar.enable();
-                }
-            },
-            scope: this
-        });
-    
         var tools = [
-            "-",
-            enable3DButton
+            "-"
         ];
-
         return tools;
     },
     
