@@ -202,7 +202,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             plain: true,
             border: false,
             modal: true,
-            items: [panel],
+            items: [panel]
         });
         win.show();
     },
