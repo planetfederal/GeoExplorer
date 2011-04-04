@@ -1,7 +1,7 @@
-
+// the autoloader injects scripts into the document dynamically
+// only suitable for development/debug mode
 
 var FS = require("fs");
-var URLMap = require("util").URLMap;
 var STATIC = require("ringo/middleware/static").middleware;
 
 // TODO: unhack this
@@ -10,7 +10,7 @@ require.paths.push(path);
 var CONFIG = require("buildkit/config");
 var MERGE = require("buildkit/merge");
 
-
+// TODO: convert this to a real template
 var template = '                                                            \n\
 (function() {                                                               \n\
                                                                             \n\
@@ -21,28 +21,15 @@ var template = '                                                            \n\
     parts.pop();                                                            \n\
     var path = parts.join("/");                                             \n\
                                                                             \n\
-    var appendable = !(/MSIE/.test(navigator.userAgent) ||                  \n\
-                       /Safari/.test(navigator.userAgent));                 \n\
     var pieces = new Array(jsfiles.length);                                 \n\
                                                                             \n\
-    var element = document.getElementsByTagName("head").length ?            \n\
-                    document.getElementsByTagName("head")[0] :              \n\
-                    document.body;                                          \n\
-    var script, src;                                                        \n\
+    var src;                                                                \n\
                                                                             \n\
     for(var i=0; i<jsfiles.length; i++) {                                   \n\
         src = path + "/" + jsfiles[i];                                      \n\
-        if(!appendable) {                                                   \n\
-            pieces[i] = "<script src=\'" + src + "\'></script>";            \n\
-        } else {                                                            \n\
-            script = document.createElement("script");                      \n\
-            script.src = src;                                               \n\
-            element.appendChild(script);                                    \n\
-        }                                                                   \n\
+        pieces[i] = "<script src=\'" + src + "\'></script>";                \n\
     }                                                                       \n\
-    if(!appendable) {                                                       \n\
-        document.write(pieces.join(""));                                    \n\
-    }                                                                       \n\
+    document.write(pieces.join(""));                                        \n\
 })();                                                                       \n\
 ';
 
@@ -103,3 +90,54 @@ var App = function(config) {
 };
 
 exports.App = App;
+
+var URLMap = function(map, options) {
+    var options = options || { longestMatchFirst : true },
+        mapping = [];
+        
+    for (var location in map) {
+        var app = map[location],
+            host = null,
+            match;
+        
+        if (match = location.match(/^https?:\/\/(.*?)(\/.*)/)) {
+            host = match[1];
+            location = match[2];
+        }
+            
+        if (location.charAt(0) != "/") {
+            throw new Error("paths need to start with / (was: " + location + ")");
+        }
+        
+        mapping.push([host, location.replace(/\/+$/,""), app]);
+    }
+    // if we want to match longest matches first, then sort
+    if (options.longestMatchFirst) {
+        mapping = mapping.sort(function(a, b) {
+            return (b[1].length - a[1].length) || ((b[0]||"").length - (a[0]||"").length);
+        });
+    }
+    
+    return function(env, path) {
+        path = (path || env.pathInfo).replace(/\/+$/,"");
+        var hHost = env.host, sPort = env.port;
+
+        for (var i = 0; i < mapping.length; i++) {
+            var host = mapping[i][0], location = mapping[i][1], app = mapping[i][2];
+
+            if ((host === hHost || (host === null)) &&
+                (location === path.substring(0, location.length)) &&
+                (path.charAt(location.length) === "" || path.charAt(location.length) === "/"))
+            {
+                env = Object.create(env); // make a shallow "copy", since we're modifying SCRIPT_NAME / PATH_INFO
+
+                env.scriptName += location;
+                env.pathInfo = path.substring(location.length);
+
+                return app(env);
+            }
+        }
+
+        throw {notfound: true};
+    }
+}
