@@ -31,12 +31,16 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // End i18n.
 
     constructor: function(config) {
-        if (config.status === 401) {
-            // user is not authorized
+        if (config.authStatus === 401) {
+            // user has not authenticated or is not authorized
             this.authorizedRoles = [];
         } else {
+            // user has authenticated or auth back-end is not available
             this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
         }
+        // should not be persisted or accessed again
+        delete config.authStatus;
+
         config.tools = [
             {
                 ptype: "gxp_layertree",
@@ -215,7 +219,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         // unauthorized, show login button
-        if (this.status === 401) {
+        if (this.authorizedRoles.length === 0) {
             this.loginButton = new Ext.Button({
                 iconCls: 'login',
                 text: this.loginText,
