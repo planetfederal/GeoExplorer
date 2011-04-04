@@ -83,6 +83,12 @@
         
     </target>
 
+    <target name="war" depends="dist">
+        <war destfile="${build}/${ant.project.name}.war">
+            <fileset dir="${build}/${ant.project.name}"/>
+        </war>
+    </target>
+
     <target name="debug">
         <java jar="externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
