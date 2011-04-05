@@ -46,6 +46,12 @@ if (java.lang.System.getProperty("app.debug")) {
             })]
         );
     }
+    
+    // TODO: remove this - for temporary debugging of the proxy only
+    urls.push([
+        (/^\/wms/), require("./proxywms").app
+    ]);
+    
 }
 
 
