@@ -110,7 +110,6 @@ function proxyPass(config) {
     } else {
         // re-issue request
         var client = new Client();
-        // response = defer();
         var exchange = client.request({
             url: outgoing.url,
             method: outgoing.method,
