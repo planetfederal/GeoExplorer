@@ -1,4 +1,4 @@
-var Client = require("ringo/httpclient").Client;
+var clientRequest = require("ringo/httpclient").request;
 var Request = require("ringo/webapp/request").Request;
 var Headers = require("ringo/utils/http").Headers;
 var MemoryStream = require("io").MemoryStream;
@@ -108,8 +108,7 @@ function proxyPass(config) {
         response = responseForStatus(400, "The url parameter value must be absolute url with same scheme as request.");
     } else {
         // re-issue request
-        var client = new Client();
-        var exchange = client.request({
+        var exchange = clientRequest({
             url: outgoing.url,
             method: outgoing.method,
             username: outgoing.username,
