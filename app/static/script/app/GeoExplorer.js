@@ -255,8 +255,20 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 }
             }
         });
+        
+        // TODO: continue making this Google Earth Panel more independent
+        // Currently, it's too tightly tied into the viewer.
+        // In the meantime, we keep track of all items that the were already
+        // disabled when the panel is shown.
+        var preGoogleDisabled = [];
 
         googleEarthPanel.on("show", function() {
+            preGoogleDisabled.length = 0;
+            this.toolbar.items.each(function(item) {
+                if (item.disabled) {
+                    preGoogleDisabled.push(item);
+                }
+            })
             this.toolbar.disable();
             // loop over all the tools and remove their output
             for (var key in this.tools) {
@@ -265,24 +277,30 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     tool.removeOutput();
                 }
             }
-            var layersContainer = Ext.getCmp('tree');
-            if (layersContainer && layersContainer.getTopToolbar()) {
-                layersContainer.getTopToolbar().setDisabled(true);
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.items.each(function(item) {
+                    if (item.disabled) {
+                        preGoogleDisabled.push(item);
+                    }
+                });
+                layersToolbar.disable();
             }
         }, this);
 
         googleEarthPanel.on("hide", function() {
+            // re-enable all tools
             this.toolbar.enable();
-            var layersContainer = Ext.getCmp('tree');
-            if (layersContainer && layersContainer.getTopToolbar()) {
-                // enable only those items that were not specifically disabled
-                var disabled = layersContainer.getTopToolbar().items.filterBy(function(item) {
-                    return item.initialConfig && item.initialConfig.disabled;
-                });
-                layersContainer.getTopToolbar().setDisabled(false);
-                disabled.each(function(item) {
-                    item.disable();
-                });
+            
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.enable();
+            }
+            // now go back and disable all things that were disabled previously
+            for (var i=0, ii=preGoogleDisabled.length; i<ii; ++i) {
+                preGoogleDisabled[i].disable();
             }
 
         }, this);
