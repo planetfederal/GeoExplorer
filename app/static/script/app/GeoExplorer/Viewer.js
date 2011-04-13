@@ -21,10 +21,30 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
     applyConfig: function(config) {
         var allTools = config.viewerTools || this.viewerTools;
         var tools = [];
+        var toolConfig;
         for (var i=0, len=allTools.length; i<len; i++) {
             var tool = allTools[i];
             if (tool.checked === true) {
-                tools.push({ptype: tool.ptype, toggleGroup: tool.toggleGroup, actionTarget: tool.actionTarget});
+                toolConfig = {
+                    ptype: tool.ptype, 
+                    toggleGroup: tool.toggleGroup, 
+                    actionTarget: tool.actionTarget
+                };
+                // TODO: Remove this hack for getting the apiKey into the viewer
+                if (tool.ptype === "gxp_googleearth") {
+                    // look for apiKey and apiKeys in saved composer config
+                    var jj = config.tools ? config.tools.length : 0;
+                    var composerConfig;
+                    for (var j=0; j<jj; ++j) {
+                        composerConfig = config.tools[j];
+                        if (composerConfig.ptype === tool.ptype) {
+                            toolConfig.apiKey = composerConfig.apiKey;
+                            toolConfig.apiKeys = composerConfig.apiKeys;
+                            break;
+                        }
+                    }
+                }
+                tools.push(toolConfig);
             }
         }
         config.tools = tools;
