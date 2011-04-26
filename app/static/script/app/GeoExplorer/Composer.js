@@ -103,8 +103,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 5}
             }, {
                 ptype: "gxp_googleearth",
-                actionTarget: {target: "paneltbar", index: 17}/*,
-                apiKey: 'ABQIAAAAeDjUod8ItM9dBg5_lz0esxTnme5EwnLVtEDGnh-lFVzRJhbdQhQBX5VH8Rb3adNACjSR5kaCLQuBmw'*/
+                actionTarget: {target: "paneltbar", index: 17},
+                apiKeys: {
+                    "localhost": "ABQIAAAAeDjUod8ItM9dBg5_lz0esxTnme5EwnLVtEDGnh-lFVzRJhbdQhQBX5VH8Rb3adNACjSR5kaCLQuBmw",
+                    "example.com": "-your-api-key-here-"
+                }
             }
         ];
         
@@ -172,11 +175,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             panel.buttons[0].disable();
             panel.getForm().submit({
                 success: function(form, action) {
-                    var cookie = action.response.getResponseHeader("Set-Cookie");
-                    if (cookie) {
-                        // TODO: old browser workaround, confirm or remove
-                        document.cookie = cookie;
-                    }
                     this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
                     Ext.getCmp('paneltbar').items.each(function(tool) {
                         if (tool.needsAuthorization === true) {
