@@ -30,27 +30,10 @@ if (java.lang.System.getProperty("app.debug")) {
             [(/^\/geoserver\/(.*)/), require("./root/proxy").pass({
                 url: geoserver, 
                 allowAuth: true, 
-                /**
-                 * Setting preserveHost to true makes it so GeoServer advertises
-                 * URLs on the same origin as this app.  That makes it so the
-                 * proxy is not involved in any requests issued to this same
-                 * GeoServer.  The reason this is required is because we want
-                 * to preserve auth related headers in requests to GeoServer and
-                 * we don't want to send those same auth related headers to
-                 * every service that is proxied.  The negative side effect is
-                 * that the proxy will occasionally fail due to 
-                 * java.lang.OutOfMemoryError issues.
-                 * TODO: figure out why so much memory is being consumed in proxy
-                 */
                 preserveHost: true
             })]
         );
     }
-    
-    // TODO: remove this - for temporary debugging of the proxy only
-    urls.push([
-        (/^\/wms/), require("./proxywms").app
-    ]);
     
 }
 
