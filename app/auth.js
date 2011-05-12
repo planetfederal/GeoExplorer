@@ -2,6 +2,14 @@ var Client = require("ringo/httpclient").Client;
 var Headers = require("ringo/utils/http").Headers;
 var objects = require("ringo/utils/objects");
 
+var defaultClient;
+function getClient() {
+    if (!defaultClient) {
+        defaultClient = new Client(undefined, false);
+    }
+    return defaultClient;
+}
+
 function getAuthUrl(request) {
     var url = java.lang.System.getProperty("app.proxy.geoserver");
     if (url) {
@@ -18,8 +26,8 @@ var getDetails = exports.getDetails = function(request) {
     var url = getAuthUrl(request);
     var status = 401;
     var headers = new Headers(objects.clone(request.headers));
-    var client = new Client(undefined, false);
     var token = headers.get("Cookie");
+    var client = getClient();
     var exchange;
     if (token) {
         // already have a cookie, check if authorized
