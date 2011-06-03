@@ -23,11 +23,11 @@ function getGeoServerUrl(request) {
 }
 
 function getLoginUrl(request) {
-    return getGeoServerUrl() + "j_spring_security_check";
+    return getGeoServerUrl(request) + "j_spring_security_check";
 }
 
 function getAuthUrl(request) {
-    return getGeoServerUrl() + "rest";
+    return getGeoServerUrl(request) + "rest";
 }
 
 // get status (ACK!) by parsing Location header
