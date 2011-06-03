@@ -10,7 +10,7 @@ function getClient() {
     return defaultClient;
 }
 
-function getAuthUrl(request) {
+function getGeoServerUrl(request) {
     var url = java.lang.System.getProperty("app.proxy.geoserver");
     if (url) {
         if (url.charAt(url.length-1) !== "/") {
@@ -19,62 +19,78 @@ function getAuthUrl(request) {
     } else {
         url = request.scheme + "://" + request.host + (request.port ? ":" + request.port : "") + "/geoserver/";
     }
-    return url + "rest";
+    return url;
 }
 
-var getDetails = exports.getDetails = function(request) {
+function getLoginUrl(request) {
+    return getGeoServerUrl() + "j_spring_security_check";
+}
+
+function getAuthUrl(request) {
+    return getGeoServerUrl() + "rest";
+}
+
+// get status (ACK!) by parsing Location header
+function parseStatus(exchange) {
+    var status = 200;
+    var location = exchange.headers.get("Location");
+    if (/error=true/.test(location)) {
+        status = 401;
+    }
+    return status;
+}
+
+exports.getStatus = function(request) {
     var url = getAuthUrl(request);
     var status = 401;
-    var headers = new Headers(objects.clone(request.headers));
+    var headers = new Headers(request.headers);
     var token = headers.get("Cookie");
     var client = getClient();
-    var exchange;
-    if (token) {
-        // already have a cookie, check if authorized
-        exchange = client.request({
+    var exchange = client.request({
+        url: url,
+        method: "GET",
+        async: false,
+        headers: headers
+    });
+    exchange.wait();
+    if (exchange.status === 404) {
+        // no auth endpoint
+        status = 404;
+    } else if (token) {
+        // check if authorized
+        status = parseStatus(exchange);
+    }
+    return status;
+};
+
+exports.authenticate = function(request) {
+    var params = request.postParams;
+    var status = 401;
+    var token;
+    if (params.username && params.password) {
+        var url = getLoginUrl(request);
+        var client = getClient();
+        var exchange = client.request({
             url: url,
-            method: "GET",
+            method: "post",
             async: false,
-            headers: headers
+            data: {
+                username: params.username,
+                password: params.password
+            }
         });
         exchange.wait();
-        status = exchange.status;
-    } else {
-        // no cookie, first get one (without Authorization header)
-        var auth = headers.get("Authorization");
-        if (auth) {
-            headers.unset("Authorization");
-        }
-        exchange = client.request({
-            url: url,
-            method: "GET",
-            async: false,
-            headers: headers
-        });
-        exchange.wait();
-        var cookie = exchange.headers.get("Set-Cookie");
-        if (cookie) {
-            token = cookie.split(";").shift();
-        } else {
-            status = 404;
-        }
-        // finally, if we got a cookie and we had auth header, check if authorized
-        if (cookie && auth) {
-            headers.set("Authorization", auth);
-            exchange = client.request({
-                url: url,
-                method: "GET",
-                async: false,
-                headers: headers
-            });
-            exchange.wait();
-            status = exchange.status;
+        status = parseStatus(exchange);
+        if (status === 200) {
+            var cookie = exchange.headers.get("Set-Cookie");
+            if (cookie) {
+                token = cookie.split(";").shift();
+            }
         }
     }
     return {
-        status: status, 
-        token: token, 
-        url: url
-    };
+        token: token,
+        status: status
+    }
 };
 

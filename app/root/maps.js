@@ -80,7 +80,7 @@ var getId = function(env) {
 };
 
 function isAuthorized(env) {
-    return auth.getDetails(new Request(env)).status !== 401;
+    return auth.getStatus(new Request(env)) !== 401;
 }
 
 var handlers = {
