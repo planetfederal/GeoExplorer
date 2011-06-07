@@ -77,7 +77,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_featuremanager",
                 id: "featuremanager",
-                maxFeatures: 20
+                maxFeatures: 20,
+                paging: false
             }, {
                 ptype: "gxp_featureeditor",
                 featureManager: "featuremanager",
