@@ -53,14 +53,7 @@ exports.getStatus = function(request) {
         headers: headers
     });
     exchange.wait();
-    if (exchange.status === 404) {
-        // no auth endpoint
-        status = 404;
-    } else if (token) {
-        // check if authorized
-        status = parseStatus(exchange);
-    }
-    return status;
+    return exchange.status;
 };
 
 exports.authenticate = function(request) {
