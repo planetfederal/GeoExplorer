@@ -29,7 +29,8 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             var tool = allTools[i];
             if (tool.checked === true) {
                 toolConfig = {
-                    ptype: tool.ptype, 
+                    ptype: tool.ptype,
+                    controlOptions: tool.controlOptions,
                     toggleGroup: tool.toggleGroup, 
                     actionTarget: {target: "paneltbar", index: counter}
                 };

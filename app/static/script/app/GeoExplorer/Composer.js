@@ -87,6 +87,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 8}
             }, {
                 ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+                controlOptions: {immediate: true},
                 actionTarget: {target: "paneltbar", index: 10}
             }, {
                 ptype: "gxp_zoom",

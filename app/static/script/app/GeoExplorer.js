@@ -108,7 +108,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 text: gxp.plugins.Measure.prototype.measureTooltip, 
                 checked: true, 
                 iconCls: "gxp-icon-measure-length",
-                ptype: "gxp_measure", 
+                ptype: "gxp_measure",
+                controlOptions: {immediate: true},
                 toggleGroup: this.toggleGroup
             }, {
                 leaf: true, 
