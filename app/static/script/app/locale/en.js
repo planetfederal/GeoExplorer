@@ -22,7 +22,7 @@ GeoExt.Lang.add("en", {
         aboutThisMapText: "About this Map"
     },
     "GeoExplorer.Composer.prototype": {
-        exportMapText: "Export Map",
+        exportMapText: "Publish Map",
         saveMapText: "Save Map",
         toolsTitle: "Choose tools to include in the toolbar:",
         previewText: "Preview",

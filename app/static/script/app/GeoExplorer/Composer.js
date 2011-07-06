@@ -19,7 +19,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
     // Begin i18n.
     saveMapText: "Save Map",
-    exportMapText: "Export Map",
+    exportMapText: "Publish Map",
     toolsTitle: "Choose tools to include in the toolbar:",
     previewText: "Preview",
     backText: "Back",
