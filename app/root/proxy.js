@@ -1,5 +1,4 @@
 var clientRequest = require("ringo/httpclient").request;
-var Request = require("ringo/webapp/request").Request;
 var Headers = require("ringo/utils/http").Headers;
 var MemoryStream = require("io").MemoryStream;
 var objects = require("ringo/utils/objects");
@@ -7,9 +6,8 @@ var responseForStatus = require("../util").responseForStatus;
 
 var URL = java.net.URL;
 
-var app = exports.app = function(env) {
+var app = exports.app = function(request) {
     var response;
-    var request = new Request(env);
     var url = request.queryParams.url;
     if (url) {
         response = proxyPass({
@@ -26,9 +24,9 @@ var pass = exports.pass = function(config) {
     if (typeof config == "string") {
         config = {url: config};
     }
-    return function(env, match) {
-        var request = new Request(env);
-        var newUrl = config.url + match + (request.queryString ? "?" + request.queryString : "");
+    return function(request, path) {
+        var query = request.queryString;
+        var newUrl = config.url + path + (query ? "?" + query : "");
         return proxyPass(objects.merge({
             request: request, 
             url: newUrl
@@ -98,7 +96,7 @@ var createProxyRequestProps = exports.createProxyRequestProps = function(config)
         };
     }
     return props;
-}
+};
 
 function proxyPass(config) {
     var response;
