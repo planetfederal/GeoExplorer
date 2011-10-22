@@ -1,10 +1,13 @@
-var Response = require("ringo/webapp/response").Response;
-var Request = require("ringo/webapp/request").Request;
+var {Application} = require("stick");
+
+var app = exports.app = Application();
+app.configure("render");
+app.render.base = module.resolve("../templates");
+app.render.master = "base.html";
+
 var auth = require("../auth");
 
-exports.app = function(req) {
-    var request = new Request(req);
+app.get("/", function(request) {
     var status = auth.getStatus(request);
-    var response = Response.skin(module.resolve("../templates/composer.html"), {status: status || 404});
-    return response;
-};
+    return app.render("composer.html", {status: status || 404});
+});

@@ -24,8 +24,9 @@ var pass = exports.pass = function(config) {
     if (typeof config == "string") {
         config = {url: config};
     }
-    return function(request, path) {
+    return function(request) {
         var query = request.queryString;
+        var path = request.pathInfo && request.pathInfo.substring(1) || "";
         var newUrl = config.url + path + (query ? "?" + query : "");
         return proxyPass(objects.merge({
             request: request, 
@@ -129,3 +130,4 @@ function proxyPass(config) {
         body: new MemoryStream(exchange.contentBytes)
     };
 }
+

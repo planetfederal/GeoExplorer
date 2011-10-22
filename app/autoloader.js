@@ -6,35 +6,14 @@ var FS = require("fs");
 var CONFIG = require("buildkit").config;
 var MERGE = require("buildkit").merge;
 
-// TODO: convert this to a real template
-var template = '                                                            \n\
-(function() {                                                               \n\
-                                                                            \n\
-    var jsfiles = [@paths@];                                                \n\
-                                                                            \n\
-    var scripts = document.getElementsByTagName("script");                  \n\
-    var parts = scripts[scripts.length-1].src.split("/");                   \n\
-    parts.pop();                                                            \n\
-    var path = parts.join("/");                                             \n\
-                                                                            \n\
-    var pieces = new Array(jsfiles.length);                                 \n\
-                                                                            \n\
-    var src;                                                                \n\
-                                                                            \n\
-    for(var i=0; i<jsfiles.length; i++) {                                   \n\
-        src = path + "/" + jsfiles[i];                                      \n\
-        pieces[i] = "<script src=\'" + src + "\'></script>";                \n\
-    }                                                                       \n\
-    document.write(pieces.join(""));                                        \n\
-})();                                                                       \n\
-';
+var template = getResource("./templates/debug-loader.js").getContent();
 
 var libLoader = function(section, order) {
     var paths = [];
     order.forEach(function(path) {
         paths.push("'@" + section + "/" + path + "'");
     });
-    var body = template.replace("@paths@", paths.join(",\n"));    
+    var body = template.replace("{{paths}}", paths.join(",\n"));
     return function(env) {
         return {
             status: 200,

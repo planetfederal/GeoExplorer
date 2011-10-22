@@ -1,5 +1,10 @@
-var Response = require("ringo/webapp/response").Response;
+var {Application} = require("stick");
 
-exports.app = function(app) {
-    return Response.skin(module.resolve("../templates/viewer.html"));
-};
+var app = exports.app = Application();
+app.configure("render");
+app.render.base = module.resolve("../templates");
+app.render.master = "base.html";
+
+app.get("/", function(request) {
+    return app.render("viewer.html");
+});
