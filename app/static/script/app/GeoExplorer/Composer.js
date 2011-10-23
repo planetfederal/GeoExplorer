@@ -308,7 +308,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
        var embedMap = new gxp.EmbedMapDialog({
            id: 'geobuilder-1',
-           url: "viewer" + "#maps/" + this.id
+           url: "viewer/#maps/" + this.id
        });
 
        var wizard = {

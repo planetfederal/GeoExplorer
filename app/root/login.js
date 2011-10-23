@@ -1,12 +1,10 @@
-var Request = require("ringo/webapp/request").Request;
 var Client = require("ringo/httpclient").Client;
 var base64 = require("ringo/base64");
 var auth = require("../auth");
 var Headers = require("ringo/utils/http").Headers;
 var objects = require("ringo/utils/objects");
 
-exports.app = function(req) {
-    var request = new Request(req);
+exports.app = function(request) {
     var details = auth.authenticate(request);
     var status = details.status;
     var cookie;

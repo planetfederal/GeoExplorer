@@ -1,5 +1,4 @@
 var SQLITE = require("../sqlite");
-var Request = require("ringo/webapp/request").Request;
 var FILE = require("fs");
 var auth = require("../auth");
 
@@ -49,8 +48,7 @@ var createResponse = function(data, status) {
     };
 };
 
-var getConfig = function(env) {
-    var request = new Request(env);
+var getConfig = function(request) {
     var config = request.input.read().decodeToString(request.charset || "utf-8");
     var obj;
     try {
@@ -79,39 +77,39 @@ var getId = function(env) {
     return id;
 };
 
-function isAuthorized(env) {
-    return auth.getStatus(new Request(env)) !== 401;
+function isAuthorized(request) {
+    return auth.getStatus(request) !== 401;
 }
 
 var handlers = {
-    "GET": function(env) {
+    "GET": function(request) {
         var resp;
-        var id = getId(env);
+        var id = getId(request);
         if (id === null) {
             // retrieve all map identifiers
-            resp = createResponse(getMapList(env));
+            resp = createResponse(getMapList(request));
         } else if (id === false) {
             // invalid id
             resp = createResponse({error: "Invalid map id."}, 400);
         } else {
             // retrieve single map config
-            resp = createResponse(readMap(id, env));
+            resp = createResponse(readMap(id, request));
         }
         return resp;
     },
-    "POST": function(env) {
+    "POST": function(request) {
         var resp;
-        if (isAuthorized(env)) {
-            var id = getId(env);
+        if (isAuthorized(request)) {
+            var id = getId(request);
             if (id !== null) {
                 resp = createResponse({error: "Can't POST to map " + id}, 405);
             } else {
-                var config = getConfig(env);
+                var config = getConfig(request);
                 if (!config) {
                     resp = createResponse({error: "Bad map config."}, 400);
                 } else {
                     // return the map id
-                    resp = createResponse(createMap(config, env));
+                    resp = createResponse(createMap(config, request));
                 }
             }
         } else {
@@ -119,21 +117,21 @@ var handlers = {
         }
         return resp;
     },
-    "PUT": function(env) {
+    "PUT": function(request) {
         var resp;
-        if (isAuthorized(env)) {
-            var id = getId(env);
+        if (isAuthorized(request)) {
+            var id = getId(request);
             if (id === null) {
                 resp = createResponse({error: "Can't PUT without map id."}, 405);
             } else if (id === false) {
                 resp = createResponse({error: "Invalid map id."}, 400);
             } else {
                 // valid map id
-                var config = getConfig(env);
+                var config = getConfig(request);
                 if (!config) {
                     resp = createResponse({error: "Bad map config."}, 400);
                 } else {
-                    resp = createResponse(updateMap(id, config, env));
+                    resp = createResponse(updateMap(id, config, request));
                 }
             }
         } else {
@@ -141,16 +139,16 @@ var handlers = {
         }
         return resp;
     },
-    "DELETE": function(env) {
+    "DELETE": function(request) {
         var resp;
-        if (isAuthorized(env)) {
-            var id = getId(env);
+        if (isAuthorized(request)) {
+            var id = getId(request);
             if (id === null) {
                 resp = createResponse({error: "Can't DELETE without map id."}, 405);
             } else if (id === false) {
                 resp = createResponse({error: "Invalid map id."}, 400);
             } else {
-                resp = createResponse(deleteMap(id, env));
+                resp = createResponse(deleteMap(id, request));
             }
         } else {
             resp = createResponse({error: "Not authorized"}, 401);
@@ -271,15 +269,13 @@ var deleteMap = exports.deleteMap = function(id, request) {
     return result;
 };
 
-exports.app = function(env, pathInfo) {
-    // TODO: make it so this is unnecessary
-    env.pathInfo = pathInfo || "";
+exports.app = function(request) {
     var resp;
-    var method = env.method;
+    var method = request.method;
     var handler = handlers[method];
     if (handler) {
         try {
-            resp = handler(env);            
+            resp = handler(request);            
         } catch (x) {
             resp = createResponse({error: x.message}, x.code || 500);
         }

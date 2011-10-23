@@ -2,8 +2,13 @@ var {Application} = require("stick");
 
 var app = Application();
 app.configure("notfound", "error", "static", "params", "mount");
-app.static(module.resolve("static"), "index.html");
-app.mount("/proxy", require("./proxy").app);
+app.static(module.resolve("static"));
+app.mount("/", require("./root/index").app);
+app.mount("/composer", require("./root/composer").app);
+app.mount("/login", require("./root/login").app);
+app.mount("/maps/", require("./root/maps").app);
+app.mount("/proxy", require("./root/proxy").app);
+app.mount("/viewer", require("./root/viewer").app);
 
 // debug mode loads unminified scripts
 // assumes markup pulls in scripts under the path /servlet_name/script/
@@ -12,7 +17,7 @@ if (java.lang.System.getProperty("app.debug")) {
     var config = fs.normal(fs.join(module.directory, "..", "buildjs.cfg"));
     app.mount("/script/", require("./autoloader").App(config));
 
-    // proxy a remote geoserver on /geoserver by setting proxy.geoserver to remote URL
+    // proxy a remote geoserver on /geoserver by setting app.proxy.geoserver to remote URL
     // only recommended for debug mode
     var geoserver = java.lang.System.getProperty("app.proxy.geoserver");
     if (geoserver) {
@@ -20,7 +25,7 @@ if (java.lang.System.getProperty("app.debug")) {
             geoserver = geoserver + "/";
         }
         // debug specific proxy
-        app.mount("/geoserver/", require("./proxy").pass({url: geoserver, preserveHost: true}));
+        app.mount("/geoserver/", require("./root/proxy").pass({url: geoserver, preserveHost: true}));
     }
 }
 

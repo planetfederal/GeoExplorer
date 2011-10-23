@@ -155,7 +155,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         if (match) {
             this.id = Number(match[1]);
             OpenLayers.Request.GET({
-                url: mapUrl,
+                url: "../" + mapUrl,
                 success: function(request) {
                     var addConfig = Ext.util.JSON.decode(request.responseText);
                     this.applyConfig(Ext.applyIf(addConfig, config));
@@ -347,10 +347,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var method, url;
         if (this.id) {
             method = "PUT";
-            url = "maps/" + this.id;
+            url = "../maps/" + this.id;
         } else {
             method = "POST";
-            url = "maps";
+            url = "../maps/";
         }
         OpenLayers.Request.issue({
             method: method,
