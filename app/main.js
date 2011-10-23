@@ -3,12 +3,21 @@ var {Application} = require("stick");
 var app = Application();
 app.configure("notfound", "error", "static", "params", "mount");
 app.static(module.resolve("static"));
-app.mount("/", require("./root/index").app);
+
+app.mount("/", function(request) {
+    var target = request.scheme + "://" + request.host + ":" + request.port + request.scriptName + "/composer/";
+    return {
+        status: 303,
+        headers: {"Location": target},
+        body: []
+    };
+});
 app.mount("/composer", require("./root/composer").app);
 app.mount("/login", require("./root/login").app);
 app.mount("/maps/", require("./root/maps").app);
 app.mount("/proxy", require("./root/proxy").app);
 app.mount("/viewer", require("./root/viewer").app);
+
 
 // debug mode loads unminified scripts
 // assumes markup pulls in scripts under the path /servlet_name/script/
