@@ -72,7 +72,11 @@
         </copy>
         <!-- copy Ext resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/ext">
-            <fileset dir="app/static/externals/ext"/>
+            <fileset dir="app/static/externals/ext">
+                <exclude name="**/*debug*.js"/>
+                <exclude name="**/ext-all-notheme.css"/>
+                <exclude name="**/xtheme-blue.css"/>
+            </fileset>
         </copy>
         <!-- copy OpenLayers resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/openlayers/theme">
@@ -80,7 +84,11 @@
         </copy>
         <!-- copy GeoExt resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/GeoExt/resources">
-            <fileset dir="app/static/externals/GeoExt/resources"/>
+            <fileset dir="app/static/externals/GeoExt/resources">
+                <exclude name="**/geoext-all-debug.css"/>
+                <exclude name="**/gxtheme-slate.css"/>
+                <exclude name="**/slate/**"/>
+            </fileset>
         </copy>
         <!-- copy gxp resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/gxp/src/theme">
