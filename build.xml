@@ -101,6 +101,7 @@
 
     <target name="debug">
         <java jar="externals/ringojs/run.jar" fork="true">
+            <sysproperty key="app.debug" value="1"/>
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <sysproperty key="ringo.modulepath" path="externals"/>
@@ -111,6 +112,7 @@
 
     <target name="debugall">
         <java jar="externals/ringojs/run.jar" fork="true">
+            <sysproperty key="app.debug" value="1"/>
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <sysproperty key="ringo.modulepath" path="externals"/>
