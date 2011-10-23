@@ -5,6 +5,9 @@ app.configure("notfound", "error", "static", "params", "mount");
 app.static(module.resolve("static"));
 
 app.mount("/", function(request) {
+    if (request.pathInfo.length > 1) {
+        throw {notfound: true};
+    }
     var target = request.scheme + "://" + request.host + ":" + request.port + request.scriptName + "/composer/";
     return {
         status: 303,
