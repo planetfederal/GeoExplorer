@@ -1,4 +1,4 @@
-var clientRequest = require("ringo/httpclient").request;
+var clientRequest = require("./httpclient").request;
 var Headers = require("ringo/utils/http").Headers;
 var objects = require("ringo/utils/objects");
 

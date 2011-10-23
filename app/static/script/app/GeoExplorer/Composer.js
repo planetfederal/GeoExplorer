@@ -130,7 +130,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      */
     showLoginDialog: function() {
         var panel = new Ext.FormPanel({
-            url: "login",
+            url: "../login/",
             frame: true,
             labelWidth: 60,
             defaultType: "textfield",
