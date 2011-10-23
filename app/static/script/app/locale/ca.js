@@ -10,7 +10,6 @@ GeoExt.Lang.add("ca", {
         xhrTroubleText: "Problemes de comunicació. Estat ",
         layersText: "Capes",
         titleText: "Títol",
-        saveErrorText: "Problemes desant: ",
         bookmarkText: "URL del marcador",
         permakinkText: "Enllaç permanent",
         appInfoText: "GeoExplorer",
@@ -23,6 +22,7 @@ GeoExt.Lang.add("ca", {
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Exporta el Mapa",
         saveMapText: "Desa el Mapa",
+        saveErrorText: "Problemes desant: ",
         toolsTitle: "Escolliu els elements que desitgeu incloure a la barra d'eines:",
         previewText: "Vista prèvia",
         backText: "Anterior",

@@ -11,7 +11,6 @@ GeoExt.Lang.add("en", {
         layersText: "Layers",
         titleText: "Title",
         zoomLevelText: "Zoom level",
-        saveErrorText: "Trouble saving: ",
         bookmarkText: "Bookmark URL",
         permakinkText: 'Permalink',
         appInfoText: "GeoExplorer",
@@ -24,6 +23,7 @@ GeoExt.Lang.add("en", {
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Publish Map",
         saveMapText: "Save Map",
+        saveErrorText: "Trouble saving: ",
         toolsTitle: "Choose tools to include in the toolbar:",
         previewText: "Preview",
         backText: "Back",

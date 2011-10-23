@@ -10,7 +10,6 @@ GeoExt.Lang.add("fr", {
         xhrTroubleText: "Trouble de la communication: état",
         layersText: "Layers",
         titleText: "Titre",
-        saveErrorText: "Sauver Trouble:",
         bookmarkText: "Mettre en favori URL",
         permakinkText: "Permalink",
         appInfoText: "GeoExplorer",
@@ -23,6 +22,7 @@ GeoExt.Lang.add("fr", {
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Carte Export",
         saveMapText: "Enregistrez la carte",
+        saveErrorText: "Sauver Trouble:",
         toolsTitle: "Choose tools to include in the toolbar:",
         previewText: "Preview",
         backText: "Back",

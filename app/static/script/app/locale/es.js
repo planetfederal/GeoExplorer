@@ -10,7 +10,6 @@ GeoExt.Lang.add("es", {
         xhrTroubleText: "Problemas de comunicación: Estado ",
         layersText: "Capas",
         titleText: "Título",
-        saveErrorText: "Problemas guardando: ",
         bookmarkText: "URL del marcador",
         permakinkText: "Enlace permanente",
         appInfoText: "GeoExplorer",
@@ -23,6 +22,7 @@ GeoExt.Lang.add("es", {
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Exportar Mapa",
         saveMapText: "Guardar Mapa",
+        saveErrorText: "Problemas guardando: ",
         toolsTitle: "Escoja los elementos que desea incluir en la barra de herramientas:",
         previewText: "Vista previa",
         backText: "Anterior",

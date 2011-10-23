@@ -28,6 +28,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     loginErrorText: "Invalid username or password.",
     userFieldText: "User",
     passwordFieldText: "Password", 
+    saveErrorText: "Trouble saving: ",
     // End i18n.
 
     constructor: function(config) {
@@ -280,6 +281,50 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         Ext.get(iframe).on('load', function() { loading.hide(); });
     },
 
+    /** private: method[save]
+     *
+     * Saves the map config and displays the URL in a window.
+     */ 
+    save: function(callback, scope) {
+        var configStr = Ext.util.JSON.encode(this.getState());
+        var method, url;
+        if (this.id) {
+            method = "PUT";
+            url = "../maps/" + this.id;
+        } else {
+            method = "POST";
+            url = "../maps/";
+        }
+        OpenLayers.Request.issue({
+            method: method,
+            url: url,
+            data: configStr,
+            callback: function(request) {
+                this.handleSave(request);
+                if (callback) {
+                    callback.call(scope || this);
+                }
+            },
+            scope: this
+        });
+    },
+        
+    /** private: method[handleSave]
+     *  :arg: ``XMLHttpRequest``
+     */
+    handleSave: function(request) {
+        if (request.status == 200) {
+            var config = Ext.util.JSON.decode(request.responseText);
+            var mapId = config.id;
+            if (mapId) {
+                this.id = mapId;
+                window.location.hash = "#maps/" + mapId;
+            }
+        } else {
+            throw this.saveErrorText + request.responseText;
+        }
+    },
+
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {
@@ -308,7 +353,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
        var embedMap = new gxp.EmbedMapDialog({
            id: 'geobuilder-1',
-           url: "viewer/#maps/" + this.id
+           url: "../viewer/#maps/" + this.id
        });
 
        var wizard = {
