@@ -66,6 +66,9 @@ exports["test: update"] = function() {
     var response = maps.createMap(config);
     assert.deepEqual(maps.readMap(response.id), config, "map config stored");
 
+    // wait for a bit and then update the map
+    java.lang.Thread.currentThread().sleep(10);
+	
     var updated = {"test": "updated!"};
     maps.updateMap(response.id, updated);
     var got = maps.readMap(response.id);
