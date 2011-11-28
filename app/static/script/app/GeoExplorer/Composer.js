@@ -179,6 +179,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             panel.getForm().submit({
                 success: function(form, action) {
                     this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
+                    this.fireEvent("loginchanged");
                     Ext.getCmp('paneltbar').items.each(function(tool) {
                         if (tool.needsAuthorization === true) {
                             tool.enable();
