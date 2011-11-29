@@ -17,6 +17,17 @@
  */
 GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
+    /** api: config[cookieParamName]
+     *  ``String`` The name of the cookie parameter to use for storing the
+     *  logged in user.
+     */
+    cookieParamName: 'geoexplorer-user',
+
+    /** api: config[loginIconCls]
+     *  ``String`` The iconCls to use for the login/logout buttons.
+     */
+    loginIconCls: "login",
+
     // Begin i18n.
     saveMapText: "Save Map",
     exportMapText: "Publish Map",
@@ -25,6 +36,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     backText: "Back",
     nextText: "Next",
     loginText: "Login",
+    logoutText: "Logout, {user}",
     loginErrorText: "Invalid username or password.",
     userFieldText: "User",
     passwordFieldText: "Password", 
@@ -124,6 +136,47 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         GeoExplorer.Composer.superclass.destroy.apply(this, arguments);
     },
 
+    /** private: method[setCookieValue]
+     *  Set the value for a cookie parameter
+     */
+    setCookieValue: function(param, value) {
+        document.cookie = param + '=' + escape(value);
+    },
+
+    /** private: method[clearCookieValue]
+     *  Clear a certain cookie parameter.
+     */
+    clearCookieValue: function(param) {
+        document.cookie = param + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    },
+
+    /** private: method[getCookieValue]
+     *  Get the value of a certain cookie parameter. Returns null if not found.
+     */
+    getCookieValue: function(param) {
+        var i, x, y, cookies = document.cookie.split(";");
+        for (i=0; i < cookies.length; i++) {
+            x = cookies[i].substr(0, cookies[i].indexOf("="));
+            y = cookies[i].substr(cookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==param) {
+                return unescape(y);
+            }
+        }
+        return null;
+    },
+
+    /** private: method[logout]
+     *  Log out the current user from the application.
+     */
+    logout: function() {
+        this.clearCookieValue("JSESSIONID");
+        this.clearCookieValue(this.cookieParamName);
+        this.authorizedRoles = [];
+        this.fireEvent("loginchanged");
+        this.showLogin();
+    },
+
     /** private: method[showLoginDialog]
      * Show the login dialog for the user to login.
      */
@@ -185,7 +238,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                             tool.enable();
                         }
                     });
-                    this.loginButton.hide();
+                    var user = form.findField('username').getValue();
+                    this.setCookieValue(this.cookieParamName, user);
+                    this.showLogout(user);
                     win.close();
                 },
                 failure: function(form, action) {
@@ -214,22 +269,52 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     },
 
     /**
+     * private: method[applyLoginState]
+     * Attach a handler to the login button and set its text.
+     */
+    applyLoginState: function(text, handler, scope) {
+        this.loginButton.setText(text);
+        this.loginButton.setHandler(handler, scope);
+    },
+
+    /** private: method[showLogin]
+     *  Show the login button.
+     */
+    showLogin: function() {
+        var text = this.loginText;
+        var handler = this.showLoginDialog;
+        this.applyLoginState(text, handler, this);
+    },
+
+    /** private: method[showLogout]
+     *  Show the logout button.
+     */
+    showLogout: function(user) {
+        var text = new Ext.Template(this.logoutText).applyTemplate({user: user});
+        var handler = this.logout;
+        this.applyLoginState(text, handler, this);
+    },
+
+    /**
      * api: method[createTools]
      * Create the toolbar configuration for the main view.
      */
     createTools: function() {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
+        this.loginButton = new Ext.Button({
+            iconCls: 'login'
+        });
+        tools.push(['->', this.loginButton]);
+
         // unauthorized, show login button
         if (this.authorizedRoles.length === 0) {
-            this.loginButton = new Ext.Button({
-                iconCls: 'login',
-                text: this.loginText,
-                handler: this.showLoginDialog,
-                scope: this
-            });
-            tools.push(['->', this.loginButton]);
+            this.showLogin();
         } else {
+            var user = this.getCookieValue(this.cookieParamName);
+            if (user !== null) {
+                this.showLogout(user);
+            }
         }
 
         var aboutButton = new Ext.Button({
