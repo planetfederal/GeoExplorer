@@ -23,11 +23,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      */
     cookieParamName: 'geoexplorer-user',
 
-    /** api: config[loginIconCls]
-     *  ``String`` The iconCls to use for the login/logout buttons.
-     */
-    loginIconCls: "login",
-
     // Begin i18n.
     saveMapText: "Save Map",
     exportMapText: "Publish Map",
@@ -272,7 +267,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      * private: method[applyLoginState]
      * Attach a handler to the login button and set its text.
      */
-    applyLoginState: function(text, handler, scope) {
+    applyLoginState: function(iconCls, text, handler, scope) {
+        this.loginButton.setIconClass(iconCls);
         this.loginButton.setText(text);
         this.loginButton.setHandler(handler, scope);
     },
@@ -283,7 +279,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     showLogin: function() {
         var text = this.loginText;
         var handler = this.showLoginDialog;
-        this.applyLoginState(text, handler, this);
+        this.applyLoginState('login', text, handler, this);
     },
 
     /** private: method[showLogout]
@@ -292,7 +288,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     showLogout: function(user) {
         var text = new Ext.Template(this.logoutText).applyTemplate({user: user});
         var handler = this.logout;
-        this.applyLoginState(text, handler, this);
+        this.applyLoginState('logout', text, handler, this);
     },
 
     /**
@@ -302,9 +298,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     createTools: function() {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
-        this.loginButton = new Ext.Button({
-            iconCls: 'login'
-        });
+        this.loginButton = new Ext.Button();
         tools.push(['->', this.loginButton]);
 
         // unauthorized, show login button

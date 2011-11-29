@@ -37,6 +37,10 @@ body {
     background-image: url(img/silk/door_in.png);
 }
 
+.x-btn .logout {
+    background-image: url(img/silk/door_out.png);
+}
+
 .x-btn .icon-geoexplorer {
     background-image: url(img/geoexplorer.png);
 }
