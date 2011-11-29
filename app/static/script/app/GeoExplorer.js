@@ -89,6 +89,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         // of the embed map dialog. TODO: make this more flexible so this is not needed.
         config.viewerTools = [
             {
+                leaf: true,
+                text: gxp.plugins.Print.prototype.tooltip,
+                ptype: "gxp_print",
+                iconCls: "gxp-icon-print",
+                customParams: {outputFilename: 'GeoExplorer-print'},
+                printService: config.printService,
+                checked: true
+            }, {
                 leaf: true, 
                 text: gxp.plugins.Navigation.prototype.tooltip, 
                 checked: true, 
@@ -262,7 +270,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 if (item.disabled) {
                     preGoogleDisabled.push(item);
                 }
-            })
+            });
             this.toolbar.disable();
             // loop over all the tools and remove their output
             for (var key in this.tools) {

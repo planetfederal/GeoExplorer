@@ -9,7 +9,7 @@
 	url = git://github.com/opengeo/gxp.git
 [submodule "app/static/externals/GeoExt"]
 	path = app/static/externals/GeoExt
-	url = git://github.com/opengeo/GeoExt.git
+	url = git://github.com/geoext/geoext.git
 [submodule "app/static/externals/openlayers"]
 	path = app/static/externals/openlayers
 	url = git://github.com/openlayers/openlayers.git

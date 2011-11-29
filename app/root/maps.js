@@ -24,13 +24,16 @@ var getDb = exports.getDb = function(request) {
         // TODO: nicer exception handling - this is hard for the user to find
         throw new Error("Can't open '" + db + "' for writing.  Set GEOEXPLORER_DATA to a writable directory.");
     }
-    var statement = connection.createStatement();
-    statement.executeUpdate(
-        "CREATE TABLE IF NOT EXISTS maps (" + 
-            "id INTEGER PRIMARY KEY ASC, config BLOB" +
-        ");"
-    );
-    connection.close();
+    try {
+        var statement = connection.createStatement();
+        statement.executeUpdate(
+            "CREATE TABLE IF NOT EXISTS maps (" + 
+                "id INTEGER PRIMARY KEY ASC, config BLOB" +
+            ");"
+        );
+    } finally {
+        connection.close();
+    }
     return db;
 }
 
@@ -159,24 +162,27 @@ var handlers = {
 
 var getMapList = exports.getMapList = function(request) {
     var connection = SQLITE.open(getDb(request));
-    var statement = connection.createStatement();
-    var results = statement.executeQuery(
-        "SELECT id, config FROM maps;"
-    );
-    var items = [];
-    var config;
-    while (results.next()) {
-        config = JSON.parse(results.getString("config"));
-        items.push({
-            id: results.getInt("id"), 
-            title: config.about && config.about.title,
-            "abstract": config.about && config.about["abstract"],
-            created: config.created,
-            modified: config.modified
-        });
+    try {
+        var statement = connection.createStatement();
+        var results = statement.executeQuery(
+            "SELECT id, config FROM maps;"
+        );
+        var items = [];
+        var config;
+        while (results.next()) {
+            config = JSON.parse(results.getString("config"));
+            items.push({
+                id: results.getInt("id"), 
+                title: config.about && config.about.title,
+                "abstract": config.about && config.about["abstract"],
+                created: config.created,
+                modified: config.modified
+            });
+        }
+        results.close();
+    } finally {
+        connection.close();
     }
-    results.close();
-    connection.close();
     // return all items
     return {maps: items};
 };
@@ -191,19 +197,22 @@ var createMap = exports.createMap = function(config, request) {
     config.modified = now;
     config = JSON.stringify(config);
     var connection = SQLITE.open(getDb(request));
-    // store the new map config
-    var prep = connection.prepareStatement(
-        "INSERT INTO maps (config) VALUES (?);"
-    );
-    prep.setString(1, config);
-    prep.executeUpdate();
-    // get the map id
-    var statement = connection.createStatement();
-    var results = statement.executeQuery("SELECT last_insert_rowid() AS id;");
-    results.next();
-    var id = Number(results.getInt("id"));
-    results.close();
-    connection.close();
+    try {
+        // store the new map config
+        var prep = connection.prepareStatement(
+            "INSERT INTO maps (config) VALUES (?);"
+        );
+        prep.setString(1, config);
+        prep.executeUpdate();
+        // get the map id
+        var statement = connection.createStatement();
+        var results = statement.executeQuery("SELECT last_insert_rowid() AS id;");
+        results.next();
+        var id = Number(results.getInt("id"));
+        results.close();
+    } finally {
+        connection.close();
+    }
     // return the map id
     return {id: id};
 };
@@ -211,20 +220,23 @@ var createMap = exports.createMap = function(config, request) {
 var readMap = exports.readMap = function(id, request) {
     var config;
     var connection = SQLITE.open(getDb(request));
-    var prep = connection.prepareStatement(
-        "SELECT config FROM maps WHERE id = ?;"
-    );
-    prep.setInt(1, id);
-    var results = prep.executeQuery();
-    if (results.next()) {
-        // found map by id
-        config = JSON.parse(String(results.getString("config")));
-    } else {
-        // not found
-        throw {message: "No map with id " + id, code: 404};
+    try {
+        var prep = connection.prepareStatement(
+            "SELECT config FROM maps WHERE id = ?;"
+        );
+        prep.setInt(1, id);
+        var results = prep.executeQuery();
+        if (results.next()) {
+            // found map by id
+            config = JSON.parse(String(results.getString("config")));
+        } else {
+            // not found
+            throw {message: "No map with id " + id, code: 404};
+        }
+        results.close();
+    } finally {
+        connection.close();
     }
-    results.close();
-    connection.close();
     return config;
 };
 
@@ -237,13 +249,16 @@ var updateMap = exports.updateMap = function(id, config, request) {
     config = JSON.stringify(config);
     var result;
     var connection = SQLITE.open(getDb(request));
-    var prep = connection.prepareStatement(
-        "UPDATE OR FAIL maps SET config = ? WHERE id = ?;"
-    );
-    prep.setString(1, config);
-    prep.setInt(2, id);
-    var rows = prep.executeUpdate();
-    connection.close();
+    try {
+        var prep = connection.prepareStatement(
+            "UPDATE OR FAIL maps SET config = ? WHERE id = ?;"
+        );
+        prep.setString(1, config);
+        prep.setInt(2, id);
+        var rows = prep.executeUpdate();
+    } finally {
+        connection.close();
+    }
     if (!rows) {
         throw {message: "No map with id " + id, code: 404};
     } else {
@@ -255,12 +270,15 @@ var updateMap = exports.updateMap = function(id, config, request) {
 var deleteMap = exports.deleteMap = function(id, request) {
     var result;
     var connection = SQLITE.open(getDb(request));
-    var prep = connection.prepareStatement(
-        "DELETE FROM maps WHERE id = ?;"
-    );
-    prep.setInt(1, id);
-    var rows = prep.executeUpdate();
-    connection.close();
+    try {
+        var prep = connection.prepareStatement(
+            "DELETE FROM maps WHERE id = ?;"
+        );
+        prep.setInt(1, id);
+        var rows = prep.executeUpdate();
+    } finally {
+        connection.close();
+    }
     if (!rows) {
         throw {message: "No map with id " + id, code: 404};
     } else {

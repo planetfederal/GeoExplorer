@@ -28,12 +28,13 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         for (var i=0, len=allTools.length; i<len; i++) {
             var tool = allTools[i];
             if (tool.checked === true) {
-                toolConfig = {
-                    ptype: tool.ptype,
-                    controlOptions: tool.controlOptions,
-                    toggleGroup: tool.toggleGroup, 
+                var properties = ['checked', 'iconCls', 'id', 'leaf', 'loader', 'text'];
+                for (var key in properties) {
+                    delete tool[properties[key]];
+                }
+                toolConfig = Ext.applyIf({
                     actionTarget: {target: "paneltbar", index: counter}
-                };
+                }, tool);
                 if (tool.numberOfButtons !== undefined) {
                     counter += tool.numberOfButtons;
                 } else {
