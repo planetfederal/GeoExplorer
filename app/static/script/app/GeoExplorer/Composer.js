@@ -90,7 +90,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_featureeditor",
                 featureManager: "featuremanager",
-                supportAbstractGeometry: true,
                 autoLoadFeatures: true,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 8}
