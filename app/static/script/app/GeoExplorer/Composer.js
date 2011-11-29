@@ -167,8 +167,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     logout: function() {
         this.clearCookieValue("JSESSIONID");
         this.clearCookieValue(this.cookieParamName);
-        this.authorizedRoles = [];
-        this.fireEvent("loginchanged");
+        this.setAuthorizedRoles([]);
+        Ext.getCmp('paneltbar').items.each(function(tool) {
+            if (tool.needsAuthorization === true) {
+                tool.disable();
+            }
+        });
         this.showLogin();
     },
 
@@ -226,8 +230,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             panel.buttons[0].disable();
             panel.getForm().submit({
                 success: function(form, action) {
-                    this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
-                    this.fireEvent("loginchanged");
+                    this.setAuthorizedRoles(["ROLE_ADMINISTRATOR"]);
                     Ext.getCmp('paneltbar').items.each(function(tool) {
                         if (tool.needsAuthorization === true) {
                             tool.enable();
