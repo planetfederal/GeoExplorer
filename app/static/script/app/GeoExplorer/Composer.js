@@ -354,6 +354,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         var preview = new Ext.Window({
             title: this.previewText,
             layout: "fit",
+            resizable: false,
             items: [{border: false, html: embedMap.getIframeHTML()}]
         });
         preview.show();
