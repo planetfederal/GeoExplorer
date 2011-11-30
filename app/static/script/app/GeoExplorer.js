@@ -272,6 +272,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 }
             });
             this.toolbar.disable();
+            // loop over all the tools and remove their output
+            for (var key in this.tools) {
+                var tool = this.tools[key];
+                if (tool.outputTarget === "map") {
+                    tool.removeOutput();
+                }
+            }
             var layersContainer = Ext.getCmp("tree");
             var layersToolbar = layersContainer && layersContainer.getTopToolbar();
             if (layersToolbar) {
