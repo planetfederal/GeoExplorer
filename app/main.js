@@ -40,7 +40,7 @@ if (java.lang.System.getProperty("app.debug")) {
             geoserver = geoserver + "/";
         }
         // debug specific proxy
-        app.mount("/geoserver/", require("./root/proxy").pass({url: geoserver, preserveHost: true}));
+        app.mount("/geoserver/", require("./root/proxy").pass({url: geoserver, preserveHost: true, allowAuth: true}));
     }
 }
 
