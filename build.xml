@@ -143,6 +143,7 @@
 
     <target name="clean" description="remove previous build">
         <delete dir="${build}"/>
+        <ant dir="externals/ringojs" target="clean"/>
     </target>
 
 </project>
