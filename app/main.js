@@ -19,6 +19,9 @@ app.mount("/composer", require("./root/composer").app);
 app.mount("/login", require("./root/login").app);
 app.mount("/maps/", require("./root/maps").app);
 app.mount("/proxy", require("./root/proxy").app);
+// TODO: remove workaround for added slashes
+app.mount("/viewer/proxy", require("./root/proxy").app);
+app.mount("/composer/proxy", require("./root/proxy").app);
 app.mount("/viewer", require("./root/viewer").app);
 
 
