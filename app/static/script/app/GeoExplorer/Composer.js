@@ -80,7 +80,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 6}
             }, {
-                ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
+                ptype: "gxp_wmsgetfeatureinfo", format: 'grid', toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 7}
             }, {
                 ptype: "gxp_featuremanager",
