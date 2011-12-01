@@ -221,7 +221,7 @@ Ext.extend(Ext.ux.ColorPicker, Ext.util.Observable, {
     },
     /**
      * Convert HSV color format to RGB color format
-     * @param {Integer/Array( h, s, v )} h
+     * @param {Integer} h
      * @param {Integer} s (optional)
      * @param {Integer} v (optional)
      * @return {Array}
@@ -246,7 +246,7 @@ Ext.extend(Ext.ux.ColorPicker, Ext.util.Observable, {
     },
     /**
      * Convert RGB color format to HSV color format
-     * @param {Integer/Array( r, g, b )} r
+     * @param {Integer} r 
      * @param {Integer} g (optional)
      * @param {Integer} b (optional)
      * @return {Array}
@@ -273,7 +273,7 @@ Ext.extend(Ext.ux.ColorPicker, Ext.util.Observable, {
     },
     /**
      * Convert RGB color format to Hexa color format
-     * @param {Integer/Array( r, g, b )} r
+     * @param {Integer} r
      * @param {Integer} g (optional)
      * @param {Integer} b (optional)
      * @return {String}
@@ -693,7 +693,7 @@ Ext.extend(Ext.ux.ColorPicker, Ext.util.Observable, {
 });
 /**
  * @class Ext.ux.ColorPanel
- * @extends Ext.util.ColorPicker,
+ * @extends Ext.util.ColorPicker
  * @constructor
  * Creates new ColorPanel
  * @param {Object} config Config Object (see the Ext.Panel config too!)
@@ -722,7 +722,7 @@ Ext.extend( Ext.ux.ColorPanel, Ext.Panel );
 Ext.applyIf( Ext.ux.ColorPanel.prototype, Ext.ux.ColorPicker.prototype );
 /**
  * @class Ext.ux.ColorDialog
- * @extends Ext.util.ColorPicker,
+ * @extends Ext.util.ColorPicker
  * @constructor
  * Creates new ColorDialog
  * @param {Object} config Config Object (see the Ext.Window config too!)
