@@ -1,6 +1,7 @@
 var assert = require("assert");
 var fs = require("fs");
 var proxy = require("../../../app/root/proxy");
+var Headers = require("ringo/utils/http").Headers;
 
 exports["test: getUrlProps"] = function() {
     
@@ -117,9 +118,9 @@ exports["test: createProxyRequestProps"] = function() {
                 method: "POST",
                 headers: {
                     "Content-Type": "text/plain",
+                    "Content-Length": "3",
                     "Host": "localhost"
                 },
-                contentLength: 3,
                 input: ["foo"]
             }
         }, 
@@ -130,6 +131,7 @@ exports["test: createProxyRequestProps"] = function() {
             password: "pass",
             headers: {
                 "Content-Type": "text/plain",
+                "Content-Length": "3",
                 "Host": "example.com"
             },
             data: ["foo"]
@@ -143,9 +145,9 @@ exports["test: createProxyRequestProps"] = function() {
                 method: "POST",
                 headers: {
                     "Content-Type": "text/plain",
+                    "Content-Length": "3",
                     "Host": "localhost"
                 },
-                contentLength: 3,
                 input: ["foo"]
             }
         }, 
@@ -157,6 +159,7 @@ exports["test: createProxyRequestProps"] = function() {
             scheme: "https",
             headers: {
                 "Content-Type": "text/plain",
+                "Content-Length": "3",
                 "Host": "localhost"
             },
             data: ["foo"]
@@ -170,10 +173,10 @@ exports["test: createProxyRequestProps"] = function() {
                 headers: {
                     "Content-Type": "text/plain",
                     "Host": "localhost",
+                    "Content-Length": "3",
                     "Authorization": "foo",
                     "Cookie": "bar"
                 },
-                contentLength: 3,
                 input: ["foo"]
             }
         }, 
@@ -182,6 +185,7 @@ exports["test: createProxyRequestProps"] = function() {
             url: "http://example.com/path/to/resource",
             headers: {
                 "Content-Type": "text/plain",
+                "Content-Length": "3",
                 "Host": "example.com"
             },
             data: ["foo"]
@@ -195,11 +199,11 @@ exports["test: createProxyRequestProps"] = function() {
                 method: "PUT",
                 headers: {
                     "Content-Type": "text/plain",
+                    "Content-Length": "3",
                     "Host": "localhost",
                     "Authorization": "foo",
                     "Cookie": "bar"
                 },
-                contentLength: 3,
                 input: ["foo"]
             }
         }, 
@@ -208,6 +212,7 @@ exports["test: createProxyRequestProps"] = function() {
             url: "http://example.com/path/to/resource",
             headers: {
                 "Content-Type": "text/plain",
+                "Content-Length": "3",
                 "Host": "example.com",
                 "Authorization": "foo",
                 "Cookie": "bar"
@@ -219,6 +224,7 @@ exports["test: createProxyRequestProps"] = function() {
     var c, got, key;
     for (var i=0, ii=cases.length; i<ii; ++i) {
         c = cases[i];
+        c.config.request.headers = new Headers(c.config.request.headers);
         got = proxy.createProxyRequestProps(c.config);
         if (!got) {
             assert.strictEqual(got, c.props, c.msg);
