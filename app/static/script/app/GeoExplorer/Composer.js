@@ -307,9 +307,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             this.showLogin();
         } else {
             var user = this.getCookieValue(this.cookieParamName);
-            if (user !== null) {
-                this.showLogout(user);
+            if (user === null) {
+                user = "unknown";
             }
+            this.showLogout(user);
         }
 
         var aboutButton = new Ext.Button({
