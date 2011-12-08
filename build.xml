@@ -6,6 +6,7 @@
     </description>
 
     <property name="build" location="build"/>
+    <property name="ringo" location="externals/ringojs-fork"/>
     <property name="app.proxy.geoserver" value=""/>
     <property name="app.port" value="8080"/>
     <condition property="git" value="git.cmd" else="git">
@@ -26,8 +27,8 @@
         </exec>
 
         <echo message="building ringo jars"/>
-        <ant dir="externals/ringojs" target="jar"/>
-        <copy todir="externals/ringojs/lib" flatten="true" includeEmptyDirs="false">
+        <ant dir="${ringo}" target="jar"/>
+        <copy todir="${ringo}/lib" flatten="true" includeEmptyDirs="false">
             <fileset dir="lib"/>
         </copy>
 
@@ -36,8 +37,8 @@
     <target name="buildjs">
 
         <mkdir dir="${build}/${ant.project.name}/WEB-INF/app/static/script"/>
-        <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+        <java jar="${ringo}/run.jar" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="${ringo}"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${build}/${ant.project.name}/WEB-INF/app/static/script buildjs.cfg"/>
         </java>
@@ -58,7 +59,7 @@
             </fileset>
         </copy>
         <copy todir="${build}/${ant.project.name}/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
-            <fileset dir="externals/ringojs/lib"/>
+            <fileset dir="${ringo}/lib"/>
         </copy>
         <copy todir="${build}/${ant.project.name}/WEB-INF/app">
             <fileset dir="app">
@@ -111,7 +112,7 @@
     </target>
 
     <target name="debug">
-        <java jar="externals/ringojs/run.jar" fork="true">
+        <java jar="${ringo}/run.jar" fork="true">
             <sysproperty key="app.debug" value="1"/>
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
@@ -122,7 +123,7 @@
     </target>
 
     <target name="debugall">
-        <java jar="externals/ringojs/run.jar" fork="true">
+        <java jar="${ringo}/run.jar" fork="true">
             <sysproperty key="app.debug" value="1"/>
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
@@ -134,7 +135,7 @@
     </target>
 
     <target name="test">
-        <java jar="externals/ringojs/run.jar" fork="true" failonerror="yes">
+        <java jar="${ringo}/run.jar" fork="true" failonerror="yes">
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <sysproperty key="ringo.modulepath" path="externals"/>
             <arg path="tests/all.js"/>
@@ -143,7 +144,7 @@
 
     <target name="clean" description="remove previous build">
         <delete dir="${build}"/>
-        <ant dir="externals/ringojs" target="clean"/>
+        <ant dir="${ringo}" target="clean"/>
     </target>
 
 </project>
