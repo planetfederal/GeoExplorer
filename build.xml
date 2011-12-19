@@ -115,7 +115,7 @@
         <java jar="${ringo}/run.jar" fork="true">
             <sysproperty key="app.debug" value="1"/>
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <sysproperty key="ringo.home" path="${ringo}"/>
             <sysproperty key="ringo.modulepath" path="externals"/>
             <arg path="app/main.js"/>
             <arg line="-p ${app.port}"/>
@@ -126,7 +126,7 @@
         <java jar="${ringo}/run.jar" fork="true">
             <sysproperty key="app.debug" value="1"/>
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <sysproperty key="ringo.home" path="${ringo}"/>
             <sysproperty key="ringo.modulepath" path="externals"/>
             <arg value="-d"/>
             <arg path="app/main.js"/>
@@ -136,7 +136,7 @@
 
     <target name="test">
         <java jar="${ringo}/run.jar" fork="true" failonerror="yes">
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <sysproperty key="ringo.home" path="${ringo}"/>
             <sysproperty key="ringo.modulepath" path="externals"/>
             <arg path="tests/all.js"/>
         </java>
