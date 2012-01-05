@@ -51,15 +51,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
         config.tools = [
             {
-                ptype: "gxp_layertree",
+                ptype: "gxp_layermanager",
                 outputConfig: {
                     id: "layertree"
                 },
-                outputTarget: "tree"
-            }, {
-                ptype: "gxp_legend",
-                outputTarget: 'legend',
-                outputConfig: {autoScroll: true}
+                treeConfig: {
+                    id: "tree",
+                    tbar: []
+                },
+                outputTarget: "westpanel"
             }, {
                 ptype: "gxp_addlayers",
                 actionTarget: "tree.tbar",
@@ -90,7 +90,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_featureeditor",
                 featureManager: "featuremanager",
-                autoLoadFeatures: true,
+                autoLoadFeature: true,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 8}
             }, {
