@@ -51,31 +51,28 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
         config.tools = [
             {
-                ptype: "gxp_layertree",
+                ptype: "gxp_layermanager",
                 outputConfig: {
-                    id: "layertree"
+                    id: "layers",
+                    tbar: []
                 },
-                outputTarget: "tree"
-            }, {
-                ptype: "gxp_legend",
-                outputTarget: 'legend',
-                outputConfig: {autoScroll: true}
+                outputTarget: "westpanel"
             }, {
                 ptype: "gxp_addlayers",
-                actionTarget: "tree.tbar",
+                actionTarget: "layers.tbar",
                 upload: true
             }, {
                 ptype: "gxp_removelayer",
-                actionTarget: ["tree.tbar", "layertree.contextMenu"]
+                actionTarget: ["layers.tbar", "layers.contextMenu"]
             }, {
                 ptype: "gxp_layerproperties",
-                actionTarget: ["tree.tbar", "layertree.contextMenu"]
+                actionTarget: ["layers.tbar", "layers.contextMenu"]
             }, {
                 ptype: "gxp_styler",
-                actionTarget: ["tree.tbar", "layertree.contextMenu"]
+                actionTarget: ["layers.tbar", "layers.contextMenu"]
             }, {
                 ptype: "gxp_zoomtolayerextent",
-                actionTarget: {target: "layertree.contextMenu", index: 0}
+                actionTarget: {target: "layers.contextMenu", index: 0}
             }, {
                 ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 6}
@@ -90,7 +87,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_featureeditor",
                 featureManager: "featuremanager",
-                autoLoadFeatures: true,
+                autoLoadFeature: true,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 8}
             }, {

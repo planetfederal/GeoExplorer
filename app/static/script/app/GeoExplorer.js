@@ -245,18 +245,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     initPortal: function() {
         
         var westPanel = new Ext.Panel({
+            id: "westpanel",
             border: false,
-            layout: "border",
             region: "west",
+            layout: "fit",
             width: 250,
             split: true,
             collapsible: true,
             collapseMode: "mini",
-            header: false,
-            items: [
-                {region: 'center', autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}, 
-                {region: 'south', xtype: "container", layout: "fit", border: false, height: 200, id: 'legend'}
-            ]
+            header: false
         });
         
         this.toolbar = new Ext.Toolbar({
