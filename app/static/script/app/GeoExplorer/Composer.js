@@ -56,7 +56,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     id: "layers",
                     tbar: []
                 },
-                outputTarget: "westpanel"
+                outputTarget: "tree"
             }, {
                 ptype: "gxp_addlayers",
                 actionTarget: "layers.tbar",
