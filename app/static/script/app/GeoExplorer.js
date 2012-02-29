@@ -41,6 +41,8 @@ Ext.override(Ext.dd.DragTracker, {
     Ext.preg("gx_googlesource", gxp.plugins.GoogleSource);
     Ext.preg("gx_bingsource", gxp.plugins.BingSource);
     Ext.preg("gx_osmsource", gxp.plugins.OSMSource);
+    // use layermanager instead of layertree
+    Ext.preg("gxp_layertree", gxp.plugins.LayerManager);
 })();
 
 /**
@@ -249,7 +251,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     initPortal: function() {
         
         var westPanel = new Ext.Panel({
-            id: "westpanel",
+            id: "tree",
             border: false,
             region: "west",
             layout: "fit",
