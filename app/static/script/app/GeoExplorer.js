@@ -197,6 +197,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 url: "../" + mapUrl,
                 success: function(request) {
                     var addConfig = Ext.util.JSON.decode(request.responseText);
+                    // Don't use persisted tool configurations from old maps
+                    delete addConfig.tools;
                     this.applyConfig(Ext.applyIf(addConfig, config));
                 },
                 failure: function(request) {
@@ -455,6 +457,16 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             items: [tabs]
         });
         win.show();
+    },
+    
+    /** private: method[getState]
+     *  :returns: ``Òbject`` the state of the viewer
+     */
+    getState: function() {
+        var state = GeoExplorer.superclass.getState.apply(this, arguments);
+        // Don't persist tools
+        delete state.tools;
+        return state;
     }
 });
 
