@@ -40,20 +40,6 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
                 } else {
                     counter++;
                 }
-                // TODO: Remove this hack for getting the apiKey into the viewer
-                if (tool.ptype === "gxp_googleearth") {
-                    // look for apiKey and apiKeys in saved composer config
-                    var jj = config.tools ? config.tools.length : 0;
-                    var composerConfig;
-                    for (var j=0; j<jj; ++j) {
-                        composerConfig = config.tools[j];
-                        if (composerConfig.ptype === tool.ptype) {
-                            toolConfig.apiKey = composerConfig.apiKey;
-                            toolConfig.apiKeys = composerConfig.apiKeys;
-                            break;
-                        }
-                    }
-                }
                 tools.push(toolConfig);
             }
         }

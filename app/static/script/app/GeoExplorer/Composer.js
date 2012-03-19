@@ -112,10 +112,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 17},
-                apiKeys: Ext.apply({}, config.apiKeys)
             }
         ];
-        delete config.apiKeys;
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
@@ -408,19 +406,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {
-       var validAPIKey = false;
-       for (var key in this.tools) {
-           var tool = this.tools[key];
-           if (tool instanceof gxp.plugins.GoogleEarth) {
-               validAPIKey = (tool.hasValidAPIKey() !== undefined);
-           }
-       }
-       for (var i=0, len=this.viewerTools.length; i<len; ++i) {
-           if (this.viewerTools[i].ptype === gxp.plugins.GoogleEarth.prototype.ptype) {
-               this.viewerTools[i].disabled = !validAPIKey;
-               this.viewerTools[i].checked = validAPIKey;
-           }
-       } 
        var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, 
            autoScroll: true,
            root: {
