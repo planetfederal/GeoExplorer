@@ -254,7 +254,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         
         var westPanel = new Ext.Panel({
             id: "tree",
-            border: false,
             region: "west",
             layout: "fit",
             width: 250,
