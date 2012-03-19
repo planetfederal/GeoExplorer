@@ -54,6 +54,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_layermanager",
                 outputConfig: {
                     id: "layers",
+                    autoScroll: true,
                     tbar: []
                 },
                 outputTarget: "tree"
