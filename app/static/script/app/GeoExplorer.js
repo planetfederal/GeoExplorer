@@ -252,14 +252,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     initPortal: function() {
         
-        var westPanel = new Ext.Panel({
+        var westPanel = new gxp.CrumbPanel({
             id: "tree",
             region: "west",
-            layout: "fit",
             width: 250,
             split: true,
             collapsible: true,
             collapseMode: "mini",
+            hideCollapseTool: true,
             header: false
         });
         

@@ -61,16 +61,19 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_addlayers",
                 actionTarget: "layers.tbar",
+                outputTarget: "tree",
                 upload: true
             }, {
                 ptype: "gxp_removelayer",
                 actionTarget: ["layers.tbar", "layers.contextMenu"]
             }, {
                 ptype: "gxp_layerproperties",
-                actionTarget: ["layers.tbar", "layers.contextMenu"]
+                actionTarget: ["layers.tbar", "layers.contextMenu"],
+                outputTarget: "tree"
             }, {
                 ptype: "gxp_styler",
-                actionTarget: ["layers.tbar", "layers.contextMenu"]
+                actionTarget: ["layers.tbar", "layers.contextMenu"],
+                outputTarget: "tree"
             }, {
                 ptype: "gxp_zoomtolayerextent",
                 actionTarget: {target: "layers.contextMenu", index: 0}
