@@ -111,7 +111,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 5}
             }, {
                 ptype: "gxp_googleearth",
-                actionTarget: {target: "paneltbar", index: 17},
+                actionTarget: {target: "paneltbar", index: 17}
             }
         ];
         
