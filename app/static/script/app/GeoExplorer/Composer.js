@@ -73,6 +73,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_styler",
                 actionTarget: ["layers.tbar", "layers.contextMenu"],
+                outputConfig: {autoScroll: true},
                 outputTarget: "tree"
             }, {
                 ptype: "gxp_zoomtolayerextent",
@@ -99,14 +100,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 controlOptions: {immediate: true},
                 actionTarget: {target: "paneltbar", index: 10}
             }, {
-                ptype: "gxp_zoom",
-                actionTarget: {target: "paneltbar", index: 11}
+                ptype: "gxp_navigationhistory"
             }, {
-                ptype: "gxp_navigationhistory",
-                actionTarget: {target: "paneltbar", index: 13}
-            }, {
-                ptype: "gxp_zoomtoextent",
-                actionTarget: {target: "paneltbar", index: 15}
+                ptype: "gxp_zoomtoextent"
             }, {
                 ptype: "gxp_print",
                 customParams: {outputFilename: 'GeoExplorer-print'},
@@ -114,7 +110,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 5}
             }, {
                 ptype: "gxp_googleearth",
-                actionTarget: {target: "paneltbar", index: 17}
+                actionTarget: ["map.tbar", "globe.tbar"]
             }
         ];
         

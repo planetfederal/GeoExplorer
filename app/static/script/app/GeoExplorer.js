@@ -281,6 +281,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         var googleEarthPanel = new gxp.GoogleEarthPanel({
             mapPanel: this.mapPanel,
+            id: "globe",
+            tbar: [],
             listeners: {
                 beforeadd: function(record) {
                     return record.get("group") !== "background";
