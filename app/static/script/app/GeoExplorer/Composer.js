@@ -201,7 +201,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             items: [{
                 fieldLabel: this.userFieldText,
                 name: "username",
-                allowBlank: false
+                allowBlank: false,
+                listeners: {
+                    render: function() {
+                        this.focus(true, 100);
+                    }
+                }
             }, {
                 fieldLabel: this.passwordFieldText,
                 name: "password",
@@ -218,7 +223,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 key: [Ext.EventObject.ENTER], 
                 handler: submitLogin,
                 scope: this
-            }]
+            }],
         });
 
         function submitLogin() {
@@ -299,15 +304,17 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.loginButton = new Ext.Button();
         tools.push(['->', this.loginButton]);
 
-        // unauthorized, show login button
-        if (this.authorizedRoles.length === 0) {
-            this.showLogin();
-        } else {
-            var user = this.getCookieValue(this.cookieParamName);
-            if (user === null) {
-                user = "unknown";
+        if (this.authorizedRoles) {
+            // unauthorized, show login button
+            if (this.authorizedRoles.length === 0) {
+                this.showLogin();
+            } else {
+                var user = this.getCookieValue(this.cookieParamName);
+                if (user === null) {
+                    user = "unknown";
+                }
+                this.showLogout(user);
             }
-            this.showLogout(user);
         }
 
         var aboutButton = new Ext.Button({
