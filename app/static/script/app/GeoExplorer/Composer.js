@@ -39,11 +39,13 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // End i18n.
 
     constructor: function(config) {
+        // Starting with this.authorizedRoles being undefined, which means no
+        // authentication service is available
         if (config.authStatus === 401) {
             // user has not authenticated or is not authorized
             this.authorizedRoles = [];
-        } else {
-            // user has authenticated or auth back-end is not available
+        } else if (config.authStatus !== 404) {
+            // user has authenticated
             this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
         }
         // should not be persisted or accessed again
