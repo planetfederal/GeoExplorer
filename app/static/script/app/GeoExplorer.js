@@ -4,10 +4,9 @@
 
 Ext.USE_NATIVE_JSON = true;
 
-// No shadows for windows, so they can be resized without the need to also
-// resize the shadow.
-// TODO remove when we have switched to CrumbPanel navigation.
-Ext.Window.prototype.shadow = false;
+// Suite 2.4.5 release cycle hotfixes
+// https://github.com/openlayers/openlayers/commit/284ec6a9573f8657d1a3979ead774044e721d7c7
+OpenLayers.Layer.Bing.prototype.maxResolution = Number.POSITIVE_INFINITY;
 
 // http://www.sencha.com/forum/showthread.php?141254-Ext.Slider-not-working-properly-in-IE9
 // TODO re-evaluate once we move to Ext 4
@@ -253,7 +252,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     initPortal: function() {
         
-        var westPanel = new Ext.Panel({
+        var westPanel = new gxp.CrumbPanel({
             id: "tree",
             region: "west",
             width: 250,
@@ -283,6 +282,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         var googleEarthPanel = new gxp.GoogleEarthPanel({
             mapPanel: this.mapPanel,
+            id: "globe",
+            tbar: [],
             listeners: {
                 beforeadd: function(record) {
                     return record.get("group") !== "background";
