@@ -223,7 +223,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 key: [Ext.EventObject.ENTER], 
                 handler: submitLogin,
                 scope: this
-            }],
+            }]
         });
 
         function submitLogin() {
