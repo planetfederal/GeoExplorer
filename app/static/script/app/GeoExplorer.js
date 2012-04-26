@@ -4,9 +4,10 @@
 
 Ext.USE_NATIVE_JSON = true;
 
-// Suite 2.4.5 release cycle hotfixes
-// https://github.com/openlayers/openlayers/commit/284ec6a9573f8657d1a3979ead774044e721d7c7
-OpenLayers.Layer.Bing.prototype.maxResolution = Number.POSITIVE_INFINITY;
+// No shadows for windows, so they can be resized without the need to also
+// resize the shadow.
+// TODO remove when we have switched to CrumbPanel navigation.
+Ext.Window.prototype.shadow = false;
 
 // http://www.sencha.com/forum/showthread.php?141254-Ext.Slider-not-working-properly-in-IE9
 // TODO re-evaluate once we move to Ext 4
@@ -255,11 +256,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var westPanel = new Ext.Panel({
             id: "tree",
             region: "west",
-            layout: "fit",
             width: 250,
             split: true,
             collapsible: true,
             collapseMode: "mini",
+            hideCollapseTool: true,
             header: false
         });
         

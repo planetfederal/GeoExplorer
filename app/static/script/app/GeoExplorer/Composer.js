@@ -39,11 +39,13 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // End i18n.
 
     constructor: function(config) {
+        // Starting with this.authorizedRoles being undefined, which means no
+        // authentication service is available
         if (config.authStatus === 401) {
             // user has not authenticated or is not authorized
             this.authorizedRoles = [];
-        } else {
-            // user has authenticated or auth back-end is not available
+        } else if (config.authStatus !== 404) {
+            // user has authenticated
             this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
         }
         // should not be persisted or accessed again
@@ -98,7 +100,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_zoom",
                 actionTarget: {target: "paneltbar", index: 11}
-            }, {
+            }, {                
                 ptype: "gxp_navigationhistory",
                 actionTarget: {target: "paneltbar", index: 13}
             }, {
@@ -200,7 +202,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             items: [{
                 fieldLabel: this.userFieldText,
                 name: "username",
-                allowBlank: false
+                allowBlank: false,
+                listeners: {
+                    render: function() {
+                        this.focus(true, 100);
+                    }
+                }
             }, {
                 fieldLabel: this.passwordFieldText,
                 name: "password",
@@ -298,15 +305,17 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.loginButton = new Ext.Button();
         tools.push(['->', this.loginButton]);
 
-        // unauthorized, show login button
-        if (this.authorizedRoles.length === 0) {
-            this.showLogin();
-        } else {
-            var user = this.getCookieValue(this.cookieParamName);
-            if (user === null) {
-                user = "unknown";
+        if (this.authorizedRoles) {
+            // unauthorized, show login button
+            if (this.authorizedRoles.length === 0) {
+                this.showLogin();
+            } else {
+                var user = this.getCookieValue(this.cookieParamName);
+                if (user === null) {
+                    user = "unknown";
+                }
+                this.showLogout(user);
             }
-            this.showLogout(user);
         }
 
         var aboutButton = new Ext.Button({
