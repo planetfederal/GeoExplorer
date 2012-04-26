@@ -9,6 +9,13 @@
     <property name="ringo" location="externals/ringojs-fork"/>
     <property name="app.proxy.geoserver" value=""/>
     <property name="app.port" value="8080"/>
+    <property name="cargo.host" value="localhost"/>
+    <property name="cargo.port" value="8080"/>
+    <property name="cargo.container" value="tomcat6x"/>
+    <property name="cargo.username" value="manager"/>
+    <property name="cargo.password" value=""/>
+    <property name="cargo.context" value="${ant.project.name}"/>
+
     <condition property="git" value="git.cmd" else="git">
         <os family="windows"/>
     </condition>
@@ -31,7 +38,7 @@
         <copy todir="${ringo}/lib" flatten="true" includeEmptyDirs="false">
             <fileset dir="lib"/>
         </copy>
-
+        
     </target>
     
     <target name="buildjs">
@@ -109,6 +116,51 @@
         <war destfile="${build}/${ant.project.name}.war">
             <fileset dir="${build}/${ant.project.name}"/>
         </war>
+    </target>
+    
+    <target name="initcargo">
+        <echo message="pulling in Cargo for remote deployment"/>
+        <mkdir dir="${build}/lib"/>
+        <get skipexisting="true" src="http://repo1.maven.org/maven2/org/codehaus/cargo/cargo-core-uberjar/1.2.1/cargo-core-uberjar-1.2.1.jar" dest="${build}/lib/cargo-core-uberjar.jar"/>
+        <get skipexisting="true" src="http://repo1.maven.org/maven2/org/codehaus/cargo/cargo-ant/1.2.1/cargo-ant-1.2.1.jar" dest="${build}/lib/cargo-ant.jar"/>
+        <get skipexisting="true" src="http://repo1.maven.org/maven2/commons-discovery/commons-discovery/0.4/commons-discovery-0.4.jar" dest="${build}/lib/commons-discovery.jar"/>
+        <get skipexisting="true" src="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" dest="${build}/lib/commons-logging.jar"/>
+    </target>
+    
+    <target name="deploy" depends="initcargo">
+
+        <taskdef resource="cargo.tasks">
+          <classpath>
+            <pathelement location="${build}/lib/cargo-core-uberjar.jar"/>
+            <pathelement location="${build}/lib/cargo-ant.jar"/>
+            <pathelement location="${build}/lib/commons-discovery.jar"/>
+            <pathelement location="${build}/lib/commons-logging.jar"/>
+          </classpath>
+        </taskdef>
+
+        <cargo containerId="${cargo.container}" action="redeploy" type="remote">
+          <configuration type="runtime">
+            <property name="cargo.hostname" value="${cargo.host}"/>
+            <property name="cargo.servlet.port" value="${cargo.port}"/>
+            <property name="cargo.remote.username" value="${cargo.username}"/>
+            <property name="cargo.remote.password" value="${cargo.password}"/>
+            <deployable type="war" file="${build}/${ant.project.name}.war">
+              <property name="context" value="${cargo.context}"/>
+            </deployable>
+          </configuration>
+        </cargo>
+
+        <cargo containerId="${cargo.container}" action="undeploy" type="remote">
+          <configuration type="runtime">
+            <property name="cargo.hostname" value="${cargo.host}"/>
+            <property name="cargo.servlet.port" value="${cargo.port}"/>
+            <property name="cargo.remote.username" value="${cargo.username}"/>
+            <property name="cargo.remote.password" value="${cargo.password}"/>
+            <deployable type="war" file="${build}/${ant.project.name}.war">
+              <property name="context" value="${cargo.context}"/>
+            </deployable>
+          </configuration>
+        </cargo>
     </target>
 
     <target name="debug">
