@@ -63,7 +63,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_addlayers",
                 actionTarget: "layers.tbar",
-                upload: true
+                upload: true,
+                uploadTarget: "local"
             }, {
                 ptype: "gxp_removelayer",
                 actionTarget: ["layers.tbar", "layers.contextMenu"]
@@ -172,10 +173,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.showLogin();
     },
 
-    /** private: method[showLoginDialog]
+    /** private: method[authenticationDialog]
      * Show the login dialog for the user to login.
      */
-    showLoginDialog: function() {
+    authenticationDialog: function() {
         var panel = new Ext.FormPanel({
             url: "../login/",
             frame: true,
@@ -282,7 +283,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      */
     showLogin: function() {
         var text = this.loginText;
-        var handler = this.showLoginDialog;
+        var handler = this.authenticationDialog;
         this.applyLoginState('login', text, handler, this);
     },
 
