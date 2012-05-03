@@ -63,13 +63,17 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_addlayers",
                 actionTarget: "layers.tbar",
-                upload: true,
-                uploadTarget: "local"
+                uploadSource: "local",
+                postUploadAction: {
+                    plugin: "layerproperties",
+                    outputConfig: {activeTab: 2}
+                }
             }, {
                 ptype: "gxp_removelayer",
                 actionTarget: ["layers.tbar", "layers.contextMenu"]
             }, {
                 ptype: "gxp_layerproperties",
+                id: "layerproperties",
                 actionTarget: ["layers.tbar", "layers.contextMenu"]
             }, {
                 ptype: "gxp_styler",
