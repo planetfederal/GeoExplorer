@@ -186,7 +186,7 @@
         </java>
     </target>
 
-    <target name="test">
+    <target name="test" unless="skipTests">
         <java jar="${ringo}/run.jar" fork="true" failonerror="yes">
             <sysproperty key="ringo.home" path="${ringo}"/>
             <sysproperty key="ringo.modulepath" path="externals"/>
