@@ -8,7 +8,7 @@
     <property name="build" location="build"/>
     <property name="ringo" location="externals/ringojs-fork"/>
     <property name="app.proxy.geoserver" value=""/>
-    <property name="app.port" value="8080"/>
+    <property name="app.port" value="9080"/>
     <property name="cargo.host" value="localhost"/>
     <property name="cargo.port" value="8080"/>
     <property name="cargo.container" value="tomcat6x"/>

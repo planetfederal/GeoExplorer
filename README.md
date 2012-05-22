@@ -32,9 +32,9 @@ To run the application in development mode, run `ant debug`:
 
 If the build succeeds, you'll be able to browse to the application at http://localhost:8080/.
 
-By default, the application runs on port 8080.  To change this, you can set the `app.port` property as follows (setting the port to 9080):
+By default, the application runs on port 9080.  To change this, you can set the `app.port` property as follows (setting the port to 8000):
 
-    you@prompt:~/geoexplorer$ ant -Dapp.port=9080 debug
+    you@prompt:~/geoexplorer$ ant -Dapp.port=8000 debug
 
 In addition, if you want to make a remote GeoServer available at the `/geoserver/` path, you can set the `app.proxy.geoserver` system property as follows:
 
