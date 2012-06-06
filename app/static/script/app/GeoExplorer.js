@@ -4,10 +4,6 @@
 
 Ext.USE_NATIVE_JSON = true;
 
-// Suite 2.4.5 release cycle hotfixes
-// https://github.com/openlayers/openlayers/commit/284ec6a9573f8657d1a3979ead774044e721d7c7
-OpenLayers.Layer.Bing.prototype.maxResolution = Number.POSITIVE_INFINITY;
-
 // http://www.sencha.com/forum/showthread.php?141254-Ext.Slider-not-working-properly-in-IE9
 // TODO re-evaluate once we move to Ext 4
 Ext.override(Ext.dd.DragTracker, {
