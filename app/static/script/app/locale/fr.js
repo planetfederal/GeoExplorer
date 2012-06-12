@@ -20,6 +20,7 @@ GeoExt.Lang.add("fr", {
         aboutThisMapText: "À propos de cette carte"
     },
     "GeoExplorer.Composer.prototype": {
+        mapText: "Carte",
         exportMapText: "Carte Export",
         saveMapText: "Enregistrez la carte",
         saveErrorText: "Sauver Trouble:",

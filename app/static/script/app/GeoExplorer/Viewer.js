@@ -22,9 +22,6 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         var allTools = config.viewerTools || this.viewerTools;
         var tools = [];
         var toolConfig;
-        // we need to start counting at 2 since there is the Layer Switcher and a 
-        // split button already
-        var counter = 2;
         for (var i=0, len=allTools.length; i<len; i++) {
             var tool = allTools[i];
             if (tool.checked === true) {
@@ -33,13 +30,8 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
                     delete tool[properties[key]];
                 }
                 toolConfig = Ext.applyIf({
-                    actionTarget: {target: "paneltbar", index: counter}
+                    actionTarget: "paneltbar"
                 }, tool);
-                if (tool.numberOfButtons !== undefined) {
-                    counter += tool.numberOfButtons;
-                } else {
-                    counter++;
-                }
                 tools.push(toolConfig);
             }
         }
@@ -51,11 +43,9 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     initPortal: function() {
-
         this.toolbar = new Ext.Toolbar({
             disabled: true,
-            id: "paneltbar",
-            items: this.createTools()
+            id: "paneltbar"
         });
         this.on("ready", function() {this.toolbar.enable();}, this);
 
@@ -88,7 +78,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             ]
         }];
         
-        GeoExplorer.superclass.initPortal.apply(this, arguments);        
+        GeoExplorer.Viewer.superclass.initPortal.apply(this, arguments);        
 
     },
 
@@ -97,29 +87,19 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     createTools: function() {
-        var tools = GeoExplorer.Viewer.superclass.createTools.apply(this, arguments);
+        GeoExplorer.Viewer.superclass.createTools.apply(this, arguments);
+        
+        Ext.getCmp("aboutbutton")
+            .setText(null)
+            .setIconClass('icon-about');
 
-        var layerChooser = new Ext.Button({
+        new Ext.Button({
+            id: "layerchooser",
             tooltip: 'Layer Switcher',
             iconCls: 'icon-layer-switcher',
             menu: new gxp.menu.LayerMenu({
                 layers: this.mapPanel.layers
             })
         });
-
-        tools.unshift("-");
-        tools.unshift(layerChooser);
-
-        var aboutButton = new Ext.Button({
-            tooltip: this.aboutText,
-            iconCls: "icon-about",
-            handler: this.displayAppInfo,
-            scope: this
-        });
-
-        tools.push("->");
-        tools.push(aboutButton);
-
-        return tools;
     }
 });

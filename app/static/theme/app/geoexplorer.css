@@ -69,11 +69,13 @@ body {
     background-image: url(img/silk/information.png);
 }
 
-.x-btn .icon-save {
+.x-btn .icon-map {
+    background-image: url(img/silk/map.png);
+}
+.x-btn .icon-save, .x-menu-item .icon-save {
     background-image: url(img/geosilk/map_save.png);
 }
-
-.x-btn .icon-export {
+.x-btn .icon-export, .x-menu-item .icon-export {
     background-image: url(img/silk/map_go.png);
 }
 

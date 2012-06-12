@@ -24,8 +24,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     cookieParamName: 'geoexplorer-user',
 
     // Begin i18n.
-    saveMapText: "Save Map",
-    exportMapText: "Publish Map",
+    mapText: "Map",
+    saveMapText: "Save map",
+    exportMapText: "Export map",
     toolsTitle: "Choose tools to include in the toolbar:",
     previewText: "Preview",
     backText: "Back",
@@ -85,11 +86,38 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_zoomtolayerextent",
                 actionTarget: {target: "layers.contextMenu", index: 0}
             }, {
-                ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 6}
+                ptype: "gxp_googleearth",
+                actionTarget: ["map.tbar", "globe.tbar"]
             }, {
-                ptype: "gxp_wmsgetfeatureinfo", format: 'grid', toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 7}
+                ptype: "gxp_navigation", toggleGroup: "navigation"
+            }, {
+                ptype: "gxp_zoom", toggleGroup: "navigation",
+                showZoomBoxAction: true,
+                controlOptions: {zoomOnClick: false}
+            }, {
+                ptype: "gxp_navigationhistory"
+            }, {
+                ptype: "gxp_zoomtoextent"
+            }, {
+                actions: ["aboutbutton"],  actionTarget: "paneltbar"
+            }, {
+                actions: ["-"], actionTarget: "paneltbar"
+            }, {
+                actions: ["mapmenu"],  actionTarget: "paneltbar"
+            }, {
+                ptype: "gxp_print",
+                customParams: {outputFilename: 'GeoExplorer-print'},
+                printService: config.printService,
+                actionTarget: "paneltbar",
+                showButtonText: true
+            }, {
+                actions: ["-"],
+                actionTarget: "paneltbar"
+            }, {
+                ptype: "gxp_wmsgetfeatureinfo", format: 'grid',
+                toggleGroup: "interaction",
+                showButtonText: true,
+                actionTarget: "paneltbar"
             }, {
                 ptype: "gxp_featuremanager",
                 id: "featuremanager",
@@ -99,35 +127,25 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_featureeditor",
                 featureManager: "featuremanager",
                 autoLoadFeature: true,
-                toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 8}
+                splitButton: true,
+                showButtonText: true,
+                toggleGroup: "interaction",
+                actionTarget: "paneltbar"
             }, {
-                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+                ptype: "gxp_measure", toggleGroup: "interaction",
                 controlOptions: {immediate: true},
-                actionTarget: {target: "paneltbar", index: 10}
+                showButtonText: true,
+                actionTarget: "paneltbar"
             }, {
-                ptype: "gxp_navigationhistory"
+                actions: ["->"],
+                actionTarget: "paneltbar"
             }, {
-                ptype: "gxp_zoomtoextent"
-            }, {
-                ptype: "gxp_print",
-                customParams: {outputFilename: 'GeoExplorer-print'},
-                printService: config.printService,
-                actionTarget: {target: "paneltbar", index: 5}
-            }, {
-                ptype: "gxp_googleearth",
-                actionTarget: ["map.tbar", "globe.tbar"]
+                actions: ["loginbutton"],
+                actionTarget: "paneltbar"
             }
         ];
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
-    },
-
-    /** api: method[destroy]
-     */
-    destroy: function() {
-        this.loginButton = null;
-        GeoExplorer.Composer.superclass.destroy.apply(this, arguments);
     },
 
     /** private: method[setCookieValue]
@@ -280,9 +298,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      * Attach a handler to the login button and set its text.
      */
     applyLoginState: function(iconCls, text, handler, scope) {
-        this.loginButton.setIconClass(iconCls);
-        this.loginButton.setText(text);
-        this.loginButton.setHandler(handler, scope);
+        var loginButton = Ext.getCmp("loginbutton");
+        loginButton.setIconClass(iconCls);
+        loginButton.setText(text);
+        loginButton.setHandler(handler, scope);
     },
 
     /** private: method[showLogin]
@@ -303,15 +322,132 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.applyLoginState('logout', text, handler, this);
     },
 
+    /** private: method[initPortal]
+     * Create the various parts that compose the layout.
+     */
+    initPortal: function() {
+        
+        var westPanel = new gxp.CrumbPanel({
+            id: "tree",
+            region: "west",
+            width: 250,
+            split: true,
+            collapsible: true,
+            collapseMode: "mini",
+            hideCollapseTool: true,
+            header: false
+        });
+        
+        this.toolbar = new Ext.Toolbar({
+            disabled: true,
+            id: 'paneltbar',
+            items: []
+        });
+        this.on("ready", function() {
+            // enable only those items that were not specifically disabled
+            var disabled = this.toolbar.items.filterBy(function(item) {
+                return item.initialConfig && item.initialConfig.disabled;
+            });
+            this.toolbar.enable();
+            disabled.each(function(item) {
+                item.disable();
+            });
+        });
+
+        var googleEarthPanel = new gxp.GoogleEarthPanel({
+            mapPanel: this.mapPanel,
+            id: "globe",
+            tbar: [],
+            listeners: {
+                beforeadd: function(record) {
+                    return record.get("group") !== "background";
+                }
+            }
+        });
+        
+        // TODO: continue making this Google Earth Panel more independent
+        // Currently, it's too tightly tied into the viewer.
+        // In the meantime, we keep track of all items that the were already
+        // disabled when the panel is shown.
+        var preGoogleDisabled = [];
+
+        googleEarthPanel.on("show", function() {
+            preGoogleDisabled.length = 0;
+            this.toolbar.items.each(function(item) {
+                if (item.disabled) {
+                    preGoogleDisabled.push(item);
+                }
+            });
+            this.toolbar.disable();
+            // loop over all the tools and remove their output
+            for (var key in this.tools) {
+                var tool = this.tools[key];
+                if (tool.outputTarget === "map") {
+                    tool.removeOutput();
+                }
+            }
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.items.each(function(item) {
+                    if (item.disabled) {
+                        preGoogleDisabled.push(item);
+                    }
+                });
+                layersToolbar.disable();
+            }
+        }, this);
+
+        googleEarthPanel.on("hide", function() {
+            // re-enable all tools
+            this.toolbar.enable();
+            
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.enable();
+            }
+            // now go back and disable all things that were disabled previously
+            for (var i=0, ii=preGoogleDisabled.length; i<ii; ++i) {
+                preGoogleDisabled[i].disable();
+            }
+
+        }, this);
+
+        this.mapPanelContainer = new Ext.Panel({
+            layout: "card",
+            region: "center",
+            defaults: {
+                border: false
+            },
+            items: [
+                this.mapPanel,
+                googleEarthPanel
+            ],
+            activeItem: 0
+        });
+        
+        this.portalItems = [{
+            region: "center",
+            layout: "border",
+            tbar: this.toolbar,
+            items: [
+                this.mapPanelContainer,
+                westPanel
+            ]
+        }];
+        
+        GeoExplorer.Composer.superclass.initPortal.apply(this, arguments);        
+    },
+    
     /**
      * api: method[createTools]
      * Create the toolbar configuration for the main view.
      */
     createTools: function() {
-        var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
+        GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
-        this.loginButton = new Ext.Button();
-        tools.push(['->', this.loginButton]);
+        new Ext.Button({id: "loginbutton"});
 
         if (this.authorizedRoles) {
             // unauthorized, show login button
@@ -325,38 +461,33 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 this.showLogout(user);
             }
         }
-
-        var aboutButton = new Ext.Button({
-            text: this.appInfoText,
-            iconCls: "icon-geoexplorer",
-            handler: this.displayAppInfo,
-            scope: this
+        
+        new Ext.Button({
+            id: "mapmenu",
+            text: this.mapText,
+            iconCls: 'icon-map',
+            menu: new Ext.menu.Menu({
+                items: [{
+                    text: this.exportMapText,
+                    handler: function() {
+                        this.doAuthorized(["ROLE_ADMINISTRATOR"], function() {
+                            this.save(this.showEmbedWindow);
+                        }, this);
+                    },
+                    scope: this,
+                    iconCls: 'icon-export'
+                }, {
+                    text: this.saveMapText,
+                    handler: function() {
+                        this.doAuthorized(["ROLE_ADMINISTRATOR"], function() {
+                            this.save(this.showUrl);
+                        }, this);
+                    },
+                    scope: this,
+                    iconCls: "icon-save"
+                }]
+            })            
         });
-
-        tools.unshift("-");
-        tools.unshift(new Ext.Button({
-            tooltip: this.exportMapText,
-            handler: function() {
-                this.doAuthorized(["ROLE_ADMINISTRATOR"], function() {
-                    this.save(this.showEmbedWindow);
-                }, this);
-            },
-            scope: this,
-            iconCls: 'icon-export'
-        }));
-        tools.unshift(new Ext.Button({
-            tooltip: this.saveMapText,
-            handler: function() {
-                this.doAuthorized(["ROLE_ADMINISTRATOR"], function() {
-                    this.save(this.showUrl);
-                }, this);
-            },
-            scope: this,
-            iconCls: "icon-save"
-        }));
-        tools.unshift("-");
-        tools.unshift(aboutButton);
-        return tools;
     },
 
     /** private: method[openPreview]

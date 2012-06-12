@@ -95,8 +95,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     mapPanel: null,
     
-    toggleGroup: "toolGroup",
-
     constructor: function(config) {
         this.mapItems = [
             {
@@ -114,70 +112,75 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         // both the Composer and the Viewer need to know about the viewerTools
         // First row in each object is needed to correctly render a tool in the treeview
         // of the embed map dialog. TODO: make this more flexible so this is not needed.
-        config.viewerTools = [
-            {
-                leaf: true,
-                text: gxp.plugins.Print.prototype.tooltip,
-                ptype: "gxp_print",
-                iconCls: "gxp-icon-print",
-                customParams: {outputFilename: 'GeoExplorer-print'},
-                printService: config.printService,
-                checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Navigation.prototype.tooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-pan",
-                ptype: "gxp_navigation", 
-                toggleGroup: this.toggleGroup
-            }, {
-                leaf: true, 
-                text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
-                checked: true, 
-                iconCls: "gxp-icon-getfeatureinfo",
-                ptype: "gxp_wmsgetfeatureinfo",
-                format: 'grid',
-                toggleGroup: this.toggleGroup
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Measure.prototype.measureTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-measure-length",
-                ptype: "gxp_measure",
-                controlOptions: {immediate: true},
-                toggleGroup: this.toggleGroup
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoom-in",
-                numberOfButtons: 2,
-                ptype: "gxp_zoom"
-            }, {
-                leaf: true, 
-                text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoom-previous",
-                numberOfButtons: 2,
-                ptype: "gxp_navigationhistory"
-            }, {
-                leaf: true, 
-                text: gxp.plugins.ZoomToExtent.prototype.tooltip, 
-                checked: true, 
-                iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
-                ptype: "gxp_zoomtoextent"
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Legend.prototype.tooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-legend",
-                ptype: "gxp_legend"
-            }, {
-                leaf: true,
-                text: gxp.plugins.GoogleEarth.prototype.tooltip,
-                checked: true,
-                iconCls: "gxp-icon-googleearth",
-                ptype: "gxp_googleearth"
+        config.viewerTools = [{
+            hidden: true, actions: ["layerchooser"], checked: true
+        }, {
+            hidden: true, actions: ["-"], checked: true
+        }, {
+            leaf: true,
+            text: gxp.plugins.Print.prototype.tooltip,
+            ptype: "gxp_print",
+            iconCls: "gxp-icon-print",
+            customParams: {outputFilename: 'GeoExplorer-print'},
+            printService: config.printService,
+            checked: true
+        }, {
+            leaf: true, 
+            text: gxp.plugins.Navigation.prototype.tooltip, 
+            checked: true, 
+            iconCls: "gxp-icon-pan",
+            ptype: "gxp_navigation", 
+            toggleGroup: "navigation"
+        }, {
+            leaf: true, 
+            text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
+            checked: true, 
+            iconCls: "gxp-icon-getfeatureinfo",
+            ptype: "gxp_wmsgetfeatureinfo",
+            format: 'grid',
+            toggleGroup: "interaction"
+        }, {
+            leaf: true, 
+            text: gxp.plugins.Measure.prototype.measureTooltip, 
+            checked: true, 
+            iconCls: "gxp-icon-measure-length",
+            ptype: "gxp_measure",
+            controlOptions: {immediate: true},
+            toggleGroup: "interaction"
+        }, {
+            leaf: true, 
+            text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, 
+            checked: true, 
+            iconCls: "gxp-icon-zoom-in",
+            ptype: "gxp_zoom"
+        }, {
+            leaf: true, 
+            text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
+            checked: true, 
+            iconCls: "gxp-icon-zoom-previous",
+            ptype: "gxp_navigationhistory"
+        }, {
+            leaf: true, 
+            text: gxp.plugins.ZoomToExtent.prototype.tooltip, 
+            checked: true, 
+            iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
+            ptype: "gxp_zoomtoextent"
+        }, {
+            leaf: true, 
+            text: gxp.plugins.Legend.prototype.tooltip, 
+            checked: true, 
+            iconCls: "gxp-icon-legend",
+            ptype: "gxp_legend"
+        }, {
+            leaf: true,
+            text: gxp.plugins.GoogleEarth.prototype.tooltip,
+            checked: true,
+            iconCls: "gxp-icon-googleearth",
+            ptype: "gxp_googleearth"
+        }, {
+            hidden: true, actions: ["->"], checked: true
+        }, {
+            hidden: true, actions: ["aboutbutton"], checked: true
         }];
 
         GeoExplorer.superclass.constructor.apply(this, arguments);
@@ -247,130 +250,23 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      * Create the various parts that compose the layout.
      */
     initPortal: function() {
-        
-        var westPanel = new gxp.CrumbPanel({
-            id: "tree",
-            region: "west",
-            width: 250,
-            split: true,
-            collapsible: true,
-            collapseMode: "mini",
-            hideCollapseTool: true,
-            header: false
-        });
-        
-        this.toolbar = new Ext.Toolbar({
-            disabled: true,
-            id: 'paneltbar',
-            items: this.createTools()
-        });
-        this.on("ready", function() {
-            // enable only those items that were not specifically disabled
-            var disabled = this.toolbar.items.filterBy(function(item) {
-                return item.initialConfig && item.initialConfig.disabled;
-            });
-            this.toolbar.enable();
-            disabled.each(function(item) {
-                item.disable();
-            });
-        });
-
-        var googleEarthPanel = new gxp.GoogleEarthPanel({
-            mapPanel: this.mapPanel,
-            id: "globe",
-            tbar: [],
-            listeners: {
-                beforeadd: function(record) {
-                    return record.get("group") !== "background";
-                }
-            }
-        });
-        
-        // TODO: continue making this Google Earth Panel more independent
-        // Currently, it's too tightly tied into the viewer.
-        // In the meantime, we keep track of all items that the were already
-        // disabled when the panel is shown.
-        var preGoogleDisabled = [];
-
-        googleEarthPanel.on("show", function() {
-            preGoogleDisabled.length = 0;
-            this.toolbar.items.each(function(item) {
-                if (item.disabled) {
-                    preGoogleDisabled.push(item);
-                }
-            });
-            this.toolbar.disable();
-            // loop over all the tools and remove their output
-            for (var key in this.tools) {
-                var tool = this.tools[key];
-                if (tool.outputTarget === "map") {
-                    tool.removeOutput();
-                }
-            }
-            var layersContainer = Ext.getCmp("tree");
-            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
-            if (layersToolbar) {
-                layersToolbar.items.each(function(item) {
-                    if (item.disabled) {
-                        preGoogleDisabled.push(item);
-                    }
-                });
-                layersToolbar.disable();
-            }
-        }, this);
-
-        googleEarthPanel.on("hide", function() {
-            // re-enable all tools
-            this.toolbar.enable();
-            
-            var layersContainer = Ext.getCmp("tree");
-            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
-            if (layersToolbar) {
-                layersToolbar.enable();
-            }
-            // now go back and disable all things that were disabled previously
-            for (var i=0, ii=preGoogleDisabled.length; i<ii; ++i) {
-                preGoogleDisabled[i].disable();
-            }
-
-        }, this);
-
-        this.mapPanelContainer = new Ext.Panel({
-            layout: "card",
-            region: "center",
-            defaults: {
-                border: false
-            },
-            items: [
-                this.mapPanel,
-                googleEarthPanel
-            ],
-            activeItem: 0
-        });
-        
-        this.portalItems = [{
-            region: "center",
-            layout: "border",
-            tbar: this.toolbar,
-            items: [
-                this.mapPanelContainer,
-                westPanel
-            ]
-        }];
-        
+        this.createTools();        
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
     },
     
     /** private: method[createTools]
      * Create the toolbar configuration for the main panel.  This method can be 
-     * overridden in derived explorer classes such as :class:`GeoExplorer.Composer`
+     * extended by derived explorer classes such as :class:`GeoExplorer.Composer`
      * or :class:`GeoExplorer.Viewer` to provide specialized controls.
      */
     createTools: function() {
-        var tools = [
-            "-"
-        ];
-        return tools;
+        new Ext.Button({
+            id: "aboutbutton",
+            text: this.appInfoText,
+            iconCls: "icon-geoexplorer",
+            handler: this.displayAppInfo,
+            scope: this
+        });
     },
     
     /** private: method[showUrl]

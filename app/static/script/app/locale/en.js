@@ -21,8 +21,9 @@ GeoExt.Lang.add("en", {
         aboutThisMapText: "About this Map"
     },
     "GeoExplorer.Composer.prototype": {
-        exportMapText: "Publish Map",
-        saveMapText: "Save Map",
+        mapText: "Map",
+        exportMapText: "Publish map",
+        saveMapText: "Save map",
         saveErrorText: "Trouble saving: ",
         toolsTitle: "Choose tools to include in the toolbar:",
         previewText: "Preview",

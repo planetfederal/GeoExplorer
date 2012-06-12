@@ -21,6 +21,7 @@ GeoExt.Lang.add("de", {
         aboutThisMapText: "Über diese Karte"
     },
     "GeoExplorer.Composer.prototype": {
+        mapText: "Karte",
         exportMapText: "Karte veröffentlichen",
         saveMapText: "Karte speichern",
         saveErrorText: "Beim Speichern ist ein Problem aufgetreten: ",
