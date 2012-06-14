@@ -150,6 +150,19 @@
           </configuration>
         </cargo>
 
+    </target>
+    
+    <target name="undeploy" depends="initcargo">
+
+        <taskdef resource="cargo.tasks">
+          <classpath>
+            <pathelement location="${build}/lib/cargo-core-uberjar.jar"/>
+            <pathelement location="${build}/lib/cargo-ant.jar"/>
+            <pathelement location="${build}/lib/commons-discovery.jar"/>
+            <pathelement location="${build}/lib/commons-logging.jar"/>
+          </classpath>
+        </taskdef>
+
         <cargo containerId="${cargo.container}" action="undeploy" type="remote">
           <configuration type="runtime">
             <property name="cargo.hostname" value="${cargo.host}"/>
