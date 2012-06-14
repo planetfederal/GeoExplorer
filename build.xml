@@ -127,7 +127,7 @@
         <get skipexisting="true" src="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" dest="${build}/lib/commons-logging.jar"/>
     </target>
     
-    <target name="deploy" depends="initcargo">
+    <target name="deploy" depends="initcargo, war">
 
         <taskdef resource="cargo.tasks">
           <classpath>
