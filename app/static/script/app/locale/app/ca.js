@@ -21,6 +21,8 @@ GeoExt.Lang.add("ca", {
     },
     "GeoExplorer.Composer.prototype": {
         mapText: "Mapa",
+        tableText: "Table",
+        queryText: "Query",
         exportMapText: "Exporta el Mapa",
         saveMapText: "Desa el Mapa",
         saveErrorText: "Problemes desant: ",

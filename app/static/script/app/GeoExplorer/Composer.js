@@ -37,6 +37,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     userFieldText: "User",
     passwordFieldText: "Password", 
     saveErrorText: "Trouble saving: ",
+    tableText: "Table",
+    queryText: "Query",
     // End i18n.
 
     constructor: function(config) {
@@ -120,6 +122,31 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: "paneltbar"
             }, {
                 ptype: "gxp_featuremanager",
+                id: "querymanager",
+                autoLoadFeatures: true,
+                maxFeatures: 50,
+                paging: true,
+                pagingType: gxp.plugins.FeatureManager.WFS_PAGING
+            }, {
+                ptype: "gxp_queryform",
+                featureManager: "querymanager",
+                actionTarget: "paneltbar",
+                outputTarget: "query",
+                actionTarget: null
+            }, {
+                ptype: "gxp_featuregrid",
+                featureManager: "querymanager",
+                selectOnMap: true,
+                showTotalResults: true,
+                autoLoadFeature: false,
+                outputTarget: "table"
+            }, {
+                ptype: "gxp_measure", toggleGroup: "interaction",
+                controlOptions: {immediate: true},
+                showButtonText: true,
+                actionTarget: "paneltbar"
+            }, {
+                ptype: "gxp_featuremanager",
                 id: "featuremanager",
                 maxFeatures: 20,
                 paging: false
@@ -130,11 +157,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 splitButton: true,
                 showButtonText: true,
                 toggleGroup: "interaction",
-                actionTarget: "paneltbar"
-            }, {
-                ptype: "gxp_measure", toggleGroup: "interaction",
-                controlOptions: {immediate: true},
-                showButtonText: true,
                 actionTarget: "paneltbar"
             }, {
                 actions: ["->"],
@@ -337,18 +359,44 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             hideCollapseTool: true,
             header: false
         });
-        
-        this.toolbar = new Ext.Toolbar({
+        var southPanel = new Ext.Container({
+            region: "south",
+            height: 220,
+            split: true,
+            collapsible: true,
+            collapseMode: "mini",
+            hideCollapseTool: true,
+            header: false,
+            layout: "border",
+            items: [{
+                region: "center",
+                id: "table",
+                title: this.tableText,
+                layout: "fit"
+            }, {
+                region: "west",
+                width: 320,
+                id: "query",
+                title: this.queryText,
+                split: true,
+                collapsible: true,
+                collapseMode: "mini",
+                hideCollapseTool: true,
+                layout: "fit",
+                autoScroll: true
+            }]
+        });
+        var toolbar = new Ext.Toolbar({
             disabled: true,
             id: 'paneltbar',
             items: []
         });
         this.on("ready", function() {
             // enable only those items that were not specifically disabled
-            var disabled = this.toolbar.items.filterBy(function(item) {
+            var disabled = toolbar.items.filterBy(function(item) {
                 return item.initialConfig && item.initialConfig.disabled;
             });
-            this.toolbar.enable();
+            toolbar.enable();
             disabled.each(function(item) {
                 item.disable();
             });
@@ -373,12 +421,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
         googleEarthPanel.on("show", function() {
             preGoogleDisabled.length = 0;
-            this.toolbar.items.each(function(item) {
+            toolbar.items.each(function(item) {
                 if (item.disabled) {
                     preGoogleDisabled.push(item);
                 }
             });
-            this.toolbar.disable();
+            toolbar.disable();
             // loop over all the tools and remove their output
             for (var key in this.tools) {
                 var tool = this.tools[key];
@@ -400,7 +448,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
         googleEarthPanel.on("hide", function() {
             // re-enable all tools
-            this.toolbar.enable();
+            toolbar.enable();
             
             var layersContainer = Ext.getCmp("tree");
             var layersToolbar = layersContainer && layersContainer.getTopToolbar();
@@ -430,10 +478,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.portalItems = [{
             region: "center",
             layout: "border",
-            tbar: this.toolbar,
+            tbar: toolbar,
             items: [
                 this.mapPanelContainer,
-                westPanel
+                westPanel,
+                southPanel
             ]
         }];
         

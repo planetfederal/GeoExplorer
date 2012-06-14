@@ -22,6 +22,8 @@ GeoExt.Lang.add("en", {
     },
     "GeoExplorer.Composer.prototype": {
         mapText: "Map",
+        tableText: "Table",
+        queryText: "Query",
         exportMapText: "Publish map",
         saveMapText: "Save map",
         saveErrorText: "Trouble saving: ",
