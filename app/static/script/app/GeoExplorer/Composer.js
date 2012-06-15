@@ -59,7 +59,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_layermanager",
                 outputConfig: {
                     id: "layers",
-                    autoScroll: true,
                     tbar: []
                 },
                 outputTarget: "tree"
@@ -359,9 +358,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             hideCollapseTool: true,
             header: false
         });
-        var southPanel = new Ext.Container({
+        var southPanel = new Ext.Panel({
             region: "south",
             height: 220,
+            border: false,
             split: true,
             collapsible: true,
             collapseMode: "mini",
