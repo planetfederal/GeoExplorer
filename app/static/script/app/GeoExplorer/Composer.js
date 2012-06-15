@@ -59,7 +59,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_layermanager",
                 outputConfig: {
                     id: "layers",
-                    tbar: []
+                    tbar: [],
+                    autoScroll: true
                 },
                 outputTarget: "tree"
             }, {
@@ -77,10 +78,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_layerproperties",
                 id: "layerproperties",
+                outputConfig: {defaults: {autoScroll: true}, width: 320},
                 actionTarget: ["layers.tbar", "layers.contextMenu"],
                 outputTarget: "tree"
             }, {
                 ptype: "gxp_styler",
+                outputConfig: {autoScroll: true, width: 300},
                 actionTarget: ["layers.tbar", "layers.contextMenu"],
                 outputTarget: "tree"
             }, {
@@ -382,8 +385,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 collapsible: true,
                 collapseMode: "mini",
                 hideCollapseTool: true,
-                layout: "fit",
-                autoScroll: true
+                layout: "fit"
             }]
         });
         var toolbar = new Ext.Toolbar({
