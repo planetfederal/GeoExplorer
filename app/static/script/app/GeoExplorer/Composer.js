@@ -83,7 +83,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 outputTarget: "tree"
             }, {
                 ptype: "gxp_styler",
-                outputConfig: {autoScroll: true, width: 300},
+                outputConfig: {autoScroll: true, width: 320},
                 actionTarget: ["layers.tbar", "layers.contextMenu"],
                 outputTarget: "tree"
             }, {
@@ -361,7 +361,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         var westPanel = new gxp.CrumbPanel({
             id: "tree",
             region: "west",
-            width: 250,
+            width: 320,
             split: true,
             collapsible: true,
             collapseMode: "mini",
