@@ -83,6 +83,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 outputTarget: "tree"
             }, {
                 ptype: "gxp_styler",
+                id: "styler",
                 outputConfig: {autoScroll: true, width: 320},
                 actionTarget: ["layers.tbar", "layers.contextMenu"],
                 outputTarget: "tree"
@@ -179,6 +180,30 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         ];
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
+    },
+    
+    loadConfig: function(config) {
+        GeoExplorer.Composer.superclass.loadConfig.apply(this, arguments);
+        
+        //TODO Consider making this a more generic plugin
+        // When the url has a #styler/layer hash, the provided layer will be
+        // loaded from the local source and the Styler will open
+        match = window.location.hash.substr(1).match(/^styler\/([^&^\/]+)$/);
+        if (match) {
+            this.createLayerRecord({
+                name: match[1],
+                source: 'local'
+            }, function(rec) {
+                var maxExtent = rec.getLayer().maxExtent,
+                    styler = this.tools.styler;
+                if (maxExtent) {
+                    this.mapPanel.map.zoomToExtent(maxExtent);
+                }
+                this.mapPanel.layers.add(rec);
+                this.selectLayer(rec);
+                this.doAuthorized(styler.roles, styler.addOutput, styler);
+            }, this);
+        }
     },
 
     /** private: method[setCookieValue]
