@@ -125,6 +125,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_featuremanager",
                 id: "querymanager",
+                selectStyle: {cursor: ''},
                 autoLoadFeatures: true,
                 maxFeatures: 50,
                 paging: true,
@@ -132,6 +133,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_queryform",
                 featureManager: "querymanager",
+                autoExpand: "south",
                 actionTarget: "paneltbar",
                 outputTarget: "query",
                 actionTarget: null
