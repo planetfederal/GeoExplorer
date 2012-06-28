@@ -372,11 +372,13 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         });
         var southPanel = new Ext.Panel({
             region: "south",
+            id: "south",
             height: 220,
             border: false,
             split: true,
             collapsible: true,
             collapseMode: "mini",
+            collapsed: true,
             hideCollapseTool: true,
             header: false,
             layout: "border",
