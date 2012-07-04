@@ -185,24 +185,25 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     loadConfig: function(config) {
         GeoExplorer.Composer.superclass.loadConfig.apply(this, arguments);
         
-        //TODO Consider making this a more generic plugin
-        // When the url has a #styler/layer hash, the provided layer will be
-        // loaded from the local source and the Styler will open
-        match = window.location.hash.substr(1).match(/^styler\/([^&^\/]+)$/);
-        if (match) {
-            this.createLayerRecord({
-                name: match[1],
-                source: 'local'
-            }, function(rec) {
-                var maxExtent = rec.getLayer().maxExtent,
-                    styler = this.tools.styler;
-                if (maxExtent) {
-                    this.mapPanel.map.zoomToExtent(maxExtent);
+        var query = Ext.urlDecode(document.location.search.substr(1));
+        if (query && query.styler) {
+            for (var i=config.map.layers.length-1; i>=0; --i) {
+                delete config.map.layers[i].selected;
+            }
+            config.map.layers.push({
+                source: "local",
+                name: query.styler,
+                selected: true
+            });
+            this.on('layerselectionchange', function(rec) {
+                var styler = this.tools.styler,
+                    layer = rec.getLayer(),
+                    extent = layer.maxExtent;
+                if (extent) {
+                    this.mapPanel.map.zoomToExtent(extent);
                 }
-                this.mapPanel.layers.add(rec);
-                this.selectLayer(rec);
                 this.doAuthorized(styler.roles, styler.addOutput, styler);
-            }, this);
+            }, this, {single: true});            
         }
     },
 
