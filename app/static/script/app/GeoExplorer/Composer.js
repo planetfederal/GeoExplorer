@@ -199,7 +199,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 var styler = this.tools.styler,
                     layer = rec.getLayer(),
                     extent = layer.maxExtent;
-                if (extent) {
+                if (extent && !query.bbox) {
                     this.mapPanel.map.zoomToExtent(extent);
                 }
                 this.doAuthorized(styler.roles, styler.addOutput, styler);
