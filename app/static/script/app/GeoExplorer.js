@@ -256,6 +256,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                      delete config.map.center;
                      config.map.extent = query.bbox.split(/\s*,\s*/);
                  }
+                 if (query.lazy && config.sources.local) {
+                     config.sources.local.requiredProperties = [];
+                 }
             }
             
             this.applyConfig(config);
