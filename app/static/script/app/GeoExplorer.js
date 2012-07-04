@@ -247,7 +247,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                          config.map.layers.push({
                              source: "local",
                              name: layers[i],
-                             title: layers[i],
                              visibility: true
                          });
                      }
