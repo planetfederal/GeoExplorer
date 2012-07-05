@@ -193,7 +193,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             config.map.layers.push({
                 source: "local",
                 name: query.styler,
-                selected: true
+                selected: true,
+                bbox: query.lazy && query.bbox ? query.bbox.split(",") : undefined
             });
             this.on('layerselectionchange', function(rec) {
                 var styler = this.tools.styler,

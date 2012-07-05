@@ -247,7 +247,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                          config.map.layers.push({
                              source: "local",
                              name: layers[i],
-                             visibility: true
+                             visibility: true,
+                             bbox: query.lazy && query.bbox ? query.bbox.split(",") : undefined
                          });
                      }
                  }
