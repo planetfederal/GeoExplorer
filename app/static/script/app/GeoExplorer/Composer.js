@@ -140,14 +140,16 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_featuregrid",
                 featureManager: "querymanager",
-                columnsSortable: false,
                 showTotalResults: true,
                 autoLoadFeature: false,
                 alwaysDisplayOnMap: true,
                 controlOptions: {multiple: true},
                 displayMode: "selected",
                 outputTarget: "table",
-                outputConfig: {id: "featuregrid"}
+                outputConfig: {
+                    id: "featuregrid",
+                    columnsSortable: false
+                }
             }, {
                 ptype: "gxp_zoomtoselectedfeatures",
                 featureManager: "querymanager",
