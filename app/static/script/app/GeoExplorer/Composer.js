@@ -134,10 +134,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_queryform",
                 featureManager: "querymanager",
-                autoExpand: "south",
+                autoExpand: "query",
                 actionTarget: "paneltbar",
-                outputTarget: "query",
-                actionTarget: null
+                outputTarget: "query"
             }, {
                 ptype: "gxp_featuregrid",
                 featureManager: "querymanager",
@@ -423,6 +422,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 split: true,
                 collapsible: true,
                 collapseMode: "mini",
+                collapsed: true,
                 hideCollapseTool: true,
                 layout: "fit"
             }]
