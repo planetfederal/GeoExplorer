@@ -141,6 +141,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_featuregrid",
                 featureManager: "querymanager",
+                columnsSortable: false,
                 showTotalResults: true,
                 autoLoadFeature: false,
                 alwaysDisplayOnMap: true,
