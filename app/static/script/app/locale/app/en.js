@@ -15,10 +15,10 @@ GeoExt.Lang.add("en", {
         permakinkText: 'Permalink',
         appInfoText: "GeoExplorer",
         aboutText: "About GeoExplorer",
-        mapInfoText: "Map Info",
+        mapInfoText: "Map info",
         descriptionText: "Description",
         contactText: "Contact",
-        aboutThisMapText: "About this Map"
+        aboutThisMapText: "About this map"
     },
     "GeoExplorer.Composer.prototype": {
         mapText: "Map",
